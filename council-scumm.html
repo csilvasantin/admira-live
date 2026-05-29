@@ -3801,8 +3801,9 @@
         }
         const diarioMatch = text.match(/^\/diario$/i);
         if (diarioMatch) {
-            window.open('https://csilvasantin.github.io/18.-diario/', '_blank', 'noopener');
-            setActionLine('📔 Diario abierto en una pestaña nueva — usa /help para ver más comandos');
+            // cache-bust (evita versión vieja en el navegador) + #latest (salta a la última entrada)
+            window.open('https://csilvasantin.github.io/18.-diario/?_=' + Date.now() + '#latest', '_blank', 'noopener');
+            setActionLine('📔 Diario abierto en la última entrada — usa /help para ver más comandos');
             return true;
         }
         const importarMatch = text.match(/^\/importar\s+(\S.+)$/i);
