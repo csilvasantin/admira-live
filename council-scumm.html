@@ -124,6 +124,13 @@
         .summary-number.red { color: #e74c3c; }
         .summary-number.blue { color: #3498db; }
         .summary-label { font-size: 0.7rem; color: #888; margin-top: 0.2rem; }
+        .summary-diario { cursor: pointer; transition: background 0.15s, box-shadow 0.15s, transform 0.1s; }
+        .summary-diario:hover, .summary-diario:focus {
+            background: #25253f;
+            box-shadow: 0 0 0 1px rgba(231,76,60,0.5), 0 0 12px rgba(231,76,60,0.25);
+            outline: none;
+        }
+        .summary-diario:active { transform: scale(0.97); }
 
         /* Council image */
         .council-image {
@@ -2840,9 +2847,12 @@
                 <div class="summary-number green">${onlineCount}</div>
                 <div class="summary-label">Consejeros activos</div>
             </div>
-            <div class="summary-item">
+            <div class="summary-item summary-diario" role="link" tabindex="0"
+                 title="Abrir la última entrada del diario"
+                 onclick="window.open('https://csilvasantin.github.io/18.-diario/?_=' + Date.now() + '#latest', '_blank', 'noopener')"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
                 <div class="summary-number red">${offlineCount}</div>
-                <div class="summary-label">Sin conexión</div>
+                <div class="summary-label">Sin conexión 📔</div>
             </div>
             <div class="summary-item">
                 <div class="summary-number blue">${totalMachinesOnline}</div>
