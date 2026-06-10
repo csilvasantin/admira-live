@@ -3,39 +3,323 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>admira.live — Coming soon</title>
-<meta name="description" content="admira.live — próximamente.">
+<title>admira.live | Operativa en vivo</title>
+<meta name="description" content="admira.live conecta la actividad operativa de Yarig con los contenidos publicados desde admira.studio.">
 <link rel="canonical" href="https://www.admira.live/">
 <meta property="og:title" content="admira.live">
-<meta property="og:description" content="Coming soon.">
+<meta property="og:description" content="Panel vivo de equipo, tareas y contenidos Admira.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.admira.live/">
 <style>
-  :root{
-    --bg:#02080d;
-    --ink:#dff8ff;
-    --mut:#75aab9;
-    --brand:#78f3ff;
-    --accent:#ffd866;
-    --line:rgba(120,243,255,.18);
+  :root {
+    --bg: #071013;
+    --panel: #0e1b1f;
+    --panel-2: #132529;
+    --ink: #e9fbff;
+    --muted: #8fb4bc;
+    --line: rgba(143, 180, 188, .22);
+    --cyan: #6ee7f5;
+    --green: #8ef06c;
+    --amber: #ffd166;
+    --rose: #ff8fab;
+    --shadow: 0 18px 60px rgba(0, 0, 0, .26);
   }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,sans-serif;line-height:1.55;min-height:100vh}
-  body{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(ellipse at 20% 0%,rgba(120,243,255,.12),transparent 55%),radial-gradient(ellipse at 100% 80%,rgba(255,216,102,.08),transparent 55%),var(--bg)}
-  .badge{display:inline-block;font-family:monospace;font-size:11px;color:var(--accent);letter-spacing:.18em;border:1px solid rgba(255,216,102,.45);padding:5px 12px;border-radius:999px;margin-bottom:24px;text-transform:uppercase}
-  h1{font-size:64px;margin:0 0 14px;letter-spacing:-.03em;font-weight:800;line-height:1}
-  h1 .grad{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
-  p.lede{font-size:18px;color:var(--mut);max-width:560px;margin:0 0 28px}
-  .dotline{font-family:monospace;color:var(--mut);font-size:12px;letter-spacing:.18em;margin-top:32px}
-  .dotline a{color:var(--brand);text-decoration:none}
-  .dotline a:hover{text-decoration:underline}
-  @media (max-width:520px){h1{font-size:44px}}
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.45; }
+  body {
+    background:
+      linear-gradient(135deg, rgba(110,231,245,.09), transparent 32%),
+      linear-gradient(225deg, rgba(142,240,108,.08), transparent 34%),
+      #071013;
+  }
+  a { color: inherit; }
+  .topbar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    padding: 14px clamp(16px, 4vw, 44px);
+    background: rgba(7, 16, 19, .84); backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; font-weight: 850; letter-spacing: 0; }
+  .brand b { font-size: 21px; }
+  .brand span { color: var(--muted); font-size: 13px; font-weight: 650; }
+  .nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .nav a, .nav button {
+    min-height: 34px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 11px;
+    background: rgba(255,255,255,.03); color: var(--ink); text-decoration: none; font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .nav a.primary { border-color: rgba(110,231,245,.55); color: var(--cyan); }
+  .shell { width: min(1440px, 100%); margin: 0 auto; padding: 28px clamp(16px, 4vw, 44px) 44px; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); gap: 18px; align-items: stretch; margin-bottom: 18px; }
+  .hero-main, .panel {
+    border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
+    box-shadow: var(--shadow); border-radius: 8px;
+  }
+  .hero-main { padding: clamp(22px, 4vw, 38px); min-height: 290px; display: grid; align-content: space-between; }
+  .eyebrow { color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 14px; }
+  h1 { font-size: clamp(38px, 6vw, 82px); line-height: .94; margin: 0; max-width: 860px; letter-spacing: 0; }
+  .lead { margin: 18px 0 0; color: var(--muted); font-size: clamp(16px, 2vw, 20px); max-width: 720px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px;
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 13px; background: var(--panel-2); color: var(--ink);
+    text-decoration: none; font-weight: 750; cursor: pointer;
+  }
+  .btn.primary { background: var(--cyan); color: #041113; border-color: var(--cyan); }
+  .status-card { padding: 22px; display: grid; gap: 16px; }
+  .live-dot { display: flex; align-items: center; gap: 9px; color: var(--green); font-weight: 850; }
+  .live-dot::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 18px var(--green); }
+  .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .metric { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: rgba(0,0,0,.16); min-height: 90px; }
+  .metric strong { display: block; font-size: 28px; line-height: 1; }
+  .metric span { display: block; color: var(--muted); font-size: 12px; margin-top: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+  .panel { padding: 18px; min-width: 0; }
+  .span-4 { grid-column: span 4; }
+  .span-5 { grid-column: span 5; }
+  .span-7 { grid-column: span 7; }
+  .span-12 { grid-column: span 12; }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .panel h2 { margin: 0; font-size: 18px; letter-spacing: 0; }
+  .stamp { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .list { display: grid; gap: 10px; }
+  .row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: rgba(0,0,0,.14); min-width: 0; }
+  .rank { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; background: rgba(110,231,245,.14); color: var(--cyan); font-weight: 850; }
+  .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 750; }
+  .sub { color: var(--muted); font-size: 12px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .score { color: var(--amber); font-weight: 850; font-variant-numeric: tabular-nums; }
+  .task-row { grid-template-columns: 1fr auto; }
+  .badge { border: 1px solid var(--line); color: var(--muted); border-radius: 999px; padding: 4px 8px; font-size: 12px; }
+  .stock-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .stock-item { min-height: 170px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: rgba(0,0,0,.18); display: grid; grid-template-rows: 118px auto; text-decoration: none; }
+  .stock-media { background: #020607; display: grid; place-items: center; overflow: hidden; color: var(--muted); font-size: 12px; }
+  .stock-media img, .stock-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .stock-copy { padding: 10px; min-width: 0; }
+  .empty, .error { color: var(--muted); padding: 18px; border: 1px dashed var(--line); border-radius: 8px; background: rgba(0,0,0,.1); }
+  .error { color: var(--rose); }
+  footer { color: var(--muted); font-size: 12px; padding: 22px 0 0; }
+  @media (max-width: 980px) {
+    .hero, .grid { grid-template-columns: 1fr; }
+    .span-4, .span-5, .span-7, .span-12 { grid-column: auto; }
+    .stock-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .topbar { position: static; align-items: flex-start; flex-direction: column; }
+    .nav { justify-content: flex-start; }
+    .metric-grid, .stock-grid { grid-template-columns: 1fr; }
+    .row { grid-template-columns: auto 1fr; }
+    .score { grid-column: 2; }
+  }
 </style>
 </head>
 <body>
-  <span class="badge">Coming soon</span>
-  <h1><span class="grad">admira</span><span style="color:var(--mut)">.live</span></h1>
-  <p class="lede">Trabajando en algo nuevo. Vuelve pronto.</p>
-  <p class="dotline">·  <a href="https://www.admiranext.com">www.admiranext.com</a>  ·</p>
+  <header class="topbar">
+    <a class="brand" href="https://www.admira.live"><b>admira.live</b><span>operativa en vivo</span></a>
+    <nav class="nav" aria-label="Navegacion">
+      <a class="primary" href="https://www.admira.studio">Abrir Studio</a>
+      <a href="https://www.admira.studio/stock.html">Stock</a>
+      <a href="https://www.admira.studio/signage.html">Signage</a>
+      <button type="button" id="refreshBtn">Actualizar</button>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <p class="eyebrow">Yarig x Admira Studio</p>
+          <h1>Equipo, tareas y contenido en una sola pantalla viva.</h1>
+          <p class="lead">Live lee datos operativos desde Yarig mediante el worker seguro y cruza esa energia con el Stock publicado desde admira.studio.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="btn primary" href="https://www.admira.studio">Crear contenido</a>
+          <a class="btn" href="https://www.admira.studio/stock.html">Ver Stock</a>
+          <a class="btn" href="https://www.admira.studio/signage.html">Pantalla signage</a>
+        </div>
+      </div>
+      <aside class="panel status-card" aria-label="Estado">
+        <div class="live-dot" id="healthText">Conectando</div>
+        <div class="metric-grid">
+          <div class="metric"><strong id="scoreTotal">--</strong><span>score total</span></div>
+          <div class="metric"><strong id="taskCount">--</strong><span>tareas hoy</span></div>
+          <div class="metric"><strong id="teamCount">--</strong><span>ranking equipo</span></div>
+          <div class="metric"><strong id="stockCount">--</strong><span>assets stock</span></div>
+        </div>
+        <div class="stamp" id="lastUpdated">sin actualizar</div>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <article class="panel span-7">
+        <div class="panel-head">
+          <h2>Ranking de equipo</h2>
+          <span class="stamp" id="rankingStamp">--</span>
+        </div>
+        <div class="list" id="rankingList"><div class="empty">Cargando ranking...</div></div>
+      </article>
+
+      <article class="panel span-5">
+        <div class="panel-head">
+          <h2>Tareas de hoy</h2>
+          <span class="stamp" id="tasksStamp">--</span>
+        </div>
+        <div class="list" id="tasksList"><div class="empty">Cargando tareas...</div></div>
+      </article>
+
+      <article class="panel span-12">
+        <div class="panel-head">
+          <h2>Ultimos assets publicados desde Studio</h2>
+          <span class="stamp" id="stockStamp">--</span>
+        </div>
+        <div class="stock-grid" id="stockGrid"><div class="empty">Cargando Stock...</div></div>
+      </article>
+    </section>
+    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador.</footer>
+  </main>
+
+<script>
+(function () {
+  const LIVE_API = location.hostname.includes('localhost') || location.hostname === '127.0.0.1'
+    ? 'http://localhost:8787'
+    : 'https://admira-live-worker.csilvasantin.workers.dev';
+  const STOCK_API = 'https://pixer-eleven.csilvasantin.workers.dev';
+  const els = {
+    health: document.getElementById('healthText'),
+    score: document.getElementById('scoreTotal'),
+    taskCount: document.getElementById('taskCount'),
+    teamCount: document.getElementById('teamCount'),
+    stockCount: document.getElementById('stockCount'),
+    updated: document.getElementById('lastUpdated'),
+    ranking: document.getElementById('rankingList'),
+    rankingStamp: document.getElementById('rankingStamp'),
+    tasks: document.getElementById('tasksList'),
+    tasksStamp: document.getElementById('tasksStamp'),
+    stock: document.getElementById('stockGrid'),
+    stockStamp: document.getElementById('stockStamp'),
+  };
+
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+  function asArray(payload) {
+    const data = payload && payload.data !== undefined ? payload.data : payload;
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.items)) return data.items;
+    if (Array.isArray(data?.tasks)) return data.tasks;
+    if (Array.isArray(data?.ranking)) return data.ranking;
+    if (Array.isArray(data?.data)) return data.data;
+    if (data && typeof data === 'object') return Object.values(data).filter(v => v && typeof v === 'object');
+    return [];
+  }
+  function getName(item) {
+    return item.name || item.nombre || item.full_name || item.user || item.usuario || item.title || item.titulo || item.task || item.descripcion || item.description || 'Sin titulo';
+  }
+  function getScore(item) {
+    return item.score || item.points || item.puntos || item.total || item.rank_points || item.value || '';
+  }
+  function fmtStamp() {
+    return new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+  async function getJson(url) {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(url + ' -> ' + res.status);
+    return res.json();
+  }
+  function showError(node, message) {
+    node.innerHTML = '<div class="error">' + escapeHtml(message) + '</div>';
+  }
+
+  async function loadHealth() {
+    try {
+      const [health, score] = await Promise.all([
+        getJson(LIVE_API + '/api/health'),
+        getJson(LIVE_API + '/api/score/total'),
+      ]);
+      els.health.textContent = health.creds_configured ? 'Worker conectado' : 'Worker sin secrets';
+      els.score.textContent = score.data ?? score ?? '--';
+    } catch (err) {
+      els.health.textContent = 'Worker no disponible';
+      els.score.textContent = '--';
+    }
+  }
+
+  async function loadRanking() {
+    try {
+      const payload = await getJson(LIVE_API + '/api/team/ranking');
+      const rows = asArray(payload).slice(0, 8);
+      els.teamCount.textContent = rows.length;
+      els.rankingStamp.textContent = fmtStamp();
+      els.ranking.innerHTML = rows.length ? rows.map((item, i) => `
+        <div class="row">
+          <div class="rank">${i + 1}</div>
+          <div>
+            <div class="title">${escapeHtml(getName(item))}</div>
+            <div class="sub">${escapeHtml(item.email || item.role || item.rol || item.department || item.departamento || 'equipo')}</div>
+          </div>
+          <div class="score">${escapeHtml(getScore(item))}</div>
+        </div>`).join('') : '<div class="empty">Sin datos de ranking.</div>';
+    } catch (err) {
+      els.teamCount.textContent = '--';
+      showError(els.ranking, 'No se pudo cargar ranking. Revisa worker/CORS/secrets.');
+    }
+  }
+
+  async function loadTasks() {
+    try {
+      const payload = await getJson(LIVE_API + '/api/tasks/today');
+      const rows = asArray(payload).slice(0, 8);
+      els.taskCount.textContent = rows.length;
+      els.tasksStamp.textContent = fmtStamp();
+      els.tasks.innerHTML = rows.length ? rows.map(item => `
+        <div class="row task-row">
+          <div>
+            <div class="title">${escapeHtml(getName(item))}</div>
+            <div class="sub">${escapeHtml(item.client || item.cliente || item.project || item.proyecto || item.status || item.estado || 'hoy')}</div>
+          </div>
+          <span class="badge">${escapeHtml(item.priority || item.prioridad || item.type || item.tipo || 'task')}</span>
+        </div>`).join('') : '<div class="empty">No hay tareas para mostrar.</div>';
+    } catch (err) {
+      els.taskCount.textContent = '--';
+      showError(els.tasks, 'No se pudieron cargar tareas.');
+    }
+  }
+
+  function stockMedia(item) {
+    const type = item.type || item.kind;
+    const src = item.thumbnail || item.url;
+    if (type === 'image' && src) return `<img src="${escapeHtml(src)}" alt="">`;
+    if ((type === 'video' || type === 'animation') && item.url) return `<video src="${escapeHtml(item.url)}" ${item.thumbnail ? `poster="${escapeHtml(item.thumbnail)}"` : ''} muted playsinline preload="metadata"></video>`;
+    return '<span>' + escapeHtml(type || 'asset') + '</span>';
+  }
+  async function loadStock() {
+    try {
+      const payload = await getJson(STOCK_API + '/stock/list?limit=8');
+      const rows = (payload.items || payload.data || []).slice(0, 8);
+      els.stockCount.textContent = payload.total || rows.length;
+      els.stockStamp.textContent = fmtStamp();
+      els.stock.innerHTML = rows.length ? rows.map(item => `
+        <a class="stock-item" href="https://www.admira.studio/stock.html?highlight=${encodeURIComponent(item.id || '')}">
+          <div class="stock-media">${stockMedia(item)}</div>
+          <div class="stock-copy">
+            <div class="title">${escapeHtml(item.title || item.name || item.id || 'asset')}</div>
+            <div class="sub">${escapeHtml(item.type || item.kind || 'stock')} · ${escapeHtml(item.motor || item.model || 'studio')}</div>
+          </div>
+        </a>`).join('') : '<div class="empty">Stock vacio.</div>';
+    } catch (err) {
+      els.stockCount.textContent = '--';
+      showError(els.stock, 'No se pudo cargar el Stock de Studio.');
+    }
+  }
+
+  async function refresh() {
+    els.updated.textContent = 'actualizando...';
+    await Promise.allSettled([loadHealth(), loadRanking(), loadTasks(), loadStock()]);
+    els.updated.textContent = 'actualizado ' + fmtStamp();
+  }
+  document.getElementById('refreshBtn').addEventListener('click', refresh);
+  refresh();
+  setInterval(refresh, 30000);
+})();
+</script>
 </body>
 </html>

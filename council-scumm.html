@@ -19,6 +19,9 @@
         })();
     </script>
     <title>XpaceOS powered by ADmira | AdmiraNext Council</title>
+    <link rel="icon" href="/council-icon.ico?v=20260522-r1" sizes="any">
+    <link rel="icon" type="image/png" href="/council-icon.png?v=20260522-r1" sizes="64x64">
+    <link rel="shortcut icon" href="/council-icon.ico?v=20260522-r1">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -124,13 +127,6 @@
         .summary-number.red { color: #e74c3c; }
         .summary-number.blue { color: #3498db; }
         .summary-label { font-size: 0.7rem; color: #888; margin-top: 0.2rem; }
-        .summary-diario { cursor: pointer; transition: background 0.15s, box-shadow 0.15s, transform 0.1s; }
-        .summary-diario:hover, .summary-diario:focus {
-            background: #25253f;
-            box-shadow: 0 0 0 1px rgba(231,76,60,0.5), 0 0 12px rgba(231,76,60,0.25);
-            outline: none;
-        }
-        .summary-diario:active { transform: scale(0.97); }
 
         /* Council image */
         .council-image {
@@ -2167,13 +2163,207 @@
         .hack-terminal { border-radius: 0; }
         .screen-overlay img { border-radius: 0; box-shadow: 4px 4px 0 #000; }
         .screen-overlay-time { border-radius: 0; }
+
+        /* ── Private Meeting Room (Sala de Reuniones Privada) ── */
+        .meeting-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #0a0a14;
+            overflow: hidden;
+        }
+        .meeting-overlay.visible { display: flex; flex-direction: column; }
+        .meeting-bg {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 50% 50%, #1a1a2e 0%, #0a0a14 70%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23111" width="100" height="100"/><path d="M0 0h100v100H0z" fill="%231a1a2e" opacity="0.1"/></svg>');
+            background-size: cover;
+        }
+        .meeting-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+            pointer-events: none;
+        }
+        .meeting-room {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .meeting-advisor {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin-bottom: 1.5rem;
+        }
+        .meeting-advisor-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 20px rgba(218,165,32,0.3));
+            animation: meeting-float 4s ease-in-out infinite;
+        }
+        @keyframes meeting-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .meeting-advisor-glow {
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(218,165,32,0.15) 0%, transparent 70%);
+            pointer-events: none;
+            animation: meeting-pulse 3s ease-in-out infinite;
+        }
+        @keyframes meeting-pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        .meeting-info {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .meeting-advisor-name {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 1rem;
+            color: #daa520;
+            text-shadow: 0 0 10px rgba(218,165,32,0.5);
+        }
+        .meeting-advisor-role {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 0.3rem;
+        }
+        .meeting-advisor-persona {
+            font-size: 0.6rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 0.2rem;
+        }
+        .meeting-side-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+        .meeting-side-badge.racional { background: #e74c3c; color: #fff; }
+        .meeting-side-badge.creativo { background: #3498db; color: #fff; }
+        .meeting-chat {
+            width: 100%;
+            max-width: 600px;
+            flex: 1;
+            background: rgba(26,26,46,0.9);
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .meeting-msg {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            animation: fadeIn 0.3s;
+        }
+        .meeting-msg:last-child { border-bottom: none; }
+        .meeting-msg.user { text-align: right; }
+        .meeting-speaker {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 0.2rem;
+        }
+        .meeting-speaker.user { color: #daa520; }
+        .meeting-speaker.advisor { color: #44bb44; }
+        .meeting-text {
+            font-size: 0.85rem;
+            color: #ddd;
+            line-height: 1.5;
+        }
+        .meeting-input-area {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .meeting-input {
+            flex: 1;
+            background: #1a1a2e;
+            border: 2px solid #333;
+            border-radius: 6px;
+            padding: 0.7rem 1rem;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+        .meeting-input:focus { outline: none; border-color: #daa520; }
+        .meeting-send {
+            background: linear-gradient(135deg, #b8860b, #daa520);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+            transition: all 0.2s;
+        }
+        .meeting-send:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(218,165,32,0.4); }
+        .meeting-close {
+            background: none;
+            border: 1px solid #444;
+            color: #888;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.5rem;
+            transition: all 0.2s;
+            align-self: center;
+        }
+        .meeting-close:hover { border-color: #e74c3c; color: #e74c3c; }
+        .meeting-typing {
+            font-size: 0.7rem;
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        .meeting-door-hotspot {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+        .meeting-door-hotspot:hover {
+            background: rgba(218,165,32,0.15);
+            box-shadow: 0 0 20px rgba(218,165,32,0.3);
+            border: 2px solid rgba(218,165,32,0.5);
+        }
+
         /* ── fin retro override ── */
     </style>
 </head>
 <body>
     <div class="container">
         <div class="top-bar">
-            <a href="https://www.youtube.com/watch?v=cHuqhQmc4ok" target="_blank" class="version-badge">Admira v.26.05.22.r1</a>
+            <a href="https://www.admira.live/dashboard.html" target="_blank" class="version-badge">Admira v.26.05.30.r2</a>
+            <a href="https://csilvasantin.github.io/diario/" target="_blank" rel="noopener" class="version-badge" title="Diario operativo del Consejo">📓 Diario</a>
             <div class="gen-toggle">
                 <button class="gen-btn active-leyendas" id="btn-leyendas" onclick="setGen('leyendas')">⭐ Leyendas</button>
                 <button class="gen-btn" id="btn-coetaneos" onclick="setGen('coetaneos')">🚀 Coetáneos</button>
@@ -2227,6 +2417,10 @@
             <div class="apple-ii-hotspot" id="apple-ii-hotspot"
                  style="left:46%;top:53%;width:10%;height:11%"
                  title="Apple II — pulsa MIRAR y haz clic"></div>
+            <!-- Door hotspot to enter Private Meeting Room (Sala del Consejo) -->
+            <div class="meeting-door-hotspot" id="meeting-door-hotspot"
+                 style="right:3%;top:15%;width:8%;height:25%"
+                 title="Sala de Reuniones Privada — haz clic para entrar"></div>
             <div class="nameplates hidden" id="nameplates"></div>
             <div class="speech-overlay" id="speech-overlay">
                 <div class="speech-bubble" id="speech-bubble">
@@ -2304,6 +2498,7 @@
                     <button class="verb-btn" data-verb="votar" onclick="selectVerb(this)">Votar</button>
                     <button class="verb-btn" data-verb="analizar" onclick="selectVerb(this)">Analizar</button>
                     <button class="verb-btn" data-verb="presentar" onclick="selectVerb(this)">Presentar</button>
+                    <button class="verb-btn verb-primary" data-verb="reunion" onclick="selectVerb(this)">🚪 Reunión</button>
                     <button class="verb-btn" data-verb="previo" id="btn-previo" onclick="selectVerb(this)" style="display:none;border-left:2px solid #5a3a1e">▶ Previo</button>
                 </div>
                 <div class="inventory">
@@ -2456,6 +2651,30 @@
             </div>
         </div>
 
+        <!-- Private Meeting Room (Sala de Reuniones Privada) -->
+        <div class="meeting-overlay" id="meeting-overlay">
+            <div class="meeting-bg"></div>
+            <div class="meeting-room">
+                <div class="meeting-advisor">
+                    <div class="meeting-advisor-glow"></div>
+                    <img class="meeting-advisor-img" id="meeting-advisor-img" src="" alt="Consejero">
+                </div>
+                <div class="meeting-info">
+                    <div class="meeting-advisor-name" id="meeting-advisor-name">—</div>
+                    <div class="meeting-advisor-role" id="meeting-advisor-role">—</div>
+                    <div class="meeting-advisor-persona" id="meeting-advisor-persona">—</div>
+                    <span class="meeting-side-badge" id="meeting-side-badge">—</span>
+                </div>
+                <div class="meeting-chat" id="meeting-chat"></div>
+                <div class="meeting-input-area">
+                    <input class="meeting-input" id="meeting-input" type="text" placeholder="Escribe tu mensaje..." autocomplete="off" onkeydown="if(event.key==='Enter')sendPrivateMessage()">
+                    <button class="meeting-send" onclick="sendPrivateMessage()">ENVIAR</button>
+                </div>
+                <div class="meeting-typing" id="meeting-typing" style="display:none;"></div>
+                <button class="meeting-close" onclick="exitPrivateMeeting()">← SALIR DE LA REUNIÓN</button>
+            </div>
+        </div>
+
         <!-- Conversation area below SCUMM bar -->
         <div class="conv-area" id="conv-area">
             <div class="conv-grid">
@@ -2490,7 +2709,7 @@
 
     <div class="hack-overlay" id="hack-overlay"></div>
 
-    <a class="control-toggle" href="https://csilvasantin.github.io/03.-ControlCodexClaude/teamwork.html" target="_blank" title="Abrir panel de Control Codex & Claude">
+    <a class="control-toggle" href="https://csilvasantin.github.io/01.-AdmiraXperience-Game/game.html?v=20260512-2500" target="_blank" title="Abrir Digital Twin">
         <span class="control-dot"></span> CONTROL
     </a>
 
@@ -2847,12 +3066,9 @@
                 <div class="summary-number green">${onlineCount}</div>
                 <div class="summary-label">Consejeros activos</div>
             </div>
-            <div class="summary-item summary-diario" role="link" tabindex="0"
-                 title="Abrir la última entrada del diario"
-                 onclick="window.open('https://csilvasantin.github.io/18.-diario/?_=' + Date.now() + '#latest', '_blank', 'noopener')"
-                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+            <div class="summary-item">
                 <div class="summary-number red">${offlineCount}</div>
-                <div class="summary-label">Sin conexión 📔</div>
+                <div class="summary-label">Sin conexión</div>
             </div>
             <div class="summary-item">
                 <div class="summary-number blue">${totalMachinesOnline}</div>
@@ -2988,7 +3204,12 @@
 
     // ESC to close overlay
     window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeScreenOverlay();
+        if (e.key === "Escape") {
+            closeScreenOverlay();
+            if (document.getElementById("meeting-overlay").classList.contains("visible")) {
+                exitPrivateMeeting();
+            }
+        }
     });
 
     // Refresh thumbnails every 10s in demo mode — preload to avoid flicker
@@ -3351,6 +3572,7 @@
         analizar:  "analizar",
         presentar: "presentar",
         previo:    "presentar",
+        reunion:   "llm",
     };
 
     function updateInventoryPanel(verb) {
@@ -3487,6 +3709,9 @@
         if (currentVerb === 'analizar') triggerAnalizar();
         if (currentVerb === 'presentar') triggerPresentar();
         if (currentVerb === 'previo') triggerPrevio();
+        if (currentVerb === 'reunion') {
+            enterReunionMode();
+        }
     }
 
     function enterPreguntarMode() {
@@ -3533,6 +3758,11 @@
         const bh = e.target.closest('.body-hotspot');
         if (!bh || !preguntarMode) return;
         selectAgentByPersona(bh.getAttribute('data-persona'));
+    });
+
+    // Meeting door hotspot click
+    document.getElementById("meeting-door-hotspot").addEventListener("click", function(e) {
+        enterReunionMode();
     });
 
     function selectAgentByPersona(persona) {
@@ -3631,7 +3861,8 @@
             '<li><strong>/importar &lt;url&gt;</strong> — descarga vídeo y lo sube a Drive</li>' +
             '<li><strong>/nombres on|off|toggle</strong> — enseña u oculta los consejeros</li>' +
             '<li><strong>/google</strong> — abre la hoja Drive de enlaces Entrenar</li>' +
-            '<li><strong>/diario</strong> — abre el diario en una pestaña nueva</li>' +
+            '<li><strong>/diario</strong> — muestra el diario operativo del Consejo</li>' +
+            '<li><strong>/diario &lt;texto&gt;</strong> — registra una decisión en el diario</li>' +
             '<li><strong>/yarig on|off|toggle</strong> — fija u oculta Yarig en la mesa</li>' +
             '<li><strong>/yarig login</strong> — abre la sesión persistente de Yarig</li>' +
             '<li><strong>/yarig estado</strong> — comprueba watcher y frescura del sync</li>' +
@@ -3662,7 +3893,8 @@
             '/help<br>' +
             '/importar &lt;url&gt; <span style="opacity:0.7">(descarga vídeo y lo sube a Drive)</span><br>' +
             '/google <span style="opacity:0.7">(abre la hoja de enlaces Entrenar)</span><br>' +
-            '/diario <span style="opacity:0.7">(abre el diario en una pestaña nueva)</span><br>' +
+            '/diario <span style="opacity:0.7">(muestra el diario operativo)</span><br>' +
+            '/diario &lt;texto&gt; <span style="opacity:0.7">(registra una decisión del Consejo)</span><br>' +
             '/nombres on<br>' +
             '/nombres off<br>' +
             '/nombres toggle<br>' +
@@ -3790,6 +4022,115 @@
         setActionLine('⚠️ No se pudo importar el vídeo — ' + (lastErr ? lastErr.message : 'backend no disponible'));
     }
 
+    // ── Diario operativo (integración Consejo ↔ diario, repo 18.-diario) ──
+    const DIARIO_PUBLIC_URL = 'https://csilvasantin.github.io/diario/';
+
+    // Llama al backend probando los URLs en orden (igual que callCouncilHackeo).
+    async function callCouncilApi(path, { method = 'GET', body = null } = {}) {
+        const urls = activeApiUrl ? [activeApiUrl].concat(COUNCIL_API_URLS.filter(u => u !== activeApiUrl)) : COUNCIL_API_URLS.slice();
+        let lastErr = null;
+        for (const baseUrl of urls) {
+            try {
+                const res = await fetch(baseUrl + path, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'X-Council-Token': COUNCIL_API_TOKEN },
+                    body: body ? JSON.stringify(body) : undefined,
+                    signal: AbortSignal.timeout(20000),
+                });
+                if (!res.ok) {
+                    let detail = 'HTTP ' + res.status;
+                    try { const j = await res.json(); if (j && j.detail) detail = j.detail; } catch (_) {}
+                    lastErr = detail; continue;
+                }
+                activeApiUrl = baseUrl;
+                return await res.json();
+            } catch (e) {
+                lastErr = e.message || String(e);
+            }
+        }
+        throw new Error(lastErr || 'council-api no disponible');
+    }
+
+    function diarioEscape(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Render markdown ligero del diario (títulos, bullets, negrita, código inline).
+    function diarioMdToHtml(md) {
+        const lines = String(md || '').split('\n');
+        const out = [];
+        for (const line of lines) {
+            let s = diarioEscape(line);
+            s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                 .replace(/`([^`]+)`/g, '<code style="background:#012;color:#8cf;padding:0 3px;border-radius:3px">$1</code>');
+            const raw = line.trim();
+            if (raw.startsWith('# ')) out.push('<div style="color:var(--matrix-bright,#7CFC9B);font-weight:700;margin-top:6px">' + s.replace(/^#\s*/, '') + '</div>');
+            else if (raw.startsWith('## ')) out.push('<div style="color:#8cf;font-weight:600;margin-top:5px">' + s.replace(/^##\s*/, '') + '</div>');
+            else if (/^-\s+/.test(raw)) out.push('<div style="padding-left:8px">• ' + s.replace(/^\s*-\s+/, '') + '</div>');
+            else if (raw === '') out.push('<div style="height:4px"></div>');
+            else out.push('<div>' + s + '</div>');
+        }
+        return out.join('');
+    }
+
+    // /diario → muestra las entradas recientes del diario operativo.
+    async function openDiario() {
+        enterConversation();
+        addUserEntry('/diario');
+        setActionLine('📓 Consultando el diario operativo…');
+        try {
+            const data = await callCouncilApi('/api/council/diario?limit=8');
+            const entries = (data && data.entries) || [];
+            if (!entries.length) {
+                addConvEntry('conv-racional', '📓', 'Diario', 'Diario operativo', 'racional',
+                    'Sin entradas legibles' + (data && data.available === false ? ' — el diario no está montado en este backend (<code>' + diarioEscape(data.dir || '') + '</code>).' : '.'));
+            } else {
+                const html = entries.map(e => {
+                    const badge = e.hasConsejo ? ' <span style="color:var(--matrix-bright,#7CFC9B)">· 🏛️ Consejo</span>' : '';
+                    return '<details style="margin:4px 0;border-left:2px solid #244;padding-left:8px">' +
+                        '<summary style="cursor:pointer;color:#8cf"><strong>' + diarioEscape(e.date) + '</strong>' +
+                        (e.author ? ' <span style="opacity:0.7">[' + diarioEscape(e.author) + ']</span>' : '') + badge + '</summary>' +
+                        '<div style="font-size:0.82rem;margin-top:4px;max-height:240px;overflow:auto">' + diarioMdToHtml(e.markdown) + '</div>' +
+                        '</details>';
+                }).join('');
+                addConvEntry('conv-racional', '📓', 'Diario', 'Diario operativo', 'racional',
+                    '<strong>Últimas ' + entries.length + ' entradas</strong>' + html);
+            }
+            addConvEntry('conv-creativo', '🏛️', 'Consejo', 'Integración diario', 'creativo',
+                'Registra una decisión operativa con <strong>/diario &lt;texto&gt;</strong>.<br>' +
+                'Diario público: <a href="' + DIARIO_PUBLIC_URL + '" target="_blank" rel="noopener" style="color:#8cf">' + DIARIO_PUBLIC_URL + '</a>');
+            setActionLine('📓 Diario operativo cargado — usa /diario <texto> para registrar una decisión');
+        } catch (e) {
+            addConvEntry('conv-racional', '⚠️', 'Diario', 'Error', 'racional',
+                'No se pudo leer el diario: ' + diarioEscape(e.message || String(e)));
+            setActionLine('⚠️ Diario no disponible — ¿está vivo el backend?');
+        }
+    }
+
+    // /diario <texto> → registra una decisión del Consejo en la entrada del día.
+    async function registrarDiario(texto) {
+        enterConversation();
+        addUserEntry('/diario ' + texto);
+        setActionLine('📓 Registrando decisión en el diario…');
+        try {
+            const data = await callCouncilApi('/api/council/diario/append', { method: 'POST', body: { text: texto, author: 'Consejo' } });
+            const pub = (data && data.publish) || {};
+            const estado = pub.pushed ? 'pusheado al repo del diario (aparece en la web al próximo cierre del día)' : (pub.committed ? 'commiteado en local (push pendiente)' : 'guardado en el fichero del día');
+            const url = (data && data.url) || DIARIO_PUBLIC_URL;
+            addConvEntry('conv-racional', '🏛️', 'Consejo', 'Decisión registrada', 'racional',
+                '<strong>' + diarioEscape(texto) + '</strong><br>' +
+                '<span style="opacity:0.8">Entrada ' + diarioEscape((data && data.date) || '') + ' · ' + estado + '.</span><br>' +
+                '<a href="' + url + '" target="_blank" rel="noopener" style="color:#8cf">' + url + '</a>' +
+                (pub.error ? '<br><span style="color:#f88;font-size:0.8rem">git: ' + diarioEscape(pub.error) + '</span>' : ''));
+            setActionLine(pub.pushed ? '📓 Decisión publicada en el diario' : '📓 Decisión guardada — push pendiente');
+        } catch (e) {
+            addConvEntry('conv-racional', '⚠️', 'Diario', 'Error', 'racional',
+                'No se pudo registrar en el diario: ' + diarioEscape(e.message || String(e)));
+            setActionLine('⚠️ No se pudo escribir en el diario');
+        }
+    }
+
     function handleCliCommand(raw) {
         const text = String(raw || '').trim();
         if (!text) return false;
@@ -3807,13 +4148,6 @@
         const googleMatch = text.match(/^\/google(?:\s+(drive|sheet|sheets|hoja|entrenar))?$/i);
         if (googleMatch) {
             openGoogleEntrenarSheet();
-            return true;
-        }
-        const diarioMatch = text.match(/^\/diario$/i);
-        if (diarioMatch) {
-            // cache-bust (evita versión vieja en el navegador) + #latest (salta a la última entrada)
-            window.open('https://csilvasantin.github.io/18.-diario/?_=' + Date.now() + '#latest', '_blank', 'noopener');
-            setActionLine('📔 Diario abierto en la última entrada — usa /help para ver más comandos');
             return true;
         }
         const importarMatch = text.match(/^\/importar\s+(\S.+)$/i);
@@ -3839,6 +4173,16 @@
         const finalizadaMatch = text.match(/^\/finalizada\s+(.+)$/i);
         if (finalizadaMatch) {
             void executeYarig('finalizada: ' + finalizadaMatch[1].trim());
+            return true;
+        }
+        const diarioAppendMatch = text.match(/^\/diario\s+(\S.*)$/i);
+        if (diarioAppendMatch) {
+            void registrarDiario(diarioAppendMatch[1].trim());
+            return true;
+        }
+        const diarioMatch = text.match(/^\/diario$/i);
+        if (diarioMatch) {
+            void openDiario();
             return true;
         }
         const yarigLoginMatch = text.match(/^\/yarig(?:\.ai)?\s+(login|loguear|entrar)$/i);
@@ -3923,6 +4267,114 @@
         conversationHistory = [];
         exitPreguntarMode();
         setActionLine("Escribe aquí o usa /help...");
+    }
+
+    // ─── Private Meeting Room (Sala de Reuniones Privada) ───
+    let meetingAdvisor = null;
+
+    function enterReunionMode() {
+        // Show advisor selection in inventory panel
+        const invPanel = document.querySelector('.inv-panel[data-panel="llm"]');
+        if (invPanel) {
+            invPanel.innerHTML = `
+                <div class="inventory-title">Selecciona Consejero</div>
+                <div class="inventory-list" id="reunion-advisor-list">
+                    ${COUNCIL.filter(m => m.gen === currentGen).map(m => 
+                        `<div class="inv-item" data-persona="${m.persona}" onclick="selectAdvisorForMeeting('${m.persona}')">
+                            ${m.icon} ${m.persona} (${m.name}) — ${m.side === 'racional' ? '🧠 Racional' : '🎨 Creativo'}
+                        </div>`
+                    ).join('')}
+                </div>
+            `;
+        }
+        // Switch to LLM panel to show advisor list
+        document.querySelectorAll('.inv-panel').forEach(p => p.classList.remove('active'));
+        document.querySelector('.inv-panel[data-panel="llm"]').classList.add('active');
+        setActionLine("👆 Selecciona un consejero para la reunión privada...");
+    }
+
+    function selectAdvisorForMeeting(persona) {
+        const members = COUNCIL.filter(m => m.gen === currentGen);
+        const agent = members.find(m => m.persona === persona);
+        if (!agent) return;
+
+        meetingAdvisor = agent;
+        enterPrivateMeeting(agent);
+    }
+
+    function enterPrivateMeeting(agent) {
+        document.getElementById("meeting-overlay").classList.add("visible");
+        
+        // Set advisor image and info
+        const img = document.getElementById("meeting-advisor-img");
+        const side = agent.side === "racional" ? "left" : "right";
+        const idx = COUNCIL.filter(m => m.gen === currentGen && m.side === agent.side).findIndex(m => m.persona === agent.persona);
+        // Use a placeholder - in production would load actual advisor portrait
+        img.src = `assets/advisor-${agent.role.toLowerCase()}.png`;
+        img.onerror = () => { img.src = `assets/council-${currentGen}.jpg?v=5`; };
+        
+        document.getElementById("meeting-advisor-name").textContent = agent.name;
+        document.getElementById("meeting-advisor-role").textContent = agent.role;
+        document.getElementById("meeting-advisor-persona").textContent = "Persona: " + agent.persona;
+        const badge = document.getElementById("meeting-side-badge");
+        badge.textContent = agent.side === "racional" ? "🧠 Racional" : "🎨 Creativo";
+        badge.className = "meeting-side-badge " + agent.side;
+        
+        // Clear chat
+        document.getElementById("meeting-chat").innerHTML = "";
+        
+        // Add welcome message
+        addMeetingMsg(agent, "Bienvenido a la reunión privada. ¿En qué puedo ayudarte?");
+        
+        // Focus input
+        setTimeout(() => document.getElementById("meeting-input").focus(), 300);
+    }
+
+    function exitPrivateMeeting() {
+        document.getElementById("meeting-overlay").classList.remove("visible");
+        meetingAdvisor = null;
+        document.getElementById("meeting-chat").innerHTML = "";
+        setActionLine("Escribe aquí o usa /help...");
+    }
+
+    function addMeetingMsg(agent, text, isUser = false) {
+        const chat = document.getElementById("meeting-chat");
+        const entry = document.createElement("div");
+        entry.className = "meeting-msg" + (isUser ? " user" : "");
+        const speakerClass = isUser ? "user" : "advisor";
+        const speakerLabel = isUser ? "👤 Tú" : agent.icon + " " + agent.name;
+        entry.innerHTML = '<div class="meeting-speaker ' + speakerClass + '">' + speakerLabel + '</div><div class="meeting-text">' + text + '</div>';
+        chat.appendChild(entry);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendPrivateMessage() {
+        const input = document.getElementById("meeting-input");
+        const text = input.value.trim();
+        if (!text || !meetingAdvisor) return;
+        
+        input.value = "";
+        addMeetingMsg(meetingAdvisor, text, true);
+        
+        // Show typing indicator
+        const typing = document.getElementById("meeting-typing");
+        typing.textContent = meetingAdvisor.name + " está escribiendo...";
+        typing.style.display = "block";
+        
+        try {
+            // Call API for single agent
+            const reply = await askOneAgentAPI(text, meetingAdvisor.name);
+            typing.style.display = "none";
+            
+            if (reply) {
+                addMeetingMsg(meetingAdvisor, reply.content);
+            } else {
+                addMeetingMsg(meetingAdvisor, "Lo siento, no he podido procesar tu mensaje.");
+            }
+        } catch (e) {
+            typing.style.display = "none";
+            addMeetingMsg(meetingAdvisor, "Error de conexión: " + e.message);
+        }
     }
 
     function addConvEntry(panelId, icon, name, persona, side, text) {
@@ -4746,6 +5198,7 @@
     let conversationHistory = [];
     let yarContext = { focus: "", doing: "", done: [], tasks: [], pending: [], taskBuckets: { inProgress: [], pending: [], done: [] }, activeTask: "", ask: "", updatedAt: "", syncUser: "", syncSource: "", dayStartAt: "", dayEndAt: "" };
     let yarStatus = null;
+    let yarStatusErrors = [];
     let yarTaskEstimateHours = 1;
     let yarProjectOptions = [];
     let yarProjectsLoaded = false;
@@ -5088,6 +5541,7 @@
     }
 
     async function fetchYarigStatus(preferredBaseUrl) {
+        yarStatusErrors = [];
         const urls = preferredBaseUrl ? [preferredBaseUrl].concat(COUNCIL_API_URLS.filter(u => u !== preferredBaseUrl)) : (activeApiUrl ? [activeApiUrl].concat(COUNCIL_API_URLS.filter(u => u !== activeApiUrl)) : COUNCIL_API_URLS.slice());
         for (const baseUrl of urls) {
             try {
@@ -5102,6 +5556,29 @@
                 return yarStatus;
             } catch (e) {
                 console.warn('Yarig status fetch failed at', baseUrl, e.message);
+                yarStatusErrors.push({ baseUrl, message: e.message || String(e) });
+            }
+        }
+        for (const baseUrl of urls) {
+            try {
+                await fetch(baseUrl + '/api/council/yar-status', {
+                    mode: 'no-cors',
+                    cache: 'no-store',
+                    signal: AbortSignal.timeout(5000),
+                });
+                yarStatus = {
+                    ok: false,
+                    limited: true,
+                    corsBlocked: true,
+                    reachableBaseUrl: baseUrl,
+                    errors: yarStatusErrors.slice(),
+                    counts: { inProgress: 0, pending: 0, done: 0 },
+                    worker: {},
+                };
+                updateYarChip();
+                return yarStatus;
+            } catch (e) {
+                yarStatusErrors.push({ baseUrl, message: 'probe ' + (e.message || String(e)) });
             }
         }
         return yarStatus;
@@ -5115,9 +5592,21 @@
         addUserEntry('🧭 /yarig estado');
         if (!status) {
             if (statusEl) statusEl.textContent = '⚠️ Estado Yarig no disponible';
-            addConvEntry('conv-racional', '🧭', 'Yarig.AI', 'Estado', 'racional', 'No se pudo consultar el estado del backend Yarig.');
+            const detail = yarStatusErrors.length
+                ? yarStatusErrors.map(e => e.baseUrl + ' → ' + e.message).join('<br>')
+                : 'Sin detalle de error disponible.';
+            addConvEntry('conv-racional', '🧭', 'Yarig.AI', 'Estado', 'racional', 'No se pudo consultar el estado del backend Yarig.<br>' + detail);
             setActionLine('⚠️ Yarig.AI estado no disponible');
             return null;
+        }
+        if (status.limited && status.corsBlocked) {
+            if (statusEl) statusEl.textContent = 'Yarig backend accesible · CORS pendiente';
+            const detail = (status.errors || []).map(e => e.baseUrl + ' → ' + e.message).join('<br>');
+            addConvEntry('conv-racional', '🧭', 'Yarig.AI', 'Estado', 'racional',
+                'El backend responde, pero el navegador no puede leer el detalle porque falta CORS para <strong>www.admira.live</strong>.<br>' +
+                'Backend alcanzado: ' + status.reachableBaseUrl + (detail ? '<br>' + detail : ''));
+            setActionLine('🧭 Yarig backend accesible · esperando CORS del backend');
+            return status;
         }
         const counts = status.counts || {};
         const worker = status.worker || {};
@@ -7036,4 +7525,3 @@
     </script>
 </body>
 </html>
-
