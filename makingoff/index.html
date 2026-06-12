@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>El Mejor Consejo del Mundo · Making Off | admira.live</title>
+  <meta name="description" content="Propuesta completa para convertir council-scumm.html en el primer consejo vivo, inteligente y operativo del ecosistema ADmiraNeXT.">
+  <link rel="canonical" href="https://www.admira.live/makingoff">
+  <style>
+    :root {
+      --bg: #071013;
+      --panel: #0e1b1f;
+      --ink: #e9fbff;
+      --muted: #8fb4bc;
+      --line: rgba(143, 180, 188, .22);
+      --cyan: #6ee7f5;
+      --green: #8ef06c;
+      --amber: #ffd166;
+      --rose: #ff8fab;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif; line-height: 1.6; }
+    body {
+      background:
+        linear-gradient(135deg, rgba(110,231,245,.08), transparent 32%),
+        linear-gradient(225deg, rgba(142,240,108,.06), transparent 34%),
+        #071013;
+    }
+    a { color: inherit; text-decoration: none; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px clamp(16px, 4vw, 44px);
+      background: rgba(7, 16, 19, .94); backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { font-weight: 850; font-size: 18px; }
+    .shell { width: min(1100px, 100%); margin: 0 auto; padding: 48px clamp(16px, 4vw, 44px) 80px; }
+    .eyebrow { color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 12px; }
+    h1 { font-size: clamp(32px, 6vw, 64px); line-height: .94; margin: 0 0 20px; letter-spacing: -.02em; }
+    h2 { font-size: 22px; margin: 48px 0 16px; color: var(--cyan); }
+    h3 { font-size: 17px; margin: 24px 0 10px; color: var(--amber); }
+    .lead { font-size: 19px; color: var(--muted); max-width: 720px; }
+    .section { margin-bottom: 48px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
+    }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+    th { color: var(--cyan); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+    .phase { background: rgba(110,231,245,.06); padding: 18px; border-radius: 8px; margin-bottom: 14px; }
+    .metric { font-size: 13px; color: var(--muted); }
+    footer { margin-top: 80px; color: var(--muted); font-size: 13px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="https://www.admira.live"><b>admira.live</b> / making off</a>
+  </header>
+
+  <main class="shell">
+    <div class="eyebrow">Propuesta estratégica · Junio 2026</div>
+    <h1>El Mejor Consejo del Mundo</h1>
+    <p class="lead">
+      Convertir <code>council-scumm.html</code> en el primer consejo vivo, inteligente, generativo y operativo del ecosistema ADmiraNeXT.
+    </p>
+
+    <div class="section">
+      <h2>1. Visión</h2>
+      <p>
+        <strong>El Mejor Consejo del Mundo</strong> no es una imagen estática ni un sistema de presentación de slides.
+        Es un <strong>consejo vivo, inteligente y operativo</strong> que recibe briefs reales, debate internamente con agentes especializados,
+        toma decisiones, genera actas y tareas automáticas, y se auto-actualiza en tiempo real en <code>council-scumm.html</code>.
+      </p>
+      <p>Es el <strong>cerebro estratégico</strong> del ecosistema ADmiraNeXT.</p>
+    </div>
+
+    <div class="section">
+      <h2>2. Problemas actuales de council-scumm.html</h2>
+      <ul style="color:#8fb4bc; line-height:1.8;">
+        <li>Es una <strong>imagen estática</strong> (aunque bonita y retro)</li>
+        <li>Solo tiene dos modos pasivos: Leyendas / Coetáneos</li>
+        <li>El sistema de "Presentar" depende de una API externa que no está activa</li>
+        <li>No genera decisiones, actas ni tareas reales</li>
+        <li>No está conectado con Yarig ni con el flujo operativo</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>3. Arquitectura (7 capas)</h2>
+      <table>
+        <tr><th>Capa</th><th>Nombre</th><th>Función</th></tr>
+        <tr><td>1</td><td>Input Layer</td><td>Recibe briefs, datos de Yarig, métricas de admira.live, stock de Studio</td></tr>
+        <tr><td>2</td><td>Memory Layer</td><td>Base de conocimiento del ecosistema (decisiones anteriores, contexto, valores)</td></tr>
+        <tr><td>3</td><td>Council Agents</td><td>5-7 agentes especializados (CEO, CTO, CMO, CFO, Legal, Operaciones, Ética)</td></tr>
+        <tr><td>4</td><td>Debate Engine</td><td>Sistema de debate multi-agente con rounds y scoring</td></tr>
+        <tr><td>5</td><td>Decision Layer</td><td>Genera resoluciones, votos, riesgos, próximos pasos</td></tr>
+        <tr><td>6</td><td>Output Layer</td><td>Acta + tareas + notificaciones + actualización visual del council</td></tr>
+        <tr><td>7</td><td>Feedback Loop</td><td>Aprende de qué decisiones se ejecutaron y cuáles no</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>4. Fases de implementación</h2>
+
+      <div class="phase">
+        <h3>Fase 0 — Fundación (1-2 semanas)</h3>
+        <p>Conectar <code>council-scumm.html</code> con una API real (council-api.py o worker). Crear estructura de agentes base. Implementar memoria persistente (KV o base de datos).</p>
+      </div>
+
+      <div class="phase">
+        <h3>Fase 1 — Primer Consejo Real (2-3 semanas)</h3>
+        <p>Un briefing real entra → el consejo debate → genera acta + 3 decisiones. Actualización visual del council (nameplates cambian según rol activo). Integración con Yarig (recibe tareas reales).</p>
+      </div>
+
+      <div class="phase">
+        <h3>Fase 2 — Consejo Operativo (3-4 semanas)</h3>
+        <p>El consejo genera tareas en Yarig automáticamente. Sistema de votación y quórum. Historial de decisiones con trazabilidad.</p>
+      </div>
+
+      <div class="phase">
+        <h3>Fase 3 — Consejo Estratégico (4-6 semanas)</h3>
+        <p>Multi-consejo (Consejo de Administración + Consejo Operativo + Consejo Ético). Predicción de riesgos y oportunidades. Integración con XpaceOS y admira.live (el consejo ve el pulso en tiempo real).</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>5. Integración con el ecosistema</h2>
+      <div class="grid-2">
+        <div class="card"><strong>Yarig</strong><br>Fuente de tareas y estado de personas/máquinas</div>
+        <div class="card"><strong>admira.live</strong><br>Fuente de métricas y pulso en vivo</div>
+        <div class="card"><strong>admira.studio</strong><br>Fuente de contenido y stock</div>
+        <div class="card"><strong>XpaceOS</strong><br>El consejo puede recomendar acciones sobre Xpacios</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>6. Métricas de éxito</h2>
+      <ul style="color:#8fb4bc; line-height:1.8;">
+        <li>Tiempo entre briefing → decisión (objetivo: &lt; 4 minutos)</li>
+        <li>% de decisiones que se ejecutan (objetivo: &gt; 80%)</li>
+        <li>Reducción de meetings operativos (medir antes/después)</li>
+        <li>Satisfacción del equipo con las decisiones del consejo</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>7. Próximos pasos concretos</h2>
+      <ol style="color:#8fb4bc; line-height:1.9; font-size:15px;">
+        <li>Crear <code>council-api.py</code> (o worker) que reciba briefs y devuelva actas</li>
+        <li>Definir los 7 perfiles de agentes del consejo</li>
+        <li>Crear la primera memoria del consejo (valores + decisiones históricas)</li>
+        <li>Modificar <code>council-scumm.html</code> para que sea dinámico (nameplates cambian según rol activo)</li>
+        <li>Primer test con un briefing real de Yarig</li>
+      </ol>
+    </div>
+
+    <footer>
+      Propuesta generada por Cypher · Junio 2026 · admira.live
+    </footer>
+  </main>
+</body>
+</html>
