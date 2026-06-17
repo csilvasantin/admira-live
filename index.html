@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>admira.live | Operativa en vivo</title>
-<meta name="description" content="admira.live conecta la actividad operativa de Yarig con los contenidos publicados desde admira.studio.">
+<meta name="description" content="admira.live conecta Yarig, Consejo, Studio, Signage y AgoraMatrix en una pantalla operativa viva.">
 <link rel="canonical" href="https://www.admira.live/">
 <meta property="og:title" content="admira.live">
-<meta property="og:description" content="Panel vivo de equipo, tareas y contenidos Admira.">
+<meta property="og:description" content="Panel vivo de equipo, tareas, contenidos y rutas operativas Admira.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.admira.live/">
 <style>
@@ -66,6 +66,28 @@
     text-decoration: none; font-weight: 750; cursor: pointer;
   }
   .btn.primary { background: var(--cyan); color: #041113; border-color: var(--cyan); }
+  .command-deck {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0 0 18px;
+  }
+  .command-card {
+    position: relative; min-height: 132px; padding: 16px; border: 1px solid var(--line); border-radius: 8px;
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.12)); text-decoration: none;
+    display: grid; align-content: space-between; overflow: hidden;
+  }
+  .command-card::before {
+    content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--accent, var(--cyan));
+    opacity: .9;
+  }
+  .command-card:focus-visible, .command-card:hover { border-color: color-mix(in srgb, var(--accent, var(--cyan)) 65%, white 0%); outline: none; transform: translateY(-1px); }
+  .command-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+  .command-status { width: 9px; height: 9px; border-radius: 50%; background: var(--accent, var(--cyan)); box-shadow: 0 0 16px var(--accent, var(--cyan)); flex: 0 0 auto; }
+  .command-card strong { display: block; margin: 18px 0 7px; font-size: 18px; line-height: 1.12; }
+  .command-card span:last-child { display: block; color: var(--muted); font-size: 13px; }
+  .command-card.council { --accent: var(--cyan); }
+  .command-card.dashboard { --accent: var(--green); }
+  .command-card.makingoff { --accent: var(--amber); }
+  .command-card.help { --accent: var(--rose); }
+  .command-card.signage { --accent: #b59cff; }
   .status-card { padding: 22px; display: grid; gap: 16px; }
   .live-dot { display: flex; align-items: center; gap: 9px; color: var(--green); font-weight: 850; }
   .live-dot::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 18px var(--green); }
@@ -90,6 +112,8 @@
   .score { color: var(--amber); font-weight: 850; font-variant-numeric: tabular-nums; }
   .task-row { grid-template-columns: 1fr auto; }
   .badge { border: 1px solid var(--line); color: var(--muted); border-radius: 999px; padding: 4px 8px; font-size: 12px; }
+  .quick-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .quick-links a { color: var(--cyan); text-decoration: none; font-size: 13px; font-weight: 750; }
   .stock-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
   .stock-item { min-height: 170px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: rgba(0,0,0,.18); display: grid; grid-template-rows: 118px auto; text-decoration: none; }
   .stock-media { background: #020607; display: grid; place-items: center; overflow: hidden; color: var(--muted); font-size: 12px; }
@@ -101,11 +125,13 @@
   @media (max-width: 980px) {
     .hero, .grid { grid-template-columns: 1fr; }
     .span-4, .span-5, .span-7, .span-12 { grid-column: auto; }
+    .command-deck { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .stock-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 620px) {
     .topbar { position: static; align-items: flex-start; flex-direction: column; }
     .nav { justify-content: flex-start; }
+    .command-deck { grid-template-columns: 1fr; }
     .metric-grid, .stock-grid { grid-template-columns: 1fr; }
     .row { grid-template-columns: auto 1fr; }
     .score { grid-column: 2; }
@@ -117,8 +143,10 @@
     <a class="brand" href="https://www.admira.live"><b>admira.live</b><span>operativa en vivo</span></a>
     <nav class="nav" aria-label="Navegacion">
       <a class="primary" href="https://www.admira.studio">Abrir Studio</a>
+      <a href="/council-scumm.html">Consejo</a>
+      <a href="/dashboard.html">Dashboard</a>
       <a href="https://www.admira.studio/stock.html">Stock</a>
-      <a href="https://www.admira.studio/signage.html">Signage</a>
+      <a href="/help/">Ayuda</a>
       <button type="button" id="refreshBtn">Actualizar</button>
     </nav>
   </header>
@@ -129,10 +157,11 @@
         <div>
           <p class="eyebrow">Yarig x Admira Studio</p>
           <h1>Equipo, tareas y contenido en una sola pantalla viva.</h1>
-          <p class="lead">Live lee datos operativos desde Yarig mediante el worker seguro y cruza esa energia con el Stock publicado desde admira.studio.</p>
+          <p class="lead">Live une el pulso de Yarig, el Consejo, Studio, Signage y AgoraMatrix para que la siguiente accion siempre este a un clic.</p>
         </div>
         <div class="hero-actions">
           <a class="btn primary" href="https://www.admira.studio">Crear contenido</a>
+          <a class="btn" href="/council-scumm.html">Abrir Consejo</a>
           <a class="btn" href="https://www.admira.studio/stock.html">Ver Stock</a>
           <a class="btn" href="https://www.admira.studio/signage.html">Pantalla signage</a>
         </div>
@@ -147,6 +176,29 @@
         </div>
         <div class="stamp" id="lastUpdated">sin actualizar</div>
       </aside>
+    </section>
+
+    <section class="command-deck" aria-label="Rutas operativas">
+      <a class="command-card council" href="/council-scumm.html">
+        <span class="command-top"><span>Consejo</span><span class="command-status" aria-hidden="true"></span></span>
+        <span><strong>Mando SCUMM</strong><span>Conversacion, leyendas y control narrativo.</span></span>
+      </a>
+      <a class="command-card dashboard" href="/dashboard.html">
+        <span class="command-top"><span>Datos</span><span class="command-status" aria-hidden="true"></span></span>
+        <span><strong>Dashboard</strong><span>Lectura operativa directa del worker.</span></span>
+      </a>
+      <a class="command-card makingoff" href="/makingoff/">
+        <span class="command-top"><span>Bitacora</span><span class="command-status" aria-hidden="true"></span></span>
+        <span><strong>Making off</strong><span>Registro vivo de avances y decisiones.</span></span>
+      </a>
+      <a class="command-card signage" href="https://www.admira.studio/signage.html">
+        <span class="command-top"><span>Pantallas</span><span class="command-status" aria-hidden="true"></span></span>
+        <span><strong>Signage</strong><span>Salida directa hacia pantallas y contenidos publicados.</span></span>
+      </a>
+      <a class="command-card help" href="/help/">
+        <span class="command-top"><span>Contexto</span><span class="command-status" aria-hidden="true"></span></span>
+        <span><strong>Por que Live</strong><span>La propuesta resumida para equipo y clientes.</span></span>
+      </a>
     </section>
 
     <section class="grid">
@@ -164,6 +216,10 @@
           <span class="stamp" id="tasksStamp">--</span>
         </div>
         <div class="list" id="tasksList"><div class="empty">Cargando tareas...</div></div>
+        <div class="quick-links" aria-label="Acciones de tareas">
+          <a href="/council-scumm.html">Abrir Consejo</a>
+          <a href="/dashboard.html">Ver dashboard</a>
+        </div>
       </article>
 
       <article class="panel span-12">
