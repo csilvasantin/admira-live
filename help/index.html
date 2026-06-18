@@ -82,6 +82,14 @@
       font-size: 13px;
       text-align: center;
     }
+    .argument h3 { font-size: 15px; color: var(--green); margin: 22px 0 8px; letter-spacing: .02em; }
+    .argument ul { margin: 8px 0 0; padding-left: 18px; }
+    .argument li { font-size: 15.5px; color: var(--ink); margin: 6px 0; }
+    .argument li code, .endpoint code, p code { background: rgba(110,231,245,.10); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; color: var(--cyan); }
+    .endpoint { font-size: 16px; margin: 4px 0 8px; }
+    pre { background: rgba(0,0,0,.30); border: 1px solid var(--line); border-radius: 10px; padding: 16px; overflow-x: auto; margin: 8px 0 0; }
+    pre code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.55; color: var(--ink); white-space: pre; background: none; border: 0; padding: 0; }
+    .badge-live { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; color: #041113; background: var(--green); border-radius: 999px; padding: 3px 10px; vertical-align: middle; margin-left: 8px; }
   </style>
 </head>
 <body>
@@ -114,6 +122,61 @@
       <h2>3. Control total sin sacrificar autonomía</h2>
       <p>
         Muestra acceso remoto, onboarding, bloqueos, checklist de alta y “siguiente bloqueo” de cada persona. Es el primer sistema que permite a un equipo distribuido tener visibilidad total sin control centralizado. Cada miembro actualiza su propio estado. El sistema simplemente lo refleja en tiempo real. Transparencia sin micromanagement.
+      </p>
+    </div>
+
+    <div class="argument" id="mcp">
+      <h2>🏛️ Conectar al Consejo vía MCP <span class="badge-live">EN VIVO</span></h2>
+      <p>
+        El <b>Consejo de Administración de AdmiraNeXT</b> —8 consejeros IA, 4 racionales y 4 creativos— está
+        expuesto como servidor <b>MCP</b> (Model Context Protocol). Cualquier agente del grupo, incluido
+        <b>www.yarig.ai</b>, puede consultarlo por URL sin instalar nada. No requiere credenciales para
+        conectarse: la clave del LLM vive en el servidor.
+      </p>
+
+      <p class="endpoint">Endpoint (MCP Streamable HTTP, <code>POST /mcp</code>):<br>
+        <code>https://admira-council-mcp.csilvasantin.workers.dev/mcp</code></p>
+
+      <h3>Herramientas disponibles</h3>
+      <ul>
+        <li><code>list_consejeros()</code> — las 8 sillas: rol, persona, leyenda, lado, pareja y dominio (sin coste).</li>
+        <li><code>ask_consejero(role, question)</code> — responde un consejero concreto. <code>role</code> ∈ {CEO, CFO, COO, CTO, CCO, CSO, CXO, CDO}.</li>
+        <li><code>ask_council(question)</code> — doble perspectiva: un consejero racional + uno creativo.</li>
+      </ul>
+
+      <h3>Conectar — Anthropic SDK (parámetro mcp_servers)</h3>
+      <pre><code>client.beta.messages.create(
+    model="claude-opus-4-8", max_tokens=1024,
+    betas=["mcp-client-2025-11-20"],
+    mcp_servers=[{
+        "type": "url",
+        "name": "admira-council",
+        "url": "https://admira-council-mcp.csilvasantin.workers.dev/mcp"
+    }],
+    messages=[{"role": "user",
+               "content": "Pregunta al consejo de AdmiraNeXT si lanzamos la beta este mes."}],
+)</code></pre>
+
+      <h3>Conectar — cliente MCP genérico (Claude Desktop / Code, etc.)</h3>
+      <pre><code>{
+  "mcpServers": {
+    "admira-council": {
+      "url": "https://admira-council-mcp.csilvasantin.workers.dev/mcp"
+    }
+  }
+}</code></pre>
+
+      <h3>Probar al instante (cURL)</h3>
+      <pre><code>curl -s https://admira-council-mcp.csilvasantin.workers.dev/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call",
+       "params":{"name":"ask_council",
+                 "arguments":{"question":"¿Lanzamos la beta este mes?"}}}'</code></pre>
+
+      <p style="margin-top:18px; color:var(--muted); font-size:14px;">
+        Infra: Cloudflare Worker · LLM Claude Opus 4.8 con fallback a Groq · transporte Streamable HTTP, stateless.
+        Cada respuesta incluye un campo <code>via</code> indicando qué modelo contestó.
       </p>
     </div>
 
