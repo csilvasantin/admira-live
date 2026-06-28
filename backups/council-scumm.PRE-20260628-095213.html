@@ -2990,7 +2990,7 @@
             }
             machineStatus[m.id] = {
                 status: isOnline ? m.status : "offline",
-                name: m.name || m.id || "Sin nombre",
+                name: m.name,
                 online: isOnline,
                 currentFocus: m.currentFocus || "",
                 note: m.note || "",
@@ -3060,7 +3060,7 @@
                     const isOnline = m.status === "online" || m.status === "idle" || m.status === "busy";
                     machineStatus[m.id] = {
                         status: m.status,
-                        name: m.name || m.id || "Sin nombre",
+                        name: m.name,
                         online: isOnline,
                         currentFocus: m.currentFocus || "",
                         note: m.note || "",
@@ -3115,8 +3115,8 @@
             }
         });
 
-        const creativoHtml = [];
-        const racionalHtml = [];
+        creativoEl.innerHTML = "";
+        racionalEl.innerHTML = "";
 
         const liveEl = document.querySelector(".live");
         liveEl.textContent = apiOk ? "● LIVE" : "● OFFLINE";
@@ -3129,7 +3129,7 @@
         filtered.forEach(member => {
             const machine = member.machineId ? machineStatus[member.machineId] : null;
             const isOnline = machine ? machine.online : false;
-            const machineName = machine ? (machine.name || "Sin asignar").split(" (")[0] : "Sin asignar";
+            const machineName = machine ? machine.name.split(" (")[0] : "Sin asignar";
             const machineStatusText = machine ? machine.status : "";
             if (isOnline) onlineCount++; else offlineCount++;
 
@@ -3188,13 +3188,9 @@
                 </div>
             `;
 
-            if (member.side === "creativo") creativoHtml.push(html);
-            else racionalHtml.push(html);
+            if (member.side === "creativo") creativoEl.innerHTML += html;
+            else racionalEl.innerHTML += html;
         });
-
-        // Single DOM write per panel (avoids O(n²) reparse and image re-fetch on every refresh)
-        creativoEl.innerHTML = creativoHtml.join("");
-        racionalEl.innerHTML = racionalHtml.join("");
 
         // Render nameplates on image
         const npEl = document.getElementById("nameplates");
@@ -3352,11 +3348,6 @@
         if (isOnline) lastThumbTime[machineId] = new Date();
 
         overlay.classList.add("visible");
-        // Clear any previous interval (e.g. opening another machine without closing first)
-        if (overlay._refreshInterval) {
-            clearInterval(overlay._refreshInterval);
-            overlay._refreshInterval = null;
-        }
         // Auto-refresh fullscreen image every 5s (only if online)
         if (isOnline) {
             overlay._refreshInterval = setInterval(() => {
@@ -5366,11 +5357,6 @@
             'http://macmini.tail48b61c.ts.net:8420',
             'https://three2-consejoadmiranextgame.onrender.com',
         ];
-    // SECURITY: este token viaja en una página estática pública (GitHub Pages),
-    // por lo que es visible en el código fuente para cualquiera. NO ofrece
-    // protección real. Remediación pendiente (fuera de esta oleada de estabilidad):
-    // mover la autenticación a un proxy/serverless que custodie el secreto, o
-    // asumir que el endpoint es público y aplicar rate-limiting en el backend.
     const COUNCIL_API_TOKEN = "admira2026";
     const YAR_DONE_BLOCK_START = '[YAR_DONE]';
     const YAR_DONE_BLOCK_END = '[/YAR_DONE]';
