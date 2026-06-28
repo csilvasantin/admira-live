@@ -9,18 +9,28 @@ La **fuente única de verdad** es [`game/manifest.json`](./manifest.json). El [h
 
 ## 1. Antes de tocar nada: reserva el área
 
-Para evitar editar lo mismo a la vez, **reserva** tu zona añadiendo una entrada en
-`collaboration.reservations` del manifest (vía Pull Request) antes de empezar:
+Para evitar editar lo mismo a la vez, **reserva** tu zona antes de empezar.
+
+**Forma recomendada — con el MCP** (ver [`game/mcp/README.md`](./mcp/README.md)):
+
+```
+list_extension_points        # ¿dónde puedo trabajar?
+list_reservations            # ¿qué está ocupado?
+claim_area { area:"verbs", owner:"Oráculo", branch:"feature/verbo-explorar", note:"..." }
+# … trabajas …
+release_area { area:"verbs", owner:"Oráculo" }
+```
+
+**A mano** — añade una entrada en `collaboration.reservations` del manifest vía Pull Request:
 
 ```json
 { "area": "verbs", "owner": "Carlos", "branch": "feature/verbo-explorar", "since": "2026-06-28", "note": "Nuevo verbo Explorar", "active": true }
 ```
 
 - `area` debe ser el `id` de un punto de extensión (`verbs`, `council`, `llm-engines`, `backend`, `manifest-help`).
-- Pon `active: false` o borra la entrada cuando termines.
+- Pon `active: false` o usa `release_area` cuando termines.
 - El help muestra las reservas activas en su sección de desarrolladores.
-
-> Un **MCP** futuro automatizará leer/escribir estas reservas; de momento es por PR.
+- El MCP **rechaza** reservar un área ya ocupada por otra persona (ahí está el "no pisarnos").
 
 ## 2. Puntos de extensión
 

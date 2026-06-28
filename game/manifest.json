@@ -1,6 +1,6 @@
 {
   "$schema": "./manifest.schema.note",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "updated": "2026-06-28",
   "game": {
     "name": "AdmiraNext Council",
@@ -16,6 +16,12 @@
     { "id": "leyendas", "label": "Leyendas", "image": "assets/council-leyendas.jpg", "note": "Figuras históricas del mundo tech, diseño y negocio." },
     { "id": "coetaneos", "label": "Coetáneos", "image": "assets/council-coetaneos.jpg", "note": "Referentes actuales en activo." }
   ],
+  "media": {
+    "screenshots": [
+      { "src": "shots/council-full.jpg", "caption": "Vista completa: el Consejo, la burbuja de bienvenida y la barra de verbos SCUMM.", "kind": "desktop" },
+      { "src": "shots/council-mobile.jpg", "caption": "En móvil la barra de verbos se reorganiza en columnas táctiles.", "kind": "mobile" }
+    ]
+  },
   "verbs": [
     { "id": "preguntar", "label": "Preguntar", "primary": true, "status": "stable", "desc": "Pregunta a un consejero concreto. Pulsa Preguntar y haz clic en él; escribe y pulsa Enviar. Usa el motor LLM activo del inventario." },
     { "id": "debatir", "label": "Debatir", "primary": true, "status": "stable", "desc": "El Consejo debate un tema entre todos sus miembros, por turnos. Si no hay proyecto activo, te pide el tema." },
@@ -59,7 +65,8 @@
     { "id": "manifest-help", "title": "Manifest y ayuda", "files": ["game/manifest.json", "game/help/index.html"], "anchors": ["este manifest es la fuente única de verdad", "el help se genera leyendo este JSON"], "how": "Cualquier cambio del juego DEBE reflejarse aquí. El help se actualiza solo al leer este archivo. Ejecuta game/check-manifest.js para detectar desincronización." }
   ],
   "collaboration": {
-    "principle": "Para no pisarnos en council-scumm.html (un único archivo grande), reservamos el área antes de tocarla. Añade una entrada en 'reservations' vía Pull Request; el resto ve qué está ocupado. (Un MCP futuro automatizará leer/escribir estas reservas.)",
+    "principle": "Para no pisarnos en council-scumm.html (un único archivo grande), reservamos el área antes de tocarla. Hazlo con el MCP del juego (game/mcp · tools claim_area/release_area/list_reservations) o, a mano, añadiendo una entrada en 'reservations' vía Pull Request. Las reservas activas se ven aquí y en el help.",
+    "mcp": { "path": "game/mcp/council-mcp.js", "readme": "game/mcp/README.md", "transport": "stdio (JSON-RPC 2.0, sin dependencias)", "tools": ["get_overview", "list_verbs", "list_council", "list_extension_points", "get_manifest", "list_reservations", "claim_area", "release_area", "check_sync"] },
     "reservations": [
       { "area": "ejemplo: verbs", "owner": "nombre", "branch": "feature/mi-verbo", "since": "2026-06-28", "note": "Ejemplo de reserva — bórrame", "active": false }
     ]

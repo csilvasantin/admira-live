@@ -67,6 +67,12 @@
   .reservations table { width:100%; border-collapse:collapse; font-size:12.5px; }
   .reservations th, .reservations td { border:1px solid var(--brown); padding:6px 8px; text-align:left; }
   .reservations th { color:var(--gold); font-family:'Press Start 2P',monospace; font-size:7px; }
+  .shots { display:grid; grid-template-columns:2fr 1fr; gap:14px; align-items:start; }
+  @media (max-width:680px){ .shots { grid-template-columns:1fr; } }
+  .shot { border:2px solid var(--brown); background:#0a0500; padding:8px; }
+  .shot img { display:block; width:100%; height:auto; image-rendering:auto; border:1px solid #000; }
+  .shot .cap { color:var(--muted); font-size:12px; margin-top:8px; line-height:1.5; }
+  .shot .tag { font-family:'Press Start 2P',monospace; font-size:6px; color:var(--gold); padding:2px 5px; border:1px solid var(--brown-line); }
   .foot { color:var(--muted); font-size:12px; text-align:center; margin-top:26px; }
   .pill { display:inline-block; border:1px solid var(--brown-line); padding:2px 8px; color:var(--gold); font-size:11px; }
   #err { color:#ff8a8a; }
@@ -92,6 +98,11 @@
     <p id="g-desc"></p>
     <h3>Las dos generaciones</h3>
     <div class="grid gens" id="g-gens"></div>
+  </section>
+
+  <section id="s-shots" style="display:none">
+    <h2>▦ Cómo se ve</h2>
+    <div class="shots" id="g-shots"></div>
   </section>
 
   <section id="s-council">
@@ -120,6 +131,7 @@
   <section id="s-dev">
     <h2>⚒ Para desarrolladores — extender sin pisarse</h2>
     <p id="g-collab"></p>
+    <div id="g-mcp"></div>
     <h3>Puntos de extensión</h3>
     <div id="g-ext"></div>
     <h3>Reservas activas (registro "no pisarnos")</h3>
@@ -160,6 +172,18 @@
     `<div class="card"><div class="name">${esc(g.label)}</div><div class="meta">${esc(g.note || "")}</div></div>`
   ).join("");
 
+  // Galería (screenshots desde el manifest)
+  const shots = (m.media && m.media.screenshots) || [];
+  if (shots.length) {
+    $("s-shots").style.display = "";
+    $("g-shots").innerHTML = shots.map(s =>
+      `<div class="shot">
+        <img src="${esc(s.src)}" alt="${esc(s.caption || "")}" loading="lazy">
+        <div class="cap"><span class="tag">${esc((s.kind || "vista").toUpperCase())}</span> ${esc(s.caption || "")}</div>
+      </div>`
+    ).join("");
+  }
+
   // Consejo con pestañas por generación
   const gens = m.generations || [];
   const tabsEl = $("g-tabs"), councilEl = $("g-council");
@@ -195,6 +219,15 @@
 
   // Desarrolladores
   $("g-collab").textContent = (m.collaboration && m.collaboration.principle) || "";
+  const mcp = m.collaboration && m.collaboration.mcp;
+  if (mcp) {
+    $("g-mcp").innerHTML =
+      `<div class="ext"><div class="et">🔌 MCP del juego — disponible</div>
+        <div class="files">Servidor: <code>${esc(mcp.path)}</code> · ${esc(mcp.transport || "")}</div>
+        <div class="anchors">${(mcp.tools || []).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+        <div>Conéctalo (Codex, Claude Desktop…) y usa <code>claim_area</code> / <code>release_area</code> para reservar sin pisar. Guía: <a href="/game/mcp/README.md">${esc(mcp.readme || "README")}</a>.</div>
+      </div>`;
+  }
   $("g-ext").innerHTML = (m.extension_points || []).map(e =>
     `<div class="ext">
       <div class="et">${esc(e.title)}</div>
