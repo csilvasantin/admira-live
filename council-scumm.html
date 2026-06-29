@@ -470,6 +470,41 @@
             line-height: 1.5;
         }
 
+        /* ⚖️ Mediador — síntesis neutral (púrpura, entre el rojo Racional y el azul Creativo) */
+        #mediador-thread { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.9rem; }
+        .mediador-card {
+            background: linear-gradient(180deg, rgba(168,85,247,0.10), rgba(168,85,247,0.035));
+            border: 1px solid #a855f7;
+            border-left: 4px solid #a855f7;
+            border-radius: 10px;
+            padding: 0.9rem 1.1rem;
+            box-shadow: 0 0 18px rgba(168,85,247,0.18);
+            animation: fadeIn 0.4s;
+            text-align: left;
+        }
+        .mediador-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:0.55rem; }
+        .mediador-title { font-weight:700; color:#c084fc; font-size:0.92rem; letter-spacing:0.3px; }
+        .mediador-ver { font-size:0.68rem; color:#d8b4fe; background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.45); border-radius:10px; padding:1px 8px; white-space:nowrap; }
+        .mediador-reco { font-size:0.9rem; color:#f3e8ff; line-height:1.5; margin-bottom:0.7rem; }
+        .mediador-reco .lbl { color:#c084fc; font-weight:700; }
+        .mediador-cols { display:grid; grid-template-columns:1fr 1fr; gap:0.9rem; margin-bottom:0.7rem; }
+        @media (max-width:640px){ .mediador-cols { grid-template-columns:1fr; } }
+        .mediador-col h5, .mediador-steps h5 { margin:0 0 4px; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; }
+        .mediador-col.pros h5 { color:#5ad17a; }
+        .mediador-col.contras h5 { color:#e87a7a; }
+        .mediador-steps h5 { color:#c084fc; }
+        .mediador-col ul, .mediador-steps ol { margin:0; padding-left:1.15rem; }
+        .mediador-col li, .mediador-steps li { font-size:0.8rem; color:#cbb8e0; line-height:1.45; margin-bottom:2px; }
+        .mediador-meta { display:flex; flex-wrap:wrap; gap:0.6rem 1.2rem; align-items:flex-start; }
+        .mediador-conf { font-size:0.78rem; color:#ddd; flex:0 0 auto; }
+        .mediador-conf .pill { display:inline-block; font-weight:700; border-radius:8px; padding:1px 8px; margin-right:6px; }
+        .mediador-conf.conf-alta .pill { background:#1e5631; color:#7CFC9B; }
+        .mediador-conf.conf-media .pill { background:#5a4a1e; color:#f0d060; }
+        .mediador-conf.conf-baja .pill { background:#5a1e1e; color:#ff9a9a; }
+        .mediador-steps { font-size:0.8rem; color:#cbb8e0; flex:1 1 220px; }
+        .mediador-alert { margin-top:0.6rem; font-size:0.8rem; color:#ffd9a0; background:rgba(255,170,60,0.08); border:1px dashed rgba(255,170,60,0.5); border-radius:8px; padding:6px 10px; }
+        .mediador-note { margin-top:0.5rem; font-size:0.67rem; color:#8a7aa0; }
+
         /* Back to status button */
         .back-status {
             display: none;
@@ -1215,6 +1250,9 @@
         .verb-btn.verb-primary { color: #e74c3c; }
         .verb-btn.verb-primary:hover { color: #ff6b6b; text-shadow: 0 0 8px rgba(231,76,60,0.5); background: rgba(231,76,60,0.08); }
         .verb-btn.verb-primary.active { color: #fff; text-shadow: 0 0 12px rgba(231,76,60,0.8); background: rgba(231,76,60,0.15); }
+        .verb-btn.verb-mediador { color: #c084fc; }
+        .verb-btn.verb-mediador:hover { color: #d8b4fe; text-shadow: 0 0 8px rgba(168,85,247,0.5); background: rgba(168,85,247,0.10); }
+        .verb-btn.verb-mediador.active { color: #fff; text-shadow: 0 0 12px rgba(168,85,247,0.85); background: rgba(168,85,247,0.18); }
         .inventory { width: 240px; border-left: 1px solid #1a1a2e; padding: 6px 8px; display: flex; flex-direction: column; }
         /* Panels del inventario — uno visible a la vez según el verbo activo */
         .inv-panel { display: none; flex: 1; flex-direction: column; }
@@ -2137,6 +2175,9 @@
         .verb-btn.verb-primary { color: #ffaaaa; text-shadow: none; }
         .verb-btn.verb-primary:hover { color: #ffff00; background: #7a5a2e; text-shadow: none; }
         .verb-btn.verb-primary.active { color: #000000; text-shadow: none; background: #e74c3c; font-weight: bold; }
+        .verb-btn.verb-mediador { color: #d8b4fe; text-shadow: none; }
+        .verb-btn.verb-mediador:hover { color: #ffff00; background: #7a5a2e; text-shadow: none; }
+        .verb-btn.verb-mediador.active { color: #000000; text-shadow: none; background: #c084fc; font-weight: bold; }
         .inventory { border-left: 2px solid #3a2410; }
         .inventory-title { color: #ffee88; }
         .inv-item { border-radius: 0; }
@@ -2488,7 +2529,7 @@
 <body>
     <div class="container">
         <div class="top-bar">
-            <a href="https://www.admira.live/dashboard.html" target="_blank" class="version-badge">Admira v.26.05.30.r2</a>
+            <a href="https://www.admira.live/dashboard.html" target="_blank" class="version-badge">Admira v.26.06.29.r1</a>
             <a href="https://csilvasantin.github.io/diario/" target="_blank" rel="noopener" class="version-badge" title="Diario operativo del Consejo">📓 Diario</a>
             <a href="/game/help" class="version-badge" title="Cómo se juega y cómo contribuir">❔ Ayuda</a>
             <div class="gen-toggle">
@@ -2628,6 +2669,7 @@
                 <div class="verb-grid">
                     <button class="verb-btn verb-primary" data-verb="preguntar" title="Pregunta a un consejero: pulsa Preguntar y haz clic en él" onclick="selectVerb(this)">Preguntar</button>
                     <button class="verb-btn verb-primary" data-verb="debatir" title="El Consejo debate un tema entre todos sus miembros" onclick="selectVerb(this)">Debatir</button>
+                    <button class="verb-btn verb-mediador" data-verb="mediar" title="El Mediador sintetiza el debate: recomendación, pros, contras, nivel de confianza y próximos pasos" onclick="selectVerb(this)">⚖️ Sintetizar</button>
                     <button class="verb-btn verb-primary" data-verb="entrenar" title="Alimenta a un consejero con URLs y material de referencia" onclick="selectVerb(this)">Entrenar</button>
                     <button class="verb-btn" data-verb="crear" title="Genera una imagen a partir de tu descripción" onclick="selectVerb(this)">Crear</button>
                     <button class="verb-btn" data-verb="hablar" title="Conecta contexto con Yarig.AI (foco, tareas, estado)" onclick="selectVerb(this)">Yarig.AI</button>
@@ -2824,6 +2866,8 @@
                     <div class="conv-content" id="conv-creativo"></div>
                 </div>
             </div>
+            <!-- ⚖️ Hilo del Mediador: síntesis versionadas (v1, v2…) al final de la deliberación -->
+            <div id="mediador-thread"></div>
             <div class="back-status-wrap" style="text-align:center;margin-top:0.5rem;">
                 <button class="back-status" id="back-status" onclick="exitConversation()" style="display:inline-block;">← Limpiar conversación</button>
             </div>
@@ -3818,6 +3862,7 @@
     const VERB_TO_PANEL = {
         preguntar: "llm",
         debatir:   "llm",
+        mediar:    "llm",
         entrenar:  "entrenar",
         crear:     "crear",
         hablar:    "llm",
@@ -3965,6 +4010,7 @@
             triggerLeer();
         }
         if (currentVerb === 'votar') triggerVotar();
+        if (currentVerb === 'mediar') triggerMediar();
         if (currentVerb === 'analizar') triggerAnalizar();
         if (currentVerb === 'presentar') triggerPresentar();
         if (currentVerb === 'previo') triggerPrevio();
@@ -4044,7 +4090,7 @@
         showSpeechBubble(agent.persona, agent.name, councilGreeting(agent));
     }
 
-    const VERB_LABELS = { preguntar:"Preguntar", debatir:"Debatir", entrenar:"Entrenar", crear:"Crear", hablar:"Yarig.AI", leer:"Pensar", votar:"Votar", analizar:"Analizar", presentar:"Presentar", previo:"Ver Previo", reunion:"Reunión" };
+    const VERB_LABELS = { preguntar:"Preguntar", debatir:"Debatir", mediar:"Sintetizar", entrenar:"Entrenar", crear:"Crear", hablar:"Yarig.AI", leer:"Pensar", votar:"Votar", analizar:"Analizar", presentar:"Presentar", previo:"Ver Previo", reunion:"Reunión" };
 
     // Escape para insertar texto no confiable dentro de la sentence line
     function _slEsc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c])); }
@@ -4560,7 +4606,11 @@
         document.getElementById("conv-area").classList.remove("active");
         document.getElementById("conv-racional").innerHTML = "";
         document.getElementById("conv-creativo").innerHTML = "";
+        const medThread = document.getElementById("mediador-thread");
+        if (medThread) medThread.innerHTML = "";
         conversationHistory = [];
+        lastDeliberation = [];
+        mediadorVersion = 0;
         exitPreguntarMode();
         setActionLine("Escribe aquí o usa /help...");
     }
@@ -5497,6 +5547,11 @@
     const YAR_DONE_BLOCK_END = '[/YAR_DONE]';
     let activeApiUrl = null;
     let conversationHistory = [];
+    // ⚖️ Mediador: transcripción estructurada del debate (bando + autor + texto)
+    // y contador de versiones de la síntesis (Mediador v1, v2…).
+    let lastDeliberation = [];
+    let mediadorVersion = 0;
+    let mediadorRunning = false;
     let yarContext = { focus: "", doing: "", done: [], tasks: [], pending: [], taskBuckets: { inProgress: [], pending: [], done: [] }, activeTask: "", ask: "", updatedAt: "", syncUser: "", syncSource: "", dayStartAt: "", dayEndAt: "" };
     let yarStatus = null;
     let yarStatusErrors = [];
@@ -6939,6 +6994,7 @@
             highlightNameplate(agent.persona, 1);
             addConvEntry(panelId, reply.icon, reply.name, reply.persona, reply.side, reply.content);
             conversationHistory.push({ role: "assistant", content: reply.name + ": " + reply.content });
+            lastDeliberation.push({ side: reply.side, persona: reply.persona, name: reply.name, icon: reply.icon, content: reply.content });
 
             setActionLine("✅ " + agent.persona + " ha respondido — escribe para seguir preguntando");
             // Keep agent selected for follow-up questions
@@ -7090,6 +7146,7 @@
                 }
                 addConvEntry("conv-racional", reply.icon, reply.name, reply.persona, "racional", reply.content);
                 conversationHistory.push({ role: "assistant", content: reply.name + ": " + reply.content });
+                lastDeliberation.push({ side: "racional", persona: reply.persona, name: reply.name, icon: reply.icon, content: reply.content });
                 await new Promise(r => setTimeout(r, 500));
                 clearNameplateHighlight();
                 turnNumber += 1;
@@ -7102,6 +7159,7 @@
                 }
                 addConvEntry("conv-creativo", reply.icon, reply.name, reply.persona, "creativo", reply.content);
                 conversationHistory.push({ role: "assistant", content: reply.name + ": " + reply.content });
+                lastDeliberation.push({ side: "creativo", persona: reply.persona, name: reply.name, icon: reply.icon, content: reply.content });
                 await new Promise(r => setTimeout(r, 500));
                 clearNameplateHighlight();
                 turnNumber += 1;
@@ -7114,16 +7172,159 @@
             setActionLine("⚠️ API no disponible — modo offline");
             const verbAction = { debatir:"debate los puntos" }[verb] || "responde";
             for (const m of racionales) {
-                addConvEntry("conv-racional", m.icon, m.name, m.persona, "racional", "[Offline] " + m.persona + " " + verbAction + ".");
+                const txt = "[Offline] " + m.persona + " " + verbAction + ".";
+                addConvEntry("conv-racional", m.icon, m.name, m.persona, "racional", txt);
+                lastDeliberation.push({ side: "racional", persona: m.persona, name: m.name, icon: m.icon, content: txt });
                 await new Promise(r => setTimeout(r, 200));
             }
             for (const m of creativos) {
-                addConvEntry("conv-creativo", m.icon, m.name, m.persona, "creativo", "[Offline] " + m.persona + " " + verbAction + ".");
+                const txt = "[Offline] " + m.persona + " " + verbAction + ".";
+                addConvEntry("conv-creativo", m.icon, m.name, m.persona, "creativo", txt);
+                lastDeliberation.push({ side: "creativo", persona: m.persona, name: m.name, icon: m.icon, content: txt });
                 await new Promise(r => setTimeout(r, 200));
             }
         }
 
         debateRunning = false;
+    }
+
+    // ═══════════════════════════════════
+    // ⚖️ MEDIADOR — síntesis neutral del debate
+    // ═══════════════════════════════════
+    async function triggerMediar() {
+        if (mediadorRunning) { setActionLine("⚖️ El Mediador ya está sintetizando…"); return; }
+        const rac = lastDeliberation.filter(d => d.side === "racional");
+        const cre = lastDeliberation.filter(d => d.side === "creativo");
+        if (!rac.length || !cre.length) {
+            setActionLine("⚖️ El Mediador necesita al menos 1 intervención 🔴 Racional y 1 🔵 Creativo. Usa Debatir (o Preguntar a ambos lados) primero.");
+            return;
+        }
+        mediadorRunning = true;
+        mediadorVersion += 1;
+        const ver = mediadorVersion;
+        const tema = currentProject || "la deliberación";
+        document.getElementById("conv-area").classList.add("active");
+        setActionLine("⚖️ El Mediador está sintetizando la deliberación (v" + ver + ")…");
+
+        const card = renderMediadorLoading(ver);
+        let synth = null;
+        try { synth = await askMediadorAPI(tema, lastDeliberation); }
+        catch (e) { console.warn("Mediador API error:", e); }
+        if (!synth) synth = localMediadorSynthesis(tema, rac, cre);
+
+        renderMediadorCard(card, ver, tema, synth);
+        conversationHistory.push({ role: "assistant", content: "Mediador v" + ver + " — Recomendación: " + synth.recomendacion });
+        setActionLine("⚖️ Mediador v" + ver + " — síntesis lista. Vuelve a llamarlo tras nuevas intervenciones para una v" + (ver + 1) + ".");
+        mediadorRunning = false;
+    }
+
+    // Llama al backend real (Claude) reutilizando /api/council/ask-one; pide JSON estricto.
+    async function askMediadorAPI(tema, deliberation) {
+        const members = COUNCIL.filter(m => m.gen === currentGen);
+        if (!members.length) return null;
+        const carrier = members[0].name; // consejero que transporta la llamada al backend
+        const transcript = deliberation.map(d =>
+            "- [" + (d.side === "racional" ? "Racional 🔴" : "Creativo 🔵") + "] " + d.persona + ": " + d.content
+        ).join("\n");
+        const prompt =
+            "IGNORA tu personaje habitual. Actúa como el MEDIADOR neutral del Consejo de Silicio Admira, " +
+            "imparcial entre el bando Racional (cauto, datos) y el Creativo (visión, oportunidad). " +
+            "Sintetiza el siguiente debate sobre \"" + tema + "\" de forma breve, profesional y honesta.\n\n" +
+            "DEBATE:\n" + transcript + "\n\n" +
+            "Responde ÚNICAMENTE con un objeto JSON válido (sin texto antes ni después, sin markdown) con esta forma exacta:\n" +
+            '{"recomendacion":"1 frase clara y accionable",' +
+            '"pros":["entre 3 y 5 bullets"],"contras":["entre 3 y 5 bullets"],' +
+            '"confianza":"Alta | Media | Baja","confianza_motivo":"1 línea",' +
+            '"pasos":["entre 2 y 3 acciones concretas"],' +
+            '"desacuerdo":null}\n' +
+            'Si hay desacuerdo fuerte, en "desacuerdo" pon "Necesitamos más datos: <qué>" o "Votación cerrada con opciones A/B/C".';
+        const reply = await askOneAgentAPI(prompt, carrier);
+        if (!reply || !reply.content) return null;
+        return parseMediadorJSON(reply.content);
+    }
+
+    function parseMediadorJSON(text) {
+        try {
+            const s = String(text);
+            const a = s.indexOf("{"), b = s.lastIndexOf("}");
+            if (a === -1 || b === -1 || b <= a) return null;
+            const obj = JSON.parse(s.slice(a, b + 1));
+            const arr = v => Array.isArray(v) ? v.map(x => String(x).trim()).filter(Boolean) : [];
+            const reco = String(obj.recomendacion || obj["recomendación"] || "").trim();
+            if (!reco) return null;
+            let conf = String(obj.confianza || "Media").trim();
+            if (!/^(alta|media|baja)$/i.test(conf)) conf = "Media";
+            conf = conf.charAt(0).toUpperCase() + conf.slice(1).toLowerCase();
+            return {
+                recomendacion: reco,
+                pros: arr(obj.pros).slice(0, 5),
+                contras: arr(obj.contras).slice(0, 5),
+                confianza: conf,
+                confianza_motivo: String(obj.confianza_motivo || "").trim(),
+                pasos: arr(obj.pasos).slice(0, 3),
+                desacuerdo: obj.desacuerdo ? String(obj.desacuerdo).trim() : null,
+                fuente: "Síntesis del Consejo · Claude"
+            };
+        } catch (e) { return null; }
+    }
+
+    // Fallback determinista a partir del contenido REAL de la deliberación (sin backend).
+    function localMediadorSynthesis(tema, rac, cre) {
+        const clip = (t, n) => { t = String(t).replace(/^\[Offline\]\s*/, "").trim(); return t.length > n ? t.slice(0, n).trim() + "…" : t; };
+        const pros = cre.slice(0, 4).map(d => d.persona + ": " + clip(d.content, 90));
+        const contras = rac.slice(0, 4).map(d => d.persona + ": " + clip(d.content, 90));
+        const balance = Math.min(rac.length, cre.length);
+        const confianza = balance >= 2 ? "Media" : "Baja";
+        return {
+            recomendacion: "Avanzar con \"" + tema + "\" tomando el impulso del bando Creativo y blindándolo con las cautelas del Racional.",
+            pros,
+            contras,
+            confianza,
+            confianza_motivo: rac.length + " voces 🔴 Racional vs " + cre.length + " 🔵 Creativo: hay base para decidir, pero conviene contrastar con datos.",
+            pasos: [
+                "Definir 1 métrica de éxito clara para \"" + tema + "\".",
+                "Lanzar una prueba acotada que valide la propuesta del bando Creativo.",
+                "Revisar resultados con el Consejo en la próxima sesión."
+            ],
+            desacuerdo: null,
+            fuente: "Síntesis local (backend del Consejo no disponible)"
+        };
+    }
+
+    function renderMediadorLoading(ver) {
+        const thread = document.getElementById("mediador-thread");
+        const card = document.createElement("div");
+        card.className = "mediador-card";
+        card.innerHTML =
+            '<div class="mediador-head"><span class="mediador-title">⚖️ Mediador — Síntesis</span><span class="mediador-ver">v' + ver + '</span></div>' +
+            '<div class="mediador-reco">El Mediador está leyendo la deliberación y sintetizando…</div>';
+        thread.appendChild(card);
+        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        return card;
+    }
+
+    function renderMediadorCard(card, ver, tema, s) {
+        const e = _slEsc;
+        const confClass = "conf-" + s.confianza.toLowerCase();
+        const li = a => (a && a.length ? a.map(x => "<li>" + e(x) + "</li>").join("") : "<li>—</li>");
+        const alert = s.desacuerdo ? '<div class="mediador-alert">⚠️ ' + e(s.desacuerdo) + '</div>' : "";
+        card.innerHTML =
+            '<div class="mediador-head">' +
+                '<span class="mediador-title">⚖️ Mediador — Síntesis</span>' +
+                '<span class="mediador-ver">v' + ver + '</span>' +
+            '</div>' +
+            '<div class="mediador-reco"><span class="lbl">Recomendación:</span> ' + e(s.recomendacion) + '</div>' +
+            '<div class="mediador-cols">' +
+                '<div class="mediador-col pros"><h5>✅ Pros consolidados</h5><ul>' + li(s.pros) + '</ul></div>' +
+                '<div class="mediador-col contras"><h5>⚠️ Contras consolidados</h5><ul>' + li(s.contras) + '</ul></div>' +
+            '</div>' +
+            '<div class="mediador-meta">' +
+                '<div class="mediador-conf ' + confClass + '"><span class="pill">Confianza: ' + e(s.confianza) + '</span>' + (s.confianza_motivo ? e(s.confianza_motivo) : "") + '</div>' +
+                '<div class="mediador-steps"><h5>▶️ Próximos pasos</h5><ol>' + li(s.pasos) + '</ol></div>' +
+            '</div>' +
+            alert +
+            '<div class="mediador-note">' + e(s.fuente || "") + ' · tema: "' + e(tema) + '"</div>';
+        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
     function showSpeechBubble(persona, role, text) {
