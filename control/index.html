@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>admira.live — Control</title>
+    <!-- QR client-side (~5 KB) para autenticación Tailscale desde el móvil -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a14; --panel: #12121f; --panel2: #15152a; --line: #2a2a44;
+            --txt: #e8e8f4; --dim: #8a8aa8; --gold: #daa520; --green: #44bb44; --red: #e74c3c;
+            --amber-bg: #2a1e08; --amber-bd: #d98e2b; --amber-tx: #ffd9a0;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--txt); font-family: 'Segoe UI', system-ui, Helvetica, Arial, sans-serif; }
+        a { color: inherit; }
+
+        .topbar { display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+        .brand { font-weight: 800; font-size: 1.05rem; letter-spacing: 0.3px; }
+        .brand b { color: var(--gold); }
+        .brand span { color: var(--dim); font-weight: 500; font-size: 0.78rem; margin-left: 8px; }
+        .topbar .spacer { flex: 1; }
+        .pill { background: var(--panel2); border: 1px solid var(--line); color: var(--dim); border-radius: 8px; padding: 4px 10px; font-size: 0.74rem; text-decoration: none; }
+        .pill:hover { border-color: var(--gold); color: var(--gold); }
+        .version-badge { color: var(--gold); }
+
+        .layout { display: grid; grid-template-columns: 280px 1fr; gap: 0; height: calc(100vh - 53px); }
+        @media (max-width: 760px) { .layout { grid-template-columns: 1fr; height: auto; } .machines { max-height: 200px; } }
+
+        .machines { border-right: 1px solid var(--line); overflow-y: auto; padding: 10px; }
+        .machines h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--dim); margin: 8px 6px; }
+        .machine { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; cursor: pointer; border: 1px solid transparent; }
+        .machine:hover { background: var(--panel2); }
+        .machine.selected { background: var(--panel2); border-color: var(--gold); }
+        .machine .dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; background: #555; }
+        .machine.online .dot { background: var(--green); box-shadow: 0 0 7px rgba(68,187,68,0.7); }
+        .machine.new .dot { background: var(--amber-bd); box-shadow: 0 0 7px rgba(217,142,43,0.7); }
+        .machine .meta { min-width: 0; }
+        .machine .nm { font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .machine .sub { font-size: 0.7rem; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .machine .badge-new { font-size: 0.6rem; background: var(--amber-bg); color: var(--amber-tx); border: 1px solid var(--amber-bd); border-radius: 6px; padding: 1px 5px; margin-left: auto; }
+
+        .console { display: flex; flex-direction: column; min-width: 0; }
+        .console-head { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+        .console-head .ch-title { font-weight: 700; }
+        .console-head .ch-host { color: var(--dim); font-size: 0.78rem; font-family: 'SF Mono', Menlo, monospace; }
+
+        /* Banners de autenticación Tailscale (uno por máquina, fijados arriba del output) */
+        #auth-banners { padding: 0 14px; }
+        #auth-banners:empty { display: none; }
+        .ts-auth { display: flex; gap: 16px; align-items: center; background: linear-gradient(180deg, #33260c, #281d08); border: 1px solid var(--amber-bd); border-left: 5px solid var(--amber-bd); border-radius: 11px; padding: 14px 16px; margin: 12px 0; box-shadow: 0 0 18px rgba(217,142,43,0.16); animation: tsIn 0.35s ease; }
+        @keyframes tsIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+        .ts-auth .ts-ico { font-size: 30px; line-height: 1; flex: 0 0 auto; }
+        .ts-auth .ts-body { flex: 1 1 auto; min-width: 0; }
+        .ts-auth .ts-title { font-weight: 800; color: var(--amber-tx); font-size: 0.98rem; }
+        .ts-auth .ts-sub { color: #e7c9a0; font-size: 0.8rem; margin-top: 3px; }
+        .ts-auth .ts-machine { color: var(--amber-bd); font-weight: 700; }
+        .ts-auth .ts-url { font-family: 'SF Mono', Menlo, monospace; font-size: 0.72rem; color: #c9a96e; word-break: break-all; margin-top: 6px; }
+        .ts-auth .ts-actions { display: flex; gap: 10px; margin-top: 11px; flex-wrap: wrap; }
+        .ts-btn { border: none; border-radius: 8px; padding: 9px 15px; font-family: inherit; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+        .ts-btn.primary { background: var(--amber-bd); color: #1a1206; }
+        .ts-btn.primary:hover { background: #f0a23a; }
+        .ts-btn.ghost { background: transparent; border: 1px solid #5a4a2a; color: var(--amber-tx); }
+        .ts-btn.ghost:hover { border-color: var(--amber-bd); }
+        .ts-qr { flex: 0 0 auto; text-align: center; }
+        .ts-qr .qr-box { width: 120px; height: 120px; background: #fff; border-radius: 8px; padding: 6px; display: flex; align-items: center; justify-content: center; }
+        .ts-qr .qr-box svg { width: 100%; height: 100%; display: block; }
+        .ts-qr .qr-cap { font-size: 0.66rem; color: #c9a96e; margin-top: 5px; }
+        .ts-close { background: none; border: none; color: #b9986a; font-size: 1.2rem; cursor: pointer; align-self: flex-start; line-height: 1; padding: 0 2px; }
+        .ts-close:hover { color: var(--amber-tx); }
+
+        .term { flex: 1 1 auto; overflow-y: auto; padding: 14px 18px; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 0.82rem; line-height: 1.55; background: #07070f; }
+        .term .ln { white-space: pre-wrap; word-break: break-word; }
+        .term .ln.cmd { color: #9fd0ff; }
+        .term .ln.ok { color: #7CFC9B; }
+        .term .ln.dim { color: var(--dim); }
+        .term .ln.err { color: #ff8a8a; }
+        .term .ln a { color: var(--amber-tx); }
+        .term-empty { color: var(--dim); font-style: italic; }
+
+        .cmdrow { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--panel); }
+        .cmdrow .prompt { color: var(--green); font-family: 'SF Mono', Menlo, monospace; align-self: center; }
+        .cmdrow input { flex: 1; background: #07070f; border: 1px solid var(--line); color: var(--txt); border-radius: 8px; padding: 9px 12px; font-family: 'SF Mono', Menlo, monospace; font-size: 0.82rem; outline: none; }
+        .cmdrow input:focus { border-color: var(--gold); }
+        .cmdrow button { background: var(--panel2); border: 1px solid var(--line); color: var(--txt); border-radius: 8px; padding: 0 16px; cursor: pointer; font-family: inherit; }
+        .cmdrow button:hover { border-color: var(--gold); color: var(--gold); }
+
+        .demobar { display: flex; gap: 10px; align-items: center; padding: 9px 14px; border-top: 1px solid var(--line); background: var(--panel2); flex-wrap: wrap; }
+        .demobar .lbl { font-size: 0.68rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.6px; }
+        .demobar button { background: #1b1b30; border: 1px solid var(--line); color: var(--txt); border-radius: 8px; padding: 7px 12px; cursor: pointer; font-family: inherit; font-size: 0.78rem; }
+        .demobar button:hover { border-color: var(--amber-bd); color: var(--amber-tx); }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand"><b>admira.live</b> · Control <span>consola de la flota</span></div>
+        <div class="spacer"></div>
+        <a class="pill" href="/council-scumm.html">← Consejo</a>
+        <a class="pill" href="/dashboard.html">Dashboard</a>
+        <a class="pill version-badge" href="/dashboard.html" id="version-badge">Admira v.26.06.29.r3</a>
+    </div>
+
+    <div class="layout">
+        <aside class="machines" id="machines">
+            <h2>Flota · Tailscale</h2>
+            <div id="machine-list"><div class="machine"><div class="meta"><div class="sub">Cargando flota…</div></div></div></div>
+        </aside>
+
+        <section class="console">
+            <div class="console-head">
+                <span class="ch-title" id="ch-title">Selecciona una máquina</span>
+                <span class="ch-host" id="ch-host"></span>
+            </div>
+            <!-- Banners de autenticación Tailscale (uno por máquina pendiente) -->
+            <div id="auth-banners"></div>
+            <div class="term" id="term"><div class="term-empty">El output de los comandos aparecerá aquí. Selecciona una máquina y ejecuta un comando, o usa el modo demo de abajo.</div></div>
+            <div class="cmdrow">
+                <span class="prompt">$</span>
+                <input id="cmd-input" type="text" placeholder="comando (ej. uptime, ssh ...)" autocomplete="off" spellcheck="false">
+                <button id="run-btn">Ejecutar</button>
+            </div>
+            <div class="demobar">
+                <span class="lbl">Demo (sin SSH real)</span>
+                <button id="demo-ts">🆕 Simular SSH a máquina nueva (auth Tailscale)</button>
+                <button id="demo-clear">🧹 Limpiar terminal</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+    (function () {
+        "use strict";
+        const $ = id => document.getElementById(id);
+        const CONTROL_API = "https://macmini.tail48b61c.ts.net/api/machines";
+        const TS_AUTH_RE = /https?:\/\/login\.tailscale\.com\/a\/[A-Za-z0-9]+/;
+        const TS_AUTH_RE_G = /https?:\/\/login\.tailscale\.com\/a\/[A-Za-z0-9]+/g;
+
+        // ── Estado ────────────────────────────────────────────────
+        let machines = [];
+        let selected = null;                 // machine id
+        const outputs = {};                  // machineId -> [{cls, html|text}]
+        const pendingAuth = {};              // machineId -> { url }
+        const awaitingRetry = {};            // machineId -> true tras pulsar "reintentar"
+        const dismissedUrls = new Set();     // URLs descartadas con la X
+
+        function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+        function lastCmdKey(id) { return "lastCmd:" + id; }
+
+        // ── Lista de máquinas ─────────────────────────────────────
+        const FALLBACK_MACHINES = [
+            { id: "admira-macmini", name: "Mac Mini (Carlos)", status: "online", platform: "macOS", ssh: { user: "csilvasantin", host: "macmini.tail48b61c.ts.net" } },
+            { id: "admira-dgx-spark", name: "DGX Spark", status: "new", platform: "Linux", isNew: true, ssh: { user: "admin", host: "dgx-spark.tail48b61c.ts.net" } }
+        ];
+
+        async function loadMachines() {
+            try {
+                const res = await fetch(CONTROL_API, { signal: AbortSignal.timeout(5000) });
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                const data = await res.json();
+                machines = (data.machines || []).map(m => ({
+                    id: m.id, name: m.name || m.id, status: m.status || "offline",
+                    platform: m.platform || "", member: m.member || "", machineRole: m.machineRole || "",
+                    ssh: m.ssh || {}, isNew: false
+                }));
+                // Garantiza una máquina "nueva" (DGX Spark) para demostrar el flujo de auth
+                if (!machines.some(m => /dgx|spark/i.test(m.id + m.name))) {
+                    machines.push({ id: "admira-dgx-spark", name: "DGX Spark", status: "new", platform: "Linux", isNew: true, ssh: { user: "admin", host: "dgx-spark.tail48b61c.ts.net" } });
+                }
+            } catch (e) {
+                machines = FALLBACK_MACHINES.slice();
+            }
+            renderMachineList();
+            if (!selected && machines.length) selectMachine(machines[0].id);
+        }
+
+        function renderMachineList() {
+            const wrap = $("machine-list");
+            wrap.innerHTML = "";
+            machines.forEach(m => {
+                const el = document.createElement("div");
+                const cls = m.isNew || m.status === "new" ? "new" : (m.status === "online" ? "online" : "");
+                el.className = "machine " + cls + (m.id === selected ? " selected" : "");
+                const host = (m.ssh && m.ssh.host) ? m.ssh.host : "";
+                el.innerHTML = '<span class="dot"></span><div class="meta">' +
+                    '<div class="nm">' + esc(m.name) + '</div>' +
+                    '<div class="sub">' + esc(m.platform || "") + (host ? ' · ' + esc(host) : '') + '</div></div>' +
+                    ((m.isNew || m.status === "new") ? '<span class="badge-new">NUEVA</span>' : '');
+                el.addEventListener("click", () => selectMachine(m.id));
+                wrap.appendChild(el);
+            });
+        }
+
+        function machineById(id) { return machines.find(m => m.id === id); }
+
+        function selectMachine(id) {
+            selected = id;
+            const m = machineById(id);
+            renderMachineList();
+            $("ch-title").textContent = m ? m.name : id;
+            const host = m && m.ssh && m.ssh.host ? m.ssh.host : "";
+            $("ch-host").textContent = host ? (m.ssh.user ? m.ssh.user + "@" + host : host) : "";
+            renderTerm();
+            renderBanners();
+            // Sugerencia de comando: conexión SSH a esa máquina
+            if (m && m.ssh && m.ssh.host) {
+                $("cmd-input").value = "ssh " + (m.ssh.user ? m.ssh.user + "@" : "") + m.ssh.host;
+            }
+        }
+
+        // ── Terminal ──────────────────────────────────────────────
+        function renderTerm() {
+            const term = $("term");
+            const lines = outputs[selected] || [];
+            if (!lines.length) { term.innerHTML = '<div class="term-empty">Sin salida todavía para esta máquina. Ejecuta un comando.</div>'; return; }
+            term.innerHTML = lines.map(l => '<div class="ln ' + (l.cls || "") + '">' + (l.html || esc(l.text)) + '</div>').join("");
+            term.scrollTop = term.scrollHeight;
+        }
+
+        // Hook central: añade salida + post-procesa para detectar auth de Tailscale.
+        function appendOutput(machineId, text, cls) {
+            if (!outputs[machineId]) outputs[machineId] = [];
+            // Linkifica una posible URL de Tailscale dentro de la propia línea del terminal
+            let html = esc(text).replace(TS_AUTH_RE_G, u => '<a href="' + u + '" target="_blank" rel="noopener">' + u + '</a>');
+            outputs[machineId].push({ cls: cls || "", html: html });
+            if (machineId === selected) renderTerm();
+            postProcessAuth(machineId, text);
+        }
+
+        // ── Helper de autenticación Tailscale ─────────────────────
+        function postProcessAuth(machineId, text) {
+            const match = text.match(TS_AUTH_RE);
+            if (match) {
+                const url = match[0];
+                if (dismissedUrls.has(url)) return;        // descartada por el usuario → no reaparece
+                pendingAuth[machineId] = { url: url };
+                awaitingRetry[machineId] = false;
+                renderBanners();
+                return;
+            }
+            // No hay URL de auth en esta salida. Si veníamos de un "reintentar",
+            // interpretamos que la autenticación se completó → ocultar banner.
+            if (pendingAuth[machineId] && awaitingRetry[machineId]) {
+                delete pendingAuth[machineId];
+                awaitingRetry[machineId] = false;
+                renderBanners();
+            }
+        }
+
+        function makeQR(url) {
+            try {
+                if (typeof qrcode !== "function") return null;
+                const qr = qrcode(0, "M");
+                qr.addData(url);
+                qr.make();
+                return qr.createSvgTag({ cellSize: 4, margin: 1, scalable: true });
+            } catch (e) { return null; }
+        }
+
+        function renderBanners() {
+            const wrap = $("auth-banners");
+            wrap.innerHTML = "";
+            Object.keys(pendingAuth).forEach(machineId => {
+                const m = machineById(machineId);
+                const url = pendingAuth[machineId].url;
+                const name = m ? m.name : machineId;
+                const banner = document.createElement("div");
+                banner.className = "ts-auth";
+                const qrSvg = makeQR(url);
+                banner.innerHTML =
+                    '<div class="ts-ico">🔐</div>' +
+                    '<div class="ts-body">' +
+                        '<div class="ts-title">Tailscale SSH necesita verificación. Autentica para continuar.</div>' +
+                        '<div class="ts-sub">Máquina: <span class="ts-machine">' + esc(name) + '</span> — autoriza este dispositivo en tu tailnet.</div>' +
+                        '<div class="ts-url">' + esc(url) + '</div>' +
+                        '<div class="ts-actions">' +
+                            '<button class="ts-btn primary" data-act="auth">🔐 Autenticar Tailscale</button>' +
+                            '<button class="ts-btn ghost" data-act="retry">✅ He autenticado, reintentar</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="ts-qr">' +
+                        '<div class="qr-box">' + (qrSvg || '<span style="color:#333;font-size:10px;">QR no disponible</span>') + '</div>' +
+                        '<div class="qr-cap">O escanea con el móvil</div>' +
+                    '</div>' +
+                    '<button class="ts-close" data-act="close" title="Ocultar">×</button>';
+                banner.querySelector('[data-act="auth"]').addEventListener("click", () => window.open(url, "_blank", "noopener"));
+                banner.querySelector('[data-act="retry"]').addEventListener("click", () => retryAuth(machineId));
+                banner.querySelector('[data-act="close"]').addEventListener("click", () => dismissAuth(machineId));
+                wrap.appendChild(banner);
+            });
+        }
+
+        function dismissAuth(machineId) {
+            if (pendingAuth[machineId]) dismissedUrls.add(pendingAuth[machineId].url);
+            delete pendingAuth[machineId];
+            renderBanners();
+        }
+
+        function retryAuth(machineId) {
+            const cmd = localStorage.getItem(lastCmdKey(machineId));
+            if (selected !== machineId) selectMachine(machineId);
+            awaitingRetry[machineId] = true;
+            if (!cmd) { appendOutput(machineId, "(no hay comando previo guardado para reintentar)", "dim"); return; }
+            appendOutput(machineId, "$ " + cmd + "   # reintento tras autenticar", "cmd");
+            // Re-ejecuta el último comando. En un sistema real, si la auth se completó
+            // la salida ya no contiene la URL → postProcessAuth oculta el banner.
+            simulateRun(machineId, cmd, /*authenticated=*/true);
+        }
+
+        // ── Ejecución de comandos (simulada; el helper de auth es real) ──
+        function runCommand() {
+            if (!selected) { return; }
+            const input = $("cmd-input");
+            const cmd = input.value.trim();
+            if (!cmd) return;
+            localStorage.setItem(lastCmdKey(selected), cmd);
+            appendOutput(selected, "$ " + cmd, "cmd");
+            input.value = "";
+            simulateRun(selected, cmd, false);
+        }
+
+        function simulateRun(machineId, cmd, authenticated) {
+            // Salida simulada de una pequeña batería de comandos comunes.
+            const m = machineById(machineId);
+            setTimeout(() => {
+                if (/^ssh\b/i.test(cmd) && (m && (m.isNew || m.status === "new")) && !authenticated) {
+                    // Primer SSH a máquina nueva → Tailscale pide verificación
+                    const token = Array.from({ length: 14 }, () => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("");
+                    appendOutput(machineId, "", "dim");
+                    appendOutput(machineId, "# Tailscale SSH requires an additional check.", "dim");
+                    appendOutput(machineId, "# To authenticate, visit:", "dim");
+                    appendOutput(machineId, "https://login.tailscale.com/a/" + token, "");
+                    return;
+                }
+                if (/^ssh\b/i.test(cmd)) {
+                    appendOutput(machineId, "Connection established — " + (m ? m.name : machineId), "ok");
+                    appendOutput(machineId, (m && m.platform === "Linux" ? "Welcome to Ubuntu 24.04 LTS (GNU/Linux)" : "Last login: " + new Date().toUTCString()), "dim");
+                    return;
+                }
+                if (/^uptime$/i.test(cmd)) { appendOutput(machineId, " " + new Date().toLocaleTimeString() + "  up 7 days,  2 users,  load average: 0.21, 0.18, 0.09", "ok"); return; }
+                if (/^whoami$/i.test(cmd)) { appendOutput(machineId, (m && m.ssh && m.ssh.user) ? m.ssh.user : "admin", "ok"); return; }
+                if (/^(ls|pwd|hostname|date)\b/i.test(cmd)) { appendOutput(machineId, "ok", "ok"); return; }
+                appendOutput(machineId, "ejecutado ✓", "ok");
+            }, 350);
+        }
+
+        // ── Demo ──────────────────────────────────────────────────
+        function demoTailscale() {
+            // Selecciona (o crea) una máquina nueva tipo DGX Spark y FUERZA el
+            // output de verificación de Tailscale, para demostrar el banner sin SSH real.
+            let m = machines.find(x => /dgx|spark/i.test(x.id + x.name));
+            if (!m) { m = { id: "admira-dgx-spark", name: "DGX Spark", status: "new", platform: "Linux", isNew: true, ssh: { user: "admin", host: "dgx-spark.tail48b61c.ts.net" } }; machines.push(m); renderMachineList(); }
+            const host = (m.ssh && m.ssh.host) ? m.ssh.host : "dgx-spark.tail48b61c.ts.net";
+            const user = (m.ssh && m.ssh.user) ? m.ssh.user : "admin";
+            selectMachine(m.id);
+            const cmd = "ssh " + user + "@" + host;
+            localStorage.setItem(lastCmdKey(m.id), cmd);
+            appendOutput(m.id, "$ " + cmd, "cmd");
+            const token = Array.from({ length: 14 }, () => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("");
+            setTimeout(() => {
+                appendOutput(m.id, "", "dim");
+                appendOutput(m.id, "# Tailscale SSH requires an additional check.", "dim");
+                appendOutput(m.id, "# To authenticate, visit:", "dim");
+                appendOutput(m.id, "https://login.tailscale.com/a/" + token, "");
+            }, 300);
+        }
+
+        function clearTerm() {
+            if (!selected) return;
+            outputs[selected] = [];
+            renderTerm();
+        }
+
+        // ── Wiring ────────────────────────────────────────────────
+        $("run-btn").addEventListener("click", runCommand);
+        $("cmd-input").addEventListener("keydown", e => { if (e.key === "Enter") runCommand(); });
+        $("demo-ts").addEventListener("click", demoTailscale);
+        $("demo-clear").addEventListener("click", clearTerm);
+
+        // Exponer para pruebas manuales / mock desde consola del navegador
+        window.controlConsole = { appendOutput, demoTailscale, selectMachine, get pending() { return pendingAuth; } };
+
+        loadMachines();
+    })();
+    </script>
+</body>
+</html>
