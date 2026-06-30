@@ -2483,14 +2483,66 @@
         }
         /* ════ fin Oleada 2 ════ */
 
+        /* ═══════════════════════════════════════════════
+           Mejora #2 — Paleta de comandos ⌘K + atajos
+           ═══════════════════════════════════════════════ */
+        .cmdk-overlay { position: fixed; inset: 0; z-index: 100000; display: none; align-items: flex-start; justify-content: center; background: rgba(4,4,12,0.62); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); padding: 10vh 16px 16px; }
+        .cmdk-overlay.active { display: flex; }
+        .cmdk-box { width: min(640px, 94vw); background: #12121f; border: 1px solid #2a2a44; border-radius: 14px; box-shadow: 0 24px 70px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; max-height: 72vh; }
+        .cmdk-input { width: 100%; box-sizing: border-box; background: transparent; border: none; border-bottom: 1px solid #2a2a44; color: #f0f0f8; font-size: 1rem; padding: 16px 18px; outline: none; font-family: inherit; }
+        .cmdk-input::placeholder { color: #6a6a8a; }
+        .cmdk-list { overflow-y: auto; padding: 6px; }
+        .cmdk-group-title { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.6px; color: #8a8aa8; padding: 11px 12px 4px; font-weight: 700; }
+        .cmdk-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; cursor: pointer; color: #d8d8e8; font-size: 0.9rem; }
+        .cmdk-item .cmdk-ico { width: 1.4em; text-align: center; flex: 0 0 auto; }
+        .cmdk-item .cmdk-label { flex: 1 1 auto; }
+        .cmdk-item.selected { background: rgba(218,165,32,0.18); color: #fff; }
+        .cmdk-empty { padding: 26px; text-align: center; color: #6a6a8a; font-size: 0.85rem; }
+        .cmdk-foot { display: flex; gap: 16px; justify-content: flex-end; padding: 8px 14px; border-top: 1px solid #2a2a44; font-size: 0.68rem; color: #7a7a98; }
+        .cmdk-foot kbd, .kbd-help-box kbd, .cmdk-hint-btn kbd { background: #1d1d30; border: 1px solid #2e2e48; border-radius: 4px; padding: 0 5px; font-family: inherit; }
+        .cmdk-hint-btn { background: #15152a; border: 1px solid #2e2e48; color: #b8b8d0; border-radius: 7px; padding: 4px 9px; font-size: 0.72rem; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; }
+        .cmdk-hint-btn:hover { border-color: #daa520; color: #daa520; }
+
+        .kbd-help-overlay { position: fixed; inset: 0; z-index: 100001; display: none; align-items: center; justify-content: center; background: rgba(4,4,12,0.72); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); padding: 16px; }
+        .kbd-help-overlay.active { display: flex; }
+        .kbd-help-box { width: min(560px, 94vw); max-height: 84vh; overflow: auto; background: #12121f; border: 1px solid #2a2a44; border-radius: 14px; padding: 22px 26px; box-shadow: 0 24px 70px rgba(0,0,0,0.6); }
+        .kbd-help-box h3 { margin: 0 0 14px; color: #daa520; font-size: 1.05rem; }
+        .kbd-help-grid { display: grid; grid-template-columns: auto 1fr; gap: 9px 16px; align-items: center; }
+        .kbd-help-grid kbd { padding: 2px 8px; font-size: 0.8rem; color: #f0f0f8; white-space: nowrap; justify-self: start; }
+        .kbd-help-grid span { color: #c0c0d4; font-size: 0.85rem; }
+        .kbd-help-sec { grid-column: 1 / -1; color: #8a8aa8; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 12px; font-weight: 700; }
+        .kbd-help-close { margin-top: 18px; text-align: center; color: #7a7a98; font-size: 0.72rem; }
+        .kbd-msg-active { outline: 2px solid #daa520; outline-offset: 2px; border-radius: 6px; }
+
+        /* ═══════════════════════════════════════════════
+           Mejora #3 — Compartir / Export (PDF + PNG social)
+           ═══════════════════════════════════════════════ */
+        .share-btn { background: #15152a; border: 1px solid #2e2e48; color: #d8d8e8; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; }
+        .share-btn:hover { border-color: #daa520; color: #daa520; }
+        .share-overlay { position: fixed; inset: 0; z-index: 100002; display: none; align-items: center; justify-content: center; background: rgba(4,4,12,0.74); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); padding: 20px; }
+        .share-overlay.active { display: flex; }
+        .share-modal { width: min(720px, 96vw); max-height: 92vh; overflow: auto; background: #12121f; border: 1px solid #2a2a44; border-radius: 14px; padding: 20px 24px; box-shadow: 0 24px 70px rgba(0,0,0,0.6); text-align: left; }
+        .share-modal h3 { margin: 0 0 4px; color: #daa520; font-size: 1.1rem; }
+        .share-modal .share-sub { color: #8a8aa8; font-size: 0.8rem; margin-bottom: 14px; }
+        .share-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 6px; }
+        .share-action { background: #1b1b30; border: 1px solid #2e2e48; color: #e8e8f4; border-radius: 9px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 0.85rem; display: inline-flex; gap: 7px; align-items: center; }
+        .share-action:hover { border-color: #daa520; color: #daa520; }
+        .share-action.primary { background: #241a3a; border-color: #a855f7; color: #d8b4fe; }
+        .share-action.primary:hover { border-color: #c084fc; color: #fff; }
+        .share-close { float: right; background: none; border: none; color: #8a8aa8; font-size: 1.4rem; cursor: pointer; line-height: 1; }
+        .share-preview-wrap { background: #07070f; border: 1px solid #20203a; border-radius: 10px; padding: 12px; overflow: hidden; text-align: center; }
+        .share-status { font-size: 0.78rem; color: #8a8aa8; margin-top: 10px; min-height: 1.1em; }
+        .share-render-stage { position: fixed; left: -10000px; top: 0; pointer-events: none; }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="top-bar">
-            <a href="https://www.admira.live/dashboard.html" target="_blank" class="version-badge">Admira v.26.05.30.r2</a>
+            <a href="https://www.admira.live/dashboard.html" target="_blank" class="version-badge">Admira v.26.06.29.r2</a>
             <a href="https://csilvasantin.github.io/diario/" target="_blank" rel="noopener" class="version-badge" title="Diario operativo del Consejo">📓 Diario</a>
             <a href="/game/help" class="version-badge" title="Cómo se juega y cómo contribuir">❔ Ayuda</a>
+            <button class="cmdk-hint-btn" id="cmdk-hint-btn" onclick="openCmdK()" title="Paleta de comandos — busca y ejecuta cualquier acción"><kbd id="cmdk-hint-keys">⌘K</kbd> Comandos</button>
             <div class="gen-toggle">
                 <button class="gen-btn active-leyendas" id="btn-leyendas" onclick="setGen('leyendas')">⭐ Leyendas</button>
                 <button class="gen-btn" id="btn-coetaneos" onclick="setGen('coetaneos')">🚀 Coetáneos</button>
@@ -2826,6 +2878,7 @@
             </div>
             <div class="back-status-wrap" style="text-align:center;margin-top:0.5rem;">
                 <button class="back-status" id="back-status" onclick="exitConversation()" style="display:inline-block;">← Limpiar conversación</button>
+                <button class="share-btn" id="share-btn" onclick="openShare()" title="Exporta la deliberación a PDF o tarjeta social">📸 Compartir</button>
             </div>
         </div>
 
@@ -2858,6 +2911,45 @@
         <span class="design-dot"></span> DISEÑO
     </button>
     <div class="design-readout" id="design-readout" style="display:none">—</div>
+
+    <!-- ═══ Mejora #2 — Paleta de comandos ⌘K ═══ -->
+    <div class="cmdk-overlay" id="cmdk-overlay" role="dialog" aria-modal="true" aria-label="Paleta de comandos">
+        <div class="cmdk-box" role="document">
+            <input id="cmdk-input" class="cmdk-input" type="text" placeholder="Buscar una acción del Consejo…  (Esc para cerrar)" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list">
+            <div id="cmdk-list" class="cmdk-list" role="listbox" aria-label="Comandos disponibles"></div>
+            <div class="cmdk-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> ejecutar</span><span><kbd>esc</kbd> cerrar</span></div>
+        </div>
+    </div>
+
+    <!-- Ayuda de atajos de teclado -->
+    <div class="kbd-help-overlay" id="kbd-help-overlay" role="dialog" aria-modal="true" aria-label="Atajos de teclado" onclick="if(event.target===this) closeKbdHelp()">
+        <div class="kbd-help-box">
+            <h3>⌨️ Atajos de teclado</h3>
+            <div class="kbd-help-grid">
+                <div class="kbd-help-sec">General</div>
+                <kbd id="kbd-help-cmdk">⌘K</kbd><span>Abrir la paleta de comandos</span>
+                <kbd>?</kbd><span>Mostrar esta ayuda</span>
+                <kbd>Esc</kbd><span>Cerrar cualquier panel, modal o paleta</span>
+                <div class="kbd-help-sec">Hilo de deliberación</div>
+                <kbd>j</kbd><span>Siguiente mensaje</span>
+                <kbd>k</kbd><span>Mensaje anterior</span>
+                <kbd>r</kbd><span>Responder (enfoca el input)</span>
+                <kbd>v</kbd><span>Abrir votación</span>
+                <div class="kbd-help-sec">Ir a… (pulsa <kbd>g</kbd> y luego)</div>
+                <kbd>g</kbd> <kbd>d</kbd><span>Diario</span>
+                <kbd>g</kbd> <kbd>c</kbd><span>Consejo (arriba)</span>
+                <kbd>g</kbd> <kbd>s</kbd><span>Studio</span>
+                <kbd>g</kbd> <kbd>t</kbd><span>Tareas (Yarig.AI)</span>
+            </div>
+            <div class="kbd-help-close">Pulsa <kbd>Esc</kbd> o haz clic fuera para cerrar</div>
+        </div>
+    </div>
+
+    <!-- ═══ Mejora #3 — Compartir / Export ═══ -->
+    <div class="share-overlay" id="share-overlay" role="dialog" aria-modal="true" aria-label="Compartir deliberación" onclick="if(event.target===this) closeShare()">
+        <div class="share-modal"><!-- contenido generado dinámicamente --></div>
+    </div>
+    <div class="share-render-stage" id="share-render-stage" aria-hidden="true"></div>
 
     <script>
     const CONTROL_API = "https://macmini.tail48b61c.ts.net/api/machines";
@@ -7836,6 +7928,510 @@
         document.getElementById('presentar-result-content').innerHTML = html;
     }
 
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Mejoras #2 + #3 — Paleta de comandos ⌘K, atajos de teclado,
+         y exportador de deliberaciones (PDF + tarjeta social PNG).
+         Bloque independiente: comparte el scope global con el script
+         principal (scripts clásicos), así reutiliza selectVerb, COUNCIL,
+         conversationHistory, openYarOverlay, etc. sin modificarlos.
+         ═══════════════════════════════════════════════════════════════ -->
+    <script>
+    (function () {
+        "use strict";
+        const $ = id => document.getElementById(id);
+        const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent || "");
+        const modName = IS_MAC ? "⌘" : "Ctrl ";
+
+        function isTypingTarget(el) {
+            return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+        }
+        function toast(msg) { try { setActionLine(msg); } catch (e) { /* noop */ } }
+        function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+        function trim(s, n) { s = String(s == null ? "" : s).trim(); return s.length > n ? s.slice(0, n).trim() + "…" : s; }
+        function verBadge() { return (document.querySelector(".version-badge") || {}).textContent || "admira.live"; }
+        function slug(s) { return (String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40)) || "deliberacion"; }
+        function openUrl(url) { window.open(url, url.charAt(0) === "/" ? "_self" : "_blank", "noopener"); }
+
+        // ────────────────────────────────────────────────
+        // Mejora #2 — Registro DINÁMICO de comandos
+        // (lee la barra de verbos y la lista de motores LLM
+        //  del DOM, así el comando del Mediador aparece solo
+        //  si la build lo incluye).
+        // ────────────────────────────────────────────────
+        const VERB_ICONS = { preguntar: "❓", debatir: "🗣️", mediar: "⚖️", entrenar: "🎓", crear: "🎨", hablar: "🧭", leer: "🧠", votar: "🗳️", analizar: "🔍", presentar: "📊", reunion: "🤝", previo: "↩️" };
+
+        function buildCommands() {
+            const cmds = [];
+            const add = c => cmds.push(c);
+
+            // 🧠 Consejo / Deliberación — verbos reales de la barra SCUMM
+            document.querySelectorAll(".verb-btn[data-verb]").forEach(btn => {
+                if (btn.id === "btn-previo" && (btn.style.display === "none" || btn.offsetParent === null)) return;
+                const v = btn.dataset.verb;
+                const label = btn.textContent.trim();
+                add({ cat: "🧠 Consejo / Deliberación", icon: VERB_ICONS[v] || "▸", title: label, keywords: "verbo accion " + v + " " + label, run: () => { closeCmdK(); btn.click(); } });
+            });
+            add({ cat: "🧠 Consejo / Deliberación", icon: "🧹", title: "Limpiar conversación", keywords: "limpiar clear reset borrar hilo", run: () => { closeCmdK(); try { exitConversation(); } catch (e) {} } });
+
+            // 🤖 Motor LLM — lista dinámica
+            document.querySelectorAll(".llm-option[data-llm]").forEach(el => {
+                const label = el.textContent.replace(/FREE|€|NIM|YT/g, "").trim();
+                add({ cat: "🤖 Motor LLM", icon: "🤖", title: "Motor: " + label, keywords: "llm motor modelo engine " + label, run: () => { closeCmdK(); el.click(); } });
+            });
+            add({ cat: "🤖 Motor LLM", icon: "ℹ️", title: "Mostrar motor activo", keywords: "modelo activo actual llm motor", run: () => { closeCmdK(); const sel = document.querySelector(".llm-option.selected"); toast("🤖 Motor activo: " + (sel ? sel.textContent.trim() : (typeof selectedLLM !== "undefined" ? selectedLLM : "—"))); } });
+
+            // 🗂️ Yarig.AI / Tareas
+            add({ cat: "🗂️ Yarig.AI / Tareas", icon: "➕", title: "Nueva tarea Yarig", keywords: "yarig tarea nueva crear task", run: () => { closeCmdK(); try { openYarOverlay(); setTimeout(() => $("yar-task-desc") && $("yar-task-desc").focus(), 140); } catch (e) {} } });
+            add({ cat: "🗂️ Yarig.AI / Tareas", icon: "🧭", title: "Abrir Yarig.AI (contexto)", keywords: "yarig abrir contexto foco tareas", run: () => { closeCmdK(); try { openYarOverlay(); } catch (e) {} } });
+
+            // 🌐 Navegación (solo destinos que existen de verdad)
+            [
+                ["📓", "Ir a Diario", "https://csilvasantin.github.io/diario/"],
+                ["🎛️", "Ir a Control (Digital Twin)", "https://csilvasantin.github.io/01.-AdmiraXperience-Game/game.html?v=20260512-2500"],
+                ["📊", "Ir a Dashboard / Estado", "https://www.admira.live/dashboard.html"],
+                ["🎬", "Ir a Studio", "https://www.admira.studio/"],
+                ["❔", "Ir a Ayuda", "/game/help"]
+            ].forEach(([ic, t, url]) => add({ cat: "🌐 Navegación", icon: ic, title: t, keywords: "ir navegar goto abrir " + t + " " + url, run: () => { closeCmdK(); openUrl(url); } }));
+            add({ cat: "🌐 Navegación", icon: "🏛️", title: "Volver al Consejo (arriba)", keywords: "consejo volver inicio top arriba", run: () => { closeCmdK(); window.scrollTo({ top: 0, behavior: "smooth" }); } });
+
+            // 🎨 Vista / Sesión
+            add({ cat: "🎨 Vista / Sesión", icon: "⭐", title: "Consejo: Leyendas", keywords: "leyendas generacion vista", run: () => { closeCmdK(); try { setGen("leyendas"); } catch (e) {} } });
+            add({ cat: "🎨 Vista / Sesión", icon: "🚀", title: "Consejo: Coetáneos", keywords: "coetaneos generacion vista", run: () => { closeCmdK(); try { setGen("coetaneos"); } catch (e) {} } });
+            add({ cat: "🎨 Vista / Sesión", icon: "🚪", title: "Salir de reunión", keywords: "salir reunion meeting privada", run: () => { closeCmdK(); try { exitPrivateMeeting(); } catch (e) {} } });
+            [["✅", "a favor", "favor"], ["❌", "en contra", "contra"], ["🤝", "abstención", "abstencion"], ["🔄", "posponer", "posponer"]]
+                .forEach(([ic, lab, val]) => add({ cat: "🎨 Vista / Sesión", icon: ic, title: "Sentido del voto: " + lab, keywords: "voto sentido " + lab + " " + val, run: () => { closeCmdK(); setVoteSense(val, lab); } }));
+
+            // 🔧 Sistema
+            add({ cat: "🔧 Sistema", icon: "📸", title: "Compartir / Exportar deliberación", keywords: "compartir export pdf png imagen snapshot social", run: () => { closeCmdK(); openShare(); } });
+            add({ cat: "🔧 Sistema", icon: "⌨️", title: "Ver atajos de teclado", keywords: "atajos teclado shortcuts ayuda help teclas", run: () => { closeCmdK(); openKbdHelp(); } });
+            add({ cat: "🔧 Sistema", icon: "🏷️", title: "Ver versión actual", keywords: "version actual build release", run: () => { closeCmdK(); toast("🏷️ " + verBadge()); } });
+            add({ cat: "🔧 Sistema", icon: "🐞", title: "Reportar un bug", keywords: "bug reportar incidencia email correo", run: () => { closeCmdK(); reportBug(); } });
+            const refreshFn = window.loadStatus || window.refreshStatus || window.updateStatus || window.fetchStatus || (typeof render === "function" ? render : null);
+            if (refreshFn) add({ cat: "🔧 Sistema", icon: "🔄", title: "Refrescar estado del Consejo", keywords: "refrescar agora estado status actualizar", run: () => { closeCmdK(); try { refreshFn(); } catch (e) {} toast("🔄 Refrescando estado del Consejo…"); } });
+
+            return cmds;
+        }
+
+        function setVoteSense(val, lab) {
+            const el = document.querySelector('.votar-option[data-votar="' + val + '"]');
+            if (el && typeof selectSubOption === "function") { try { selectSubOption("votar", el); } catch (e) {} }
+            else if (typeof selectedVotar !== "undefined") { try { selectedVotar = val; } catch (e) {} }
+            toast("🗳️ Sentido del voto: " + (lab || val));
+        }
+
+        function reportBug() {
+            const v = verBadge();
+            const subj = encodeURIComponent("[Bug] AdmiraNext Council " + v);
+            const body = encodeURIComponent("Describe el problema:\n\n\n----------------\nVersión: " + v + "\nURL: " + location.href + "\nNavegador: " + navigator.userAgent);
+            window.location.href = "mailto:info@admira.com?subject=" + subj + "&body=" + body;
+        }
+
+        // ────────────────────────────────────────────────
+        // Mejora #2 — Render + búsqueda fuzzy + recientes
+        // ────────────────────────────────────────────────
+        let CMDS = [];
+        let cmdkFiltered = [];
+        let cmdkSel = 0;
+        const RECENT_KEY = "council_cmdk_recent";
+
+        function getRecent() { try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); } catch (e) { return []; } }
+        function pushRecent(title) { try { let r = getRecent().filter(x => x !== title); r.unshift(title); localStorage.setItem(RECENT_KEY, JSON.stringify(r.slice(0, 5))); } catch (e) {} }
+
+        function fuzzy(q, text) {
+            q = q.toLowerCase(); text = (text || "").toLowerCase();
+            if (!q) return 0;
+            let ti = 0, score = 0, first = -1, contiguous = 0;
+            for (let qi = 0; qi < q.length; qi++) {
+                let found = -1;
+                for (let k = ti; k < text.length; k++) { if (text[k] === q[qi]) { found = k; break; } }
+                if (found < 0) return -1;
+                if (first < 0) first = found;
+                contiguous = (found === ti) ? contiguous + 1 : 0;
+                score += 2 + contiguous;
+                ti = found + 1;
+            }
+            return score - first * 0.15;
+        }
+
+        function filterCmds(q) {
+            q = (q || "").trim();
+            if (!q) {
+                const recent = getRecent().map(t => CMDS.find(c => c.title === t)).filter(Boolean).map(c => Object.assign({}, c, { _recent: true }));
+                return recent.concat(CMDS);
+            }
+            const scored = [];
+            CMDS.forEach(c => { const s = Math.max(fuzzy(q, c.title), fuzzy(q, c.keywords || "") - 1); if (s >= 0) scored.push({ c, s }); });
+            scored.sort((a, b) => b.s - a.s);
+            return scored.map(x => x.c);
+        }
+
+        function renderCmdk() {
+            const list = $("cmdk-list");
+            list.innerHTML = "";
+            if (!cmdkFiltered.length) { list.innerHTML = '<div class="cmdk-empty">Sin coincidencias</div>'; return; }
+            const q = $("cmdk-input").value.trim();
+            let lastGroup = null;
+            cmdkFiltered.forEach((c, i) => {
+                const group = (!q && c._recent) ? "🕘 Recientes" : c.cat;
+                if (group !== lastGroup) { const h = document.createElement("div"); h.className = "cmdk-group-title"; h.textContent = group; list.appendChild(h); lastGroup = group; }
+                const row = document.createElement("div");
+                row.className = "cmdk-item" + (i === cmdkSel ? " selected" : "");
+                row.setAttribute("role", "option");
+                row.setAttribute("aria-selected", i === cmdkSel ? "true" : "false");
+                row.dataset.idx = i;
+                const ico = document.createElement("span"); ico.className = "cmdk-ico"; ico.textContent = c.icon || "▸";
+                const lab = document.createElement("span"); lab.className = "cmdk-label"; lab.textContent = c.title;
+                row.appendChild(ico); row.appendChild(lab);
+                row.addEventListener("click", () => runCmd(cmdkFiltered[i]));
+                row.addEventListener("mousemove", () => { if (cmdkSel !== i) { cmdkSel = i; paintSel(); } });
+                list.appendChild(row);
+            });
+        }
+
+        function paintSel() {
+            const rows = $("cmdk-list").querySelectorAll(".cmdk-item");
+            rows.forEach(r => { const sel = Number(r.dataset.idx) === cmdkSel; r.classList.toggle("selected", sel); r.setAttribute("aria-selected", sel ? "true" : "false"); if (sel) r.scrollIntoView({ block: "nearest" }); });
+        }
+
+        function moveSel(d) {
+            if (!cmdkFiltered.length) return;
+            cmdkSel = (cmdkSel + d + cmdkFiltered.length) % cmdkFiltered.length;
+            paintSel();
+        }
+
+        function runCmd(c) { if (!c) return; pushRecent(c.title); try { c.run(); } catch (e) { console.warn("cmd error", e); } }
+
+        function openCmdK() {
+            CMDS = buildCommands();
+            $("cmdk-overlay").classList.add("active");
+            const inp = $("cmdk-input");
+            inp.value = "";
+            cmdkFiltered = filterCmds("");
+            cmdkSel = 0;
+            renderCmdk();
+            setTimeout(() => inp.focus(), 0);
+        }
+        function closeCmdK() { $("cmdk-overlay").classList.remove("active"); const i = $("cmdk-input"); if (i) i.blur(); }
+        function toggleCmdK() { $("cmdk-overlay").classList.contains("active") ? closeCmdK() : openCmdK(); }
+
+        $("cmdk-input").addEventListener("input", function () { cmdkFiltered = filterCmds(this.value); cmdkSel = 0; renderCmdk(); });
+        $("cmdk-input").addEventListener("keydown", function (e) {
+            if (e.key === "ArrowDown") { e.preventDefault(); moveSel(1); }
+            else if (e.key === "ArrowUp") { e.preventDefault(); moveSel(-1); }
+            else if (e.key === "Enter") { e.preventDefault(); runCmd(cmdkFiltered[cmdkSel]); }
+            else if (e.key === "Escape") { e.preventDefault(); closeCmdK(); }
+        });
+        $("cmdk-overlay").addEventListener("click", function (e) { if (e.target === this) closeCmdK(); });
+
+        // ────────────────────────────────────────────────
+        // Mejora #2 — Atajos globales de teclado
+        // ────────────────────────────────────────────────
+        function anyMyOverlayOpen() {
+            return $("cmdk-overlay").classList.contains("active") ||
+                $("kbd-help-overlay").classList.contains("active") ||
+                $("share-overlay").classList.contains("active");
+        }
+        function closeAnyMyOverlay() {
+            let closed = false;
+            if ($("cmdk-overlay").classList.contains("active")) { closeCmdK(); closed = true; }
+            if ($("kbd-help-overlay").classList.contains("active")) { closeKbdHelp(); closed = true; }
+            if ($("share-overlay").classList.contains("active")) { closeShare(); closed = true; }
+            return closed;
+        }
+        function nativeOverlayOpen() {
+            const m = $("meeting-overlay"); if (m && m.classList.contains("visible")) return true;
+            const y = $("yar-overlay"); if (y && y.classList.contains("active")) return true;
+            if ($("vote-overlay")) return true;
+            const s = $("screen-overlay"); if (s && getComputedStyle(s).display !== "none") return true;
+            return false;
+        }
+        function openKbdHelp() { $("kbd-help-overlay").classList.add("active"); }
+        function closeKbdHelp() { $("kbd-help-overlay").classList.remove("active"); }
+        function focusActionInput() { const i = $("action-input"); if (i) { i.focus(); i.scrollIntoView({ block: "center", behavior: "smooth" }); } }
+        function openVotar() { const b = document.querySelector('.verb-btn[data-verb="votar"]'); if (b) b.click(); }
+
+        let kbdMsgIndex = -1;
+        function allMsgs() { return Array.prototype.slice.call(document.querySelectorAll("#conv-racional .conv-entry, #conv-creativo .conv-entry")); }
+        function navMsg(dir) {
+            const msgs = allMsgs();
+            if (!msgs.length) { toast("No hay mensajes en el hilo todavía"); return; }
+            kbdMsgIndex = kbdMsgIndex < 0 ? (dir > 0 ? 0 : msgs.length - 1) : Math.max(0, Math.min(msgs.length - 1, kbdMsgIndex + dir));
+            msgs.forEach(m => m.classList.remove("kbd-msg-active"));
+            const el = msgs[kbdMsgIndex];
+            el.classList.add("kbd-msg-active");
+            el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+
+        let gPending = false, gTimer = null;
+        function handleGoto(k) {
+            const map = {
+                d: () => openUrl("https://csilvasantin.github.io/diario/"),
+                c: () => window.scrollTo({ top: 0, behavior: "smooth" }),
+                s: () => openUrl("https://www.admira.studio/"),
+                t: () => { try { openYarOverlay(); setTimeout(() => $("yar-task-desc") && $("yar-task-desc").focus(), 140); } catch (e) {} }
+            };
+            (map[(k || "").toLowerCase()] || (() => toast("g + " + k + " no está asignado")))();
+        }
+
+        window.addEventListener("keydown", function (e) {
+            const mod = e.metaKey || e.ctrlKey;
+            // ⌘K / Ctrl+K en cualquier sitio
+            if (mod && (e.key === "k" || e.key === "K")) { e.preventDefault(); toggleCmdK(); return; }
+            // Esc cierra mis overlays primero
+            if (e.key === "Escape") { if (anyMyOverlayOpen()) { e.preventDefault(); closeAnyMyOverlay(); } return; }
+            // Atajos de una tecla: solo fuera de inputs y sin overlays abiertos
+            if (isTypingTarget(document.activeElement)) return;
+            if (anyMyOverlayOpen() || nativeOverlayOpen()) return;
+            if (e.metaKey || e.ctrlKey || e.altKey) return;
+            if (gPending) { gPending = false; clearTimeout(gTimer); e.preventDefault(); handleGoto(e.key); return; }
+            switch (e.key) {
+                case "?": e.preventDefault(); openKbdHelp(); break;
+                case "g": case "G": gPending = true; gTimer = setTimeout(() => { gPending = false; }, 1300); break;
+                case "r": case "R": e.preventDefault(); focusActionInput(); break;
+                case "v": case "V": e.preventDefault(); openVotar(); break;
+                case "j": case "J": e.preventDefault(); navMsg(1); break;
+                case "k": case "K": e.preventDefault(); navMsg(-1); break;
+            }
+        });
+
+        // ────────────────────────────────────────────────
+        // Mejora #3 — Recolección de la deliberación
+        // ────────────────────────────────────────────────
+        function parseEntry(e) {
+            const sp = e.querySelector(".conv-speaker");
+            const tx = e.querySelector(".conv-text");
+            if (!tx) return null;
+            const side = sp && sp.classList.contains("creativo") ? "creativo" : "racional";
+            return { speaker: sp ? sp.textContent.trim() : "", text: tx.textContent.trim(), side: side };
+        }
+        function collectDeliberation() {
+            const rac = Array.prototype.slice.call(document.querySelectorAll("#conv-racional .conv-entry")).map(parseEntry).filter(Boolean);
+            const cre = Array.prototype.slice.call(document.querySelectorAll("#conv-creativo .conv-entry")).map(parseEntry).filter(Boolean);
+            let mediador = null;
+            const mc = document.querySelector("#mediador-thread .mediador-card:last-child"); // presente solo si la build trae el Mediador (#1)
+            if (mc) {
+                mediador = {
+                    reco: (mc.querySelector(".mediador-reco") || {}).textContent ? mc.querySelector(".mediador-reco").textContent.replace(/^\s*Recomendación:\s*/, "").trim() : "",
+                    pros: Array.prototype.slice.call(mc.querySelectorAll(".mediador-col.pros li")).map(l => l.textContent.trim()),
+                    contras: Array.prototype.slice.call(mc.querySelectorAll(".mediador-col.contras li")).map(l => l.textContent.trim()),
+                    conf: (mc.querySelector(".mediador-conf .pill") || {}).textContent || "",
+                    pasos: Array.prototype.slice.call(mc.querySelectorAll(".mediador-steps li")).map(l => l.textContent.trim())
+                };
+            }
+            let tema = "";
+            try { if (typeof currentProject !== "undefined" && currentProject) tema = currentProject; } catch (e) {}
+            if (!tema) tema = "Deliberación del Consejo";
+            let members = [];
+            try { if (typeof COUNCIL !== "undefined") members = COUNCIL.filter(m => m.gen === currentGen); } catch (e) {}
+            return { tema: tema, rac: rac, cre: cre, mediador: mediador, members: members, all: rac.concat(cre) };
+        }
+        function pickTopQuotes(d, n) {
+            const sorted = d.all.slice().sort((a, b) => b.text.length - a.text.length);
+            const out = [];
+            const r = sorted.find(x => x.side === "racional"); if (r) out.push(r);
+            const c = sorted.find(x => x.side === "creativo"); if (c) out.push(c);
+            sorted.forEach(x => { if (out.length < n && out.indexOf(x) < 0) out.push(x); });
+            return out.slice(0, n);
+        }
+
+        // ────────────────────────────────────────────────
+        // Mejora #3 — Plantillas (tarjeta social + doc PDF)
+        // ────────────────────────────────────────────────
+        function shortSpeaker(s) { return String(s || "").replace(/\s+/g, " ").trim(); }
+        function quoteBlock(label, color, q) {
+            return '<div style="border-left:8px solid ' + color + ';padding:6px 0 6px 30px;">' +
+                '<div style="font-size:26px;font-weight:700;color:' + color + ';letter-spacing:0.5px;">' + esc(label) + ' · ' + esc(shortSpeaker(q.speaker)) + '</div>' +
+                '<div style="margin-top:12px;font-size:36px;line-height:1.32;color:#eaeaf4;">' + esc(trim(q.text, 180)) + '</div></div>';
+        }
+        function buildSocialCardHTML(d) {
+            const r = d.rac.slice().sort((a, b) => b.text.length - a.text.length)[0];
+            const c = d.cre.slice().sort((a, b) => b.text.length - a.text.length)[0];
+            const med = d.mediador;
+            return '<div style="width:1080px;height:1350px;box-sizing:border-box;background:linear-gradient(160deg,#0a0a14,#15152b 58%,#0a0a14);font-family:Segoe UI,system-ui,Helvetica,Arial,sans-serif;color:#fff;padding:80px 76px;position:relative;overflow:hidden;">' +
+                '<div style="display:flex;align-items:center;gap:16px;">' +
+                    '<div style="font-size:46px;">🏛️</div>' +
+                    '<div style="font-weight:800;letter-spacing:1px;font-size:32px;color:#daa520;">AdmiraNext · Consejo de Silicio</div>' +
+                '</div>' +
+                '<div style="margin-top:64px;font-size:62px;line-height:1.12;font-weight:800;">' + esc(trim(d.tema, 110)) + '</div>' +
+                '<div style="margin-top:58px;display:flex;flex-direction:column;gap:38px;">' +
+                    (r ? quoteBlock("🔴 Racional", "#e74c3c", r) : "") +
+                    (c ? quoteBlock("🔵 Creativo", "#3498db", c) : "") +
+                    (med && med.reco ? quoteBlock("⚖️ Mediador", "#a855f7", { speaker: "Recomendación", text: med.reco }) : "") +
+                '</div>' +
+                '<div style="position:absolute;left:76px;right:76px;bottom:66px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #2a2a44;padding-top:26px;">' +
+                    '<div style="font-size:28px;color:#c0c0d4;">Ver en <b style="color:#daa520;">admira.live</b></div>' +
+                    '<div style="font-size:23px;color:#7a7a98;">' + esc(verBadge()) + '</div>' +
+                '</div></div>';
+        }
+        function pdfMediador(m) {
+            return '<div style="margin-top:22px;padding:16px 20px;background:#f7f3ff;border:1px solid #e6d8ff;border-left:5px solid #a855f7;border-radius:8px;">' +
+                '<div style="font-weight:800;color:#7c3aed;font-size:15px;">⚖️ Síntesis del Mediador</div>' +
+                '<div style="margin-top:8px;font-size:15px;color:#222;"><b>Recomendación:</b> ' + esc(m.reco || "—") + '</div>' +
+                '<div style="display:flex;gap:24px;margin-top:12px;flex-wrap:wrap;">' +
+                    '<div style="flex:1 1 240px;"><div style="font-size:12px;font-weight:700;color:#2e9e54;">PROS</div><ul style="margin:4px 0;padding-left:18px;font-size:13px;color:#333;">' + ((m.pros || []).map(p => "<li>" + esc(p) + "</li>").join("") || "<li>—</li>") + '</ul></div>' +
+                    '<div style="flex:1 1 240px;"><div style="font-size:12px;font-weight:700;color:#c0392b;">CONTRAS</div><ul style="margin:4px 0;padding-left:18px;font-size:13px;color:#333;">' + ((m.contras || []).map(p => "<li>" + esc(p) + "</li>").join("") || "<li>—</li>") + '</ul></div>' +
+                '</div>' +
+                (m.conf ? '<div style="margin-top:8px;font-size:13px;color:#555;">' + esc(m.conf) + '</div>' : "") +
+                ((m.pasos && m.pasos.length) ? '<div style="margin-top:10px;font-size:12px;font-weight:700;color:#7c3aed;">PRÓXIMOS PASOS</div><ol style="margin:4px 0;padding-left:18px;font-size:13px;color:#333;">' + m.pasos.map(p => "<li>" + esc(p) + "</li>").join("") + "</ol>" : "") +
+            '</div>';
+        }
+        function buildPdfDocHTML(d) {
+            const fecha = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" });
+            const med = d.mediador;
+            const quotes = pickTopQuotes(d, 5);
+            const parts = d.members.map(m =>
+                '<span style="display:inline-flex;align-items:center;gap:6px;margin:4px 14px 4px 0;font-size:13px;">' +
+                '<span style="font-size:18px;">' + esc(m.icon || "•") + '</span> ' + esc(m.persona) +
+                ' <span style="color:#999;">(' + esc(m.name) + ')</span> <span style="color:' + (m.side === "creativo" ? "#3498db" : "#e74c3c") + ';">●</span></span>'
+            ).join("");
+            return '<div style="width:794px;box-sizing:border-box;background:#fff;color:#1a1a1a;font-family:Segoe UI,system-ui,Helvetica,Arial,sans-serif;padding:54px 56px;">' +
+                '<div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #daa520;padding-bottom:16px;">' +
+                    '<div style="font-size:30px;">🏛️</div>' +
+                    '<div><div style="font-weight:800;font-size:22px;color:#0a0a14;">AdmiraNext · Consejo de Silicio</div>' +
+                    '<div style="font-size:12px;color:#777;">El primer consejo vivo, inteligente y operativo · admira.live</div></div>' +
+                '</div>' +
+                '<div style="margin-top:28px;font-size:13px;color:#999;text-transform:uppercase;letter-spacing:1px;">Deliberación · ' + esc(fecha) + '</div>' +
+                '<h1 style="margin:6px 0 0;font-size:30px;line-height:1.2;color:#0a0a14;">' + esc(d.tema) + '</h1>' +
+                (med ? pdfMediador(med) : '<div style="margin-top:24px;padding:14px 18px;background:#f4f2ea;border-left:4px solid #bbb;color:#666;border-radius:6px;font-size:14px;">Sin síntesis del Mediador disponible para esta deliberación.</div>') +
+                '<h2 style="margin:30px 0 10px;font-size:17px;color:#a855f7;border-bottom:1px solid #eee;padding-bottom:6px;">Citas destacadas</h2>' +
+                (quotes.map(q => '<div style="margin:12px 0;padding-left:14px;border-left:4px solid ' + (q.side === "creativo" ? "#3498db" : "#e74c3c") + ';">' +
+                    '<div style="font-size:12px;font-weight:700;color:' + (q.side === "creativo" ? "#3498db" : "#e74c3c") + ';">' + esc(q.speaker) + '</div>' +
+                    '<div style="font-size:14px;line-height:1.5;color:#333;">' + esc(q.text) + '</div></div>').join("") || '<div style="color:#999;font-size:14px;">—</div>') +
+                '<h2 style="margin:30px 0 8px;font-size:17px;color:#0a0a14;border-bottom:1px solid #eee;padding-bottom:6px;">Consejo participante</h2>' +
+                '<div>' + (parts || '<span style="color:#999;font-size:13px;">—</span>') + '</div>' +
+                '<div style="margin-top:36px;border-top:1px solid #eee;padding-top:12px;display:flex;justify-content:space-between;font-size:11px;color:#999;">' +
+                    '<span>Generado en admira.live</span><span>' + esc(verBadge()) + '</span></div>' +
+            '</div>';
+        }
+        function buildMarkdown(d) {
+            let s = "# " + (d.tema || "Deliberación del Consejo") + "\n\n";
+            if (d.mediador) {
+                s += "## ⚖️ Síntesis del Mediador\n\n**Recomendación:** " + (d.mediador.reco || "") + "\n\n";
+                if (d.mediador.pros && d.mediador.pros.length) s += "**Pros:**\n" + d.mediador.pros.map(p => "- " + p).join("\n") + "\n\n";
+                if (d.mediador.contras && d.mediador.contras.length) s += "**Contras:**\n" + d.mediador.contras.map(p => "- " + p).join("\n") + "\n\n";
+                if (d.mediador.conf) s += "_" + d.mediador.conf + "_\n\n";
+            }
+            if (d.rac.length) s += "## 🔴 Racional\n\n" + d.rac.map(q => "- **" + q.speaker + "**: " + q.text).join("\n") + "\n\n";
+            if (d.cre.length) s += "## 🔵 Creativo\n\n" + d.cre.map(q => "- **" + q.speaker + "**: " + q.text).join("\n") + "\n\n";
+            s += "---\n" + verBadge() + " · admira.live\n";
+            return s;
+        }
+
+        // ────────────────────────────────────────────────
+        // Mejora #3 — Carga diferida de libs + render canvas
+        // ────────────────────────────────────────────────
+        let libsLoaded = false;
+        function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("No se pudo cargar la librería de exportación")); document.head.appendChild(s); }); }
+        async function ensureLibs() {
+            if (libsLoaded) return;
+            if (typeof window.html2canvas === "undefined") await loadScript("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js");
+            if (!window.jspdf) await loadScript("https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js");
+            libsLoaded = true;
+        }
+        async function htmlToCanvas(html, opts) {
+            opts = opts || {};
+            const stage = $("share-render-stage");
+            stage.innerHTML = html;
+            const node = stage.firstElementChild;
+            const canvas = await window.html2canvas(node, { scale: opts.scale || 2, backgroundColor: opts.bg || null, useCORS: true, logging: false, windowWidth: node.offsetWidth, windowHeight: node.offsetHeight });
+            stage.innerHTML = "";
+            return canvas;
+        }
+        function downloadBlob(blob, name) { const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); }
+
+        async function exportPNG(d) {
+            shareStatus("Generando tarjeta social 1080×1350…");
+            try {
+                await ensureLibs();
+                const canvas = await htmlToCanvas(buildSocialCardHTML(d), { scale: 1, bg: "#0a0a14" });
+                await new Promise(res => canvas.toBlob(b => { downloadBlob(b, "consejo-" + slug(d.tema) + ".png"); res(); }, "image/png"));
+                shareStatus("✅ Tarjeta PNG descargada (1080×1350).");
+            } catch (e) { shareStatus("⚠️ " + e.message); }
+        }
+        async function exportPDF(d) {
+            shareStatus("Generando PDF…");
+            try {
+                await ensureLibs();
+                const canvas = await htmlToCanvas(buildPdfDocHTML(d), { scale: 2, bg: "#ffffff" });
+                const jsPDF = window.jspdf.jsPDF;
+                const pdf = new jsPDF({ unit: "pt", format: "a4" });
+                const pw = pdf.internal.pageSize.getWidth();
+                const ph = pdf.internal.pageSize.getHeight();
+                const imgH = canvas.height * (pw / canvas.width);
+                const img = canvas.toDataURL("image/jpeg", 0.92);
+                if (imgH <= ph) { pdf.addImage(img, "JPEG", 0, 0, pw, imgH); }
+                else { let y = 0, left = imgH; while (left > 0) { pdf.addImage(img, "JPEG", 0, y, pw, imgH); left -= ph; if (left > 0) { pdf.addPage(); y -= ph; } } }
+                pdf.save("consejo-" + slug(d.tema) + ".pdf");
+                shareStatus("✅ PDF descargado.");
+            } catch (e) { shareStatus("⚠️ " + e.message); }
+        }
+        function copyMarkdown(d) {
+            const md = buildMarkdown(d);
+            const done = () => shareStatus("✅ Texto (markdown) copiado al portapapeles.");
+            const fail = () => { const ta = document.createElement("textarea"); ta.value = md; ta.style.position = "fixed"; ta.style.left = "-9999px"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (e) { shareStatus("⚠️ No se pudo copiar automáticamente."); } ta.remove(); };
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(md).then(done).catch(fail);
+            else fail();
+        }
+
+        function shareStatus(msg) { const el = $("share-status"); if (el) el.textContent = msg; }
+
+        function buildShareModal(d) {
+            const modal = document.querySelector("#share-overlay .share-modal");
+            modal.innerHTML =
+                '<button class="share-close" onclick="window.__councilShare.close()" aria-label="Cerrar">×</button>' +
+                "<h3>📸 Compartir deliberación</h3>" +
+                '<div class="share-sub">' + esc(trim(d.tema, 90)) + " · " + d.all.length + " intervenciones" + (d.mediador ? " · con síntesis del Mediador" : "") + "</div>" +
+                '<div class="share-preview-wrap" style="display:flex;justify-content:center;"><div style="width:324px;height:405px;overflow:hidden;"><div id="share-preview-scale" style="width:1080px;transform:scale(0.30);transform-origin:top left;"></div></div></div>' +
+                '<div class="share-actions">' +
+                    '<button class="share-action primary" onclick="window.__councilShare.pdf()">📄 Descargar PDF</button>' +
+                    '<button class="share-action" onclick="window.__councilShare.png()">🖼️ Descargar tarjeta PNG</button>' +
+                    '<button class="share-action" onclick="window.__councilShare.md()">📋 Copiar texto (markdown)</button>' +
+                "</div>" +
+                '<div class="share-status" id="share-status">El PDF y la imagen se generan en tu navegador — no se envían datos a ningún servidor.</div>' +
+                '<div class="cmdk-foot" style="border:none;justify-content:flex-start;color:#6a6a8a;padding-left:0;">Enlace público read-only <code>/shared/:hash</code> — <b style="color:#7a7a98;">Fase 2</b> (requiere backend; TODO marcado en el código).</div>';
+            const sp = $("share-preview-scale");
+            sp.innerHTML = buildSocialCardHTML(d);
+        }
+        function openShare() {
+            const d = collectDeliberation();
+            if (!d.all.length) { toast("📸 Primero genera una deliberación (Preguntar o Debatir) para poder compartirla."); return; }
+            window.__shareData = d;
+            buildShareModal(d);
+            $("share-overlay").classList.add("active");
+        }
+        function closeShare() { $("share-overlay").classList.remove("active"); }
+
+        // TODO (Fase 2): enlace público read-only /shared/:hash.
+        // Requiere un endpoint de backend (Cloudflare Worker o council-api) que
+        // persista la deliberación serializada (buildMarkdown/collectDeliberation)
+        // bajo un hash y la sirva sin auth. No incluido en Day 1 por dependencia de backend.
+
+        // ────────────────────────────────────────────────
+        // Exponer lo mínimo al ámbito global (onclick inline)
+        // ────────────────────────────────────────────────
+        window.openCmdK = openCmdK;
+        window.openShare = openShare;
+        window.closeShare = closeShare;
+        window.closeKbdHelp = closeKbdHelp;
+        window.__councilShare = {
+            close: closeShare,
+            pdf: () => exportPDF(window.__shareData),
+            png: () => exportPNG(window.__shareData),
+            md: () => copyMarkdown(window.__shareData)
+        };
+
+        // Etiqueta del hint según plataforma (⌘K en Mac, Ctrl K en el resto)
+        document.addEventListener("DOMContentLoaded", function () {
+            const keys = $("cmdk-hint-keys"); if (keys) keys.textContent = IS_MAC ? "⌘K" : "Ctrl K";
+            const hk = $("kbd-help-cmdk"); if (hk) hk.textContent = IS_MAC ? "⌘K" : "Ctrl K";
+        });
+        if (document.readyState !== "loading") {
+            const keys = $("cmdk-hint-keys"); if (keys) keys.textContent = IS_MAC ? "⌘K" : "Ctrl K";
+            const hk = $("kbd-help-cmdk"); if (hk) hk.textContent = IS_MAC ? "⌘K" : "Ctrl K";
+        }
+    })();
     </script>
 </body>
 </html>
