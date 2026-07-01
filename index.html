@@ -82,6 +82,14 @@
     text-decoration: none; font-weight: 750; cursor: pointer;
   }
   .btn.primary { background: var(--cyan); color: #041113; border-color: var(--cyan); }
+  .nav a:focus-visible, .nav button:focus-visible, .btn:focus-visible, .brand:focus-visible, .quick-links a:focus-visible, .stock-item:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 8px; }
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -2px; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    .command-card:hover, .btn:hover { transform: none !important; }
+    .spinner { animation: none; }
+  }
   .command-deck {
     display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0 0 18px;
   }
@@ -94,7 +102,8 @@
     content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--accent, var(--cyan));
     opacity: .9;
   }
-  .command-card:focus-visible, .command-card:hover { border-color: color-mix(in srgb, var(--accent, var(--cyan)) 65%, white 0%); outline: none; transform: translateY(-1px); }
+  .command-card:hover { border-color: color-mix(in srgb, var(--accent, var(--cyan)) 65%, white 0%); transform: translateY(-1px); }
+  .command-card:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-color: color-mix(in srgb, var(--accent, var(--cyan)) 65%, white 0%); }
   .command-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
   .command-status { width: 9px; height: 9px; border-radius: 50%; background: var(--accent, var(--cyan)); box-shadow: 0 0 16px var(--accent, var(--cyan)); flex: 0 0 auto; }
   .command-card strong { display: block; margin: 18px 0 7px; font-size: 18px; line-height: 1.12; }
@@ -192,14 +201,14 @@
         </div>
       </div>
       <aside class="panel status-card" aria-label="Estado">
-        <div class="live-dot" id="healthText">Conectando</div>
-        <div class="metric-grid">
+        <div class="live-dot" id="healthText" role="status" aria-live="polite">Conectando</div>
+        <div class="metric-grid" aria-live="polite" aria-atomic="true">
           <div class="metric"><strong id="scoreTotal">--</strong><span>score total</span></div>
           <div class="metric"><strong id="taskCount">--</strong><span>tareas hoy</span></div>
           <div class="metric"><strong id="teamCount">--</strong><span>ranking equipo</span></div>
           <div class="metric"><strong id="stockCount">--</strong><span>assets stock</span></div>
         </div>
-        <div class="stamp" id="lastUpdated">sin actualizar</div>
+        <div class="stamp" id="lastUpdated" role="status" aria-live="polite">sin actualizar</div>
       </aside>
     </section>
 
@@ -255,7 +264,7 @@
         <div class="stock-grid" id="stockGrid"><div class="empty">Cargando Stock...</div></div>
       </article>
     </section>
-    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.01.r4</span></footer>
+    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.01.r5</span></footer>
   </main>
 
 <script>
@@ -403,6 +412,7 @@
   const REFRESH_MS = 30000;      // cadencia normal
   const MAX_REFRESH_MS = 300000; // techo del backoff (5 min)
   const banner = document.getElementById('statusBanner');
+  const refreshBtn = document.getElementById('refreshBtn');
   let refreshMs = REFRESH_MS;    // cadencia actual (crece con backoff)
   let nextAt = 0;                // instante del próximo refresco
   let lastStamp = '';            // hora del último refresco OK
@@ -431,13 +441,20 @@
 
   async function refresh() {
     els.updated.textContent = 'actualizando...';
-    const results = await Promise.allSettled([loadHealth(), loadRanking(), loadTasks(), loadStock()]);
-    workerOk = results[0].status === 'fulfilled' && results[0].value === true;
-    // Backoff exponencial: dobla la cadencia si el worker falla, resetea al recuperar
-    refreshMs = workerOk ? REFRESH_MS : Math.min(refreshMs * 2, MAX_REFRESH_MS);
-    lastStamp = fmtStamp();
-    nextAt = Date.now() + refreshMs;
-    renderStatus();
+    refreshBtn.setAttribute('aria-busy', 'true');
+    refreshBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span>Actualizando…';
+    try {
+      const results = await Promise.allSettled([loadHealth(), loadRanking(), loadTasks(), loadStock()]);
+      workerOk = results[0].status === 'fulfilled' && results[0].value === true;
+      // Backoff exponencial: dobla la cadencia si el worker falla, resetea al recuperar
+      refreshMs = workerOk ? REFRESH_MS : Math.min(refreshMs * 2, MAX_REFRESH_MS);
+      lastStamp = fmtStamp();
+      nextAt = Date.now() + refreshMs;
+      renderStatus();
+    } finally {
+      refreshBtn.removeAttribute('aria-busy');
+      refreshBtn.textContent = 'Actualizar';
+    }
   }
 
   function startTick() {
@@ -455,7 +472,7 @@
     else refresh();
   });
 
-  document.getElementById('refreshBtn').addEventListener('click', refresh);
+  refreshBtn.addEventListener('click', refresh);
   refresh();
   startTick();
 })();
