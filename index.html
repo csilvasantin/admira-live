@@ -107,6 +107,13 @@
   .status-card { padding: 22px; display: grid; gap: 16px; }
   .live-dot { display: flex; align-items: center; gap: 9px; color: var(--green); font-weight: 850; }
   .live-dot::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 18px var(--green); }
+  .live-dot.warn { color: var(--amber); }
+  .live-dot.warn::before { background: var(--amber); box-shadow: 0 0 18px var(--amber); }
+  .live-dot.down { color: var(--rose); }
+  .live-dot.down::before { background: var(--rose); box-shadow: 0 0 18px var(--rose); }
+  .status-banner { margin: 0 0 16px; padding: 12px 14px; border: 1px solid rgba(255,209,102,.5); border-radius: 8px; background: rgba(255,209,102,.08); color: var(--amber); font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 9px; }
+  .status-banner::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 14px var(--amber); flex: 0 0 auto; }
+  .status-banner[hidden] { display: none; }
   .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .metric { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: rgba(0,0,0,.16); min-height: 90px; }
   .metric strong { display: block; font-size: 28px; line-height: 1; }
@@ -169,6 +176,7 @@
   </header>
 
   <main class="shell">
+    <div id="statusBanner" class="status-banner" role="status" aria-live="polite" hidden></div>
     <section class="hero">
       <div class="hero-main">
         <div>
@@ -247,7 +255,7 @@
         <div class="stock-grid" id="stockGrid"><div class="empty">Cargando Stock...</div></div>
       </article>
     </section>
-    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.01.r3</span></footer>
+    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.01.r4</span></footer>
   </main>
 
 <script>
@@ -302,17 +310,25 @@
     node.innerHTML = '<div class="error">' + escapeHtml(message) + '</div>';
   }
 
+  // Devuelve true si el worker respondió (conectividad), aunque falten secrets.
   async function loadHealth() {
     try {
       const [health, score] = await Promise.all([
         getJson(LIVE_API + '/api/health'),
         getJson(LIVE_API + '/api/score/total'),
       ]);
-      els.health.textContent = health.creds_configured ? 'Worker conectado' : 'Worker sin secrets';
+      const configured = !!health.creds_configured;
+      els.health.textContent = configured ? 'Worker conectado' : 'Worker sin secrets';
+      els.health.classList.remove('down');
+      els.health.classList.toggle('warn', !configured);   // ámbar si conecta pero sin secrets
       els.score.textContent = score.data ?? score ?? '--';
+      return true;
     } catch (err) {
       els.health.textContent = 'Worker no disponible';
+      els.health.classList.remove('warn');
+      els.health.classList.add('down');                    // rojo si no hay conexión
       els.score.textContent = '--';
+      return false;
     }
   }
 
@@ -384,23 +400,44 @@
     }
   }
 
-  const REFRESH_MS = 30000;
-  let nextAt = 0;          // instante del próximo refresco
-  let lastStamp = '';      // hora del último refresco
-  let tickTimer = null;    // ticker de 1s (cuenta atrás + disparo)
+  const REFRESH_MS = 30000;      // cadencia normal
+  const MAX_REFRESH_MS = 300000; // techo del backoff (5 min)
+  const banner = document.getElementById('statusBanner');
+  let refreshMs = REFRESH_MS;    // cadencia actual (crece con backoff)
+  let nextAt = 0;                // instante del próximo refresco
+  let lastStamp = '';            // hora del último refresco OK
+  let workerOk = true;           // ¿respondió el worker en el último refresco?
+  let tickTimer = null;          // ticker de 1s (cuenta atrás + disparo)
 
-  function renderStamp() {
-    if (document.hidden) { els.updated.textContent = 'en pausa (pestaña oculta)'; return; }
-    const secs = Math.max(0, Math.round((nextAt - Date.now()) / 1000));
-    els.updated.textContent = (lastStamp ? 'actualizado ' + lastStamp + ' · ' : '') + 'próx. actualización en ' + secs + 's';
+  function secsLeft() { return Math.max(0, Math.round((nextAt - Date.now()) / 1000)); }
+
+  function renderStatus() {
+    const hiddenTab = document.hidden;
+    const secs = secsLeft();
+    els.updated.textContent = hiddenTab
+      ? 'en pausa (pestaña oculta)'
+      : (lastStamp ? 'actualizado ' + lastStamp + ' · ' : '') + 'próx. actualización en ' + secs + 's';
+    // Banner único de estado: solo cuando el worker no respondió
+    if (workerOk) {
+      banner.hidden = true;
+      banner.textContent = '';
+    } else {
+      banner.hidden = false;
+      banner.textContent = hiddenTab
+        ? 'Sin conexión con el worker — en pausa (pestaña oculta)'
+        : 'Sin conexión con el worker — reintentando en ' + secs + 's';
+    }
   }
 
   async function refresh() {
     els.updated.textContent = 'actualizando...';
-    await Promise.allSettled([loadHealth(), loadRanking(), loadTasks(), loadStock()]);
+    const results = await Promise.allSettled([loadHealth(), loadRanking(), loadTasks(), loadStock()]);
+    workerOk = results[0].status === 'fulfilled' && results[0].value === true;
+    // Backoff exponencial: dobla la cadencia si el worker falla, resetea al recuperar
+    refreshMs = workerOk ? REFRESH_MS : Math.min(refreshMs * 2, MAX_REFRESH_MS);
     lastStamp = fmtStamp();
-    nextAt = Date.now() + REFRESH_MS;
-    renderStamp();
+    nextAt = Date.now() + refreshMs;
+    renderStatus();
   }
 
   function startTick() {
@@ -408,13 +445,13 @@
     tickTimer = setInterval(() => {
       if (document.hidden) return;                 // oculta: ni refresca ni descuenta
       if (Date.now() >= nextAt) refresh();
-      else renderStamp();
+      else renderStatus();
     }, 1000);
   }
 
   // Page Visibility: pausa con la pestaña oculta, refresca al volver
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) renderStamp();
+    if (document.hidden) renderStatus();
     else refresh();
   });
 
