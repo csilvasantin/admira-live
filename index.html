@@ -247,7 +247,7 @@
         <div class="stock-grid" id="stockGrid"><div class="empty">Cargando Stock...</div></div>
       </article>
     </section>
-    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.01.r2</span></footer>
+    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.01.r3</span></footer>
   </main>
 
 <script>
@@ -384,14 +384,43 @@
     }
   }
 
+  const REFRESH_MS = 30000;
+  let nextAt = 0;          // instante del próximo refresco
+  let lastStamp = '';      // hora del último refresco
+  let tickTimer = null;    // ticker de 1s (cuenta atrás + disparo)
+
+  function renderStamp() {
+    if (document.hidden) { els.updated.textContent = 'en pausa (pestaña oculta)'; return; }
+    const secs = Math.max(0, Math.round((nextAt - Date.now()) / 1000));
+    els.updated.textContent = (lastStamp ? 'actualizado ' + lastStamp + ' · ' : '') + 'próx. actualización en ' + secs + 's';
+  }
+
   async function refresh() {
     els.updated.textContent = 'actualizando...';
     await Promise.allSettled([loadHealth(), loadRanking(), loadTasks(), loadStock()]);
-    els.updated.textContent = 'actualizado ' + fmtStamp();
+    lastStamp = fmtStamp();
+    nextAt = Date.now() + REFRESH_MS;
+    renderStamp();
   }
+
+  function startTick() {
+    if (tickTimer) clearInterval(tickTimer);
+    tickTimer = setInterval(() => {
+      if (document.hidden) return;                 // oculta: ni refresca ni descuenta
+      if (Date.now() >= nextAt) refresh();
+      else renderStamp();
+    }, 1000);
+  }
+
+  // Page Visibility: pausa con la pestaña oculta, refresca al volver
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) renderStamp();
+    else refresh();
+  });
+
   document.getElementById('refreshBtn').addEventListener('click', refresh);
   refresh();
-  setInterval(refresh, 30000);
+  startTick();
 })();
 </script>
 </body>
