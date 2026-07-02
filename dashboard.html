@@ -41,6 +41,10 @@
   .refresh{font-family:monospace;font-size:11px;color:var(--mut);background:transparent;border:1px solid var(--line);
     color:var(--brand);padding:6px 12px;border-radius:999px;cursor:pointer}
   .refresh:hover{background:rgba(120,243,255,.08)}
+  .refresh:focus-visible,footer a:focus-visible,.card a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  }
 
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
   .card{grid-column:span 4;background:linear-gradient(180deg,var(--panel),var(--panel-2));
@@ -90,8 +94,8 @@
   <header class="top">
     <div class="brand"><span class="grad">admira</span><span class="mut">.live</span> · dashboard</div>
     <div class="status">
-      <span id="dot" class="dot"></span>
-      <span id="statusText">conectando…</span>
+      <span id="dot" class="dot" aria-hidden="true"></span>
+      <span id="statusText" role="status" aria-live="polite">conectando…</span>
       <button class="refresh" id="refreshBtn">↻ refrescar</button>
     </div>
   </header>
@@ -101,7 +105,7 @@
   <div class="grid">
     <section class="card" id="card-score">
       <h2>Puntuación</h2><div class="sub">/api/score/total</div>
-      <div id="score"><div class="skel" style="width:60%;height:40px"></div></div>
+      <div id="score" aria-live="polite" aria-atomic="true"><div class="skel" style="width:60%;height:40px"></div></div>
     </section>
 
     <section class="card wide" id="card-journey">
@@ -132,7 +136,7 @@
 
   <footer>
     Datos en vivo vía <a href="https://admira-live-worker.csilvasantin.workers.dev/api/health" target="_blank" rel="noopener">admira-live-worker</a>
-    · <span id="lastFetch">—</span><span class="ver" title="Versión desplegada">v.26.07.02.r2</span>
+    · <span id="lastFetch">—</span><span class="ver" title="Versión desplegada">v.26.07.02.r3</span>
   </footer>
 </div>
 
