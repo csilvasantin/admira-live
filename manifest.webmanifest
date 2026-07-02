@@ -1,0 +1,13 @@
+{
+  "name": "admira.live",
+  "short_name": "admira.live",
+  "description": "Operativa en vivo de Yarig, Consejo, Studio y Signage.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#02080d",
+  "theme_color": "#071013",
+  "icons": [
+    { "src": "/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+  ]
+}
