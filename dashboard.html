@@ -79,6 +79,7 @@
   .status-banner.down::before{background:var(--bad);box-shadow:0 0 14px var(--bad)}
   .status-banner[hidden]{display:none}
   .empty{color:var(--mut);font-size:13px;font-style:italic;padding:8px 0}
+  .stale{font-family:monospace;font-size:10px;color:var(--warn);opacity:.85;margin-bottom:6px}
   .err{color:var(--bad);font-family:monospace;font-size:12px;padding:8px 0;white-space:pre-wrap}
   .skel{height:14px;border-radius:6px;background:linear-gradient(90deg,rgba(120,243,255,.06),rgba(120,243,255,.14),rgba(120,243,255,.06));
     background-size:200% 100%;animation:sh 1.2s infinite;margin:8px 0}
@@ -136,7 +137,7 @@
 
   <footer>
     Datos en vivo vía <a href="https://admira-live-worker.csilvasantin.workers.dev/api/health" target="_blank" rel="noopener">admira-live-worker</a>
-    · <span id="lastFetch">—</span><span class="ver" title="Versión desplegada">v.26.07.02.r3</span>
+    · <span id="lastFetch">—</span><span class="ver" title="Versión desplegada">v.26.07.02.r4</span>
   </footer>
 </div>
 
@@ -156,6 +157,12 @@ async function getJSON(path){
   if(body && body.ok === false) throw new Error(path + " → " + (body.message || body.error || "error"));
   return body;
 }
+
+// Caché offline: última respuesta buena por panel, para sobrevivir al bloqueo de workers.dev en ES
+const cacheKey = (path) => "adlive:" + path;
+function cacheSet(path, body){ try{ localStorage.setItem(cacheKey(path), JSON.stringify({ ts: Date.now(), body })); }catch(_){} }
+function cacheGet(path){ try{ const v = localStorage.getItem(cacheKey(path)); return v ? JSON.parse(v) : null; }catch(_){ return null; } }
+const cacheTime = (ts) => new Date(ts).toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit" });
 
 function renderScore(body){
   const raw = body?.data;
@@ -251,6 +258,7 @@ let nextAt = 0;                // instante del próximo refresco
 let lastStamp = "";            // hora del último refresco
 let workerOk = true;           // ¿respondió algún endpoint en el último ciclo?
 let lastFail = 0, lastOk = 0;  // conteo del último ciclo (para el banner)
+let lastCacheServed = 0;       // paneles servidos desde caché en el último ciclo
 let tickTimer = null;
 
 const secsLeft = () => Math.max(0, Math.round((nextAt - Date.now()) / 1000));
@@ -262,9 +270,10 @@ function renderBanner(){
   banner.classList.toggle("down", down);
   banner.hidden = false;
   const when = document.hidden ? "en pausa (pestaña oculta)" : "reintentando en " + secsLeft() + "s";
+  const cacheNote = lastCacheServed > 0 ? " (mostrando caché)" : "";
   banner.textContent = down
-    ? "Sin conexión con el worker — " + when
-    : lastFail + " panel" + (lastFail>1?"es":"") + " sin datos — " + when;
+    ? "Sin conexión con el worker" + cacheNote + " — " + when
+    : lastFail + " panel" + (lastFail>1?"es":"") + " sin datos" + cacheNote + " — " + when;
 }
 
 function renderCountdown(){
@@ -276,13 +285,26 @@ function renderCountdown(){
 
 async function refresh(){
   setStatus("", "actualizando…");
-  let okCount = 0, failCount = 0;
+  let okCount = 0, failCount = 0, cacheServed = 0;
   await Promise.all(PANELS.map(async ([path, render, id]) => {
-    try { render(await getJSON(path)); okCount++; }
-    catch(e){ failCount++; const el = $(id); if(el) el.innerHTML = `<div class="err">⚠ ${esc(e.message)}</div>`; }
+    try {
+      const body = await getJSON(path);
+      cacheSet(path, body); render(body); okCount++;
+    } catch(e){
+      failCount++;
+      const el = $(id); if(!el) return;
+      const cached = cacheGet(path);
+      if(cached){
+        render(cached.body);
+        el.insertAdjacentHTML("afterbegin", `<div class="stale">📥 caché · ${esc(cacheTime(cached.ts))}</div>`);
+        cacheServed++;
+      } else {
+        el.innerHTML = `<div class="err">⚠ ${esc(e.message)}</div>`;
+      }
+    }
   }));
   workerOk = okCount > 0;
-  lastOk = okCount; lastFail = failCount;
+  lastOk = okCount; lastFail = failCount; lastCacheServed = cacheServed;
   // Backoff solo si NADA responde (red/bloqueo); un fallo parcial mantiene la cadencia normal
   refreshMs = workerOk ? REFRESH_MS : Math.min(refreshMs * 2, MAX_REFRESH_MS);
   lastStamp = new Date().toLocaleTimeString("es-ES");
