@@ -156,6 +156,8 @@
   .error { color: var(--rose); }
   footer { color: var(--muted); font-size: 12px; padding: 22px 0 0; }
   footer .ver { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--cyan); opacity: .8; margin-left: 6px; }
+  .skip { position: absolute; left: -9999px; top: 8px; background: var(--cyan); color: #06171b; padding: 8px 14px; border-radius: 8px; font-weight: 800; text-decoration: none; z-index: 100; }
+  .skip:focus { left: 12px; }
   @media (max-width: 980px) {
     .hero, .grid { grid-template-columns: 1fr; }
     .span-4, .span-5, .span-7, .span-12 { grid-column: auto; }
@@ -173,6 +175,7 @@
 </style>
 </head>
 <body>
+  <a class="skip" href="#main">Saltar al contenido</a>
   <header class="topbar">
     <a class="brand" href="https://www.admira.live"><b>admira.live</b><span>operativa en vivo</span></a>
     <nav class="nav" aria-label="Navegación">
@@ -185,7 +188,7 @@
     </nav>
   </header>
 
-  <main class="shell">
+  <main class="shell" id="main" tabindex="-1">
     <div id="statusBanner" class="status-banner" role="status" aria-live="polite" hidden></div>
     <section class="hero">
       <div class="hero-main">
@@ -265,7 +268,7 @@
         <div class="stock-grid" id="stockGrid"><div class="empty">Cargando Stock...</div></div>
       </article>
     </section>
-    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.01.r5</span></footer>
+    <footer>admira.live conecta Yarig, admira.studio y signage sin exponer credenciales en el navegador. <span class="ver" title="Versión desplegada">v.26.07.02.r10</span></footer>
   </main>
 
 <script>
