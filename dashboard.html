@@ -29,6 +29,11 @@
   .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 64px}
 
   header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+  .nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .nav a{font-size:13px;font-weight:600;color:var(--mut);text-decoration:none;padding:6px 12px;border:1px solid var(--line);border-radius:999px}
+  .nav a:hover{color:var(--brand);background:rgba(120,243,255,.08)}
+  .nav a.primary{border-color:rgba(120,243,255,.45);color:var(--brand)}
+  .nav a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
   .brand{font-size:26px;font-weight:800;letter-spacing:-.02em}
   .brand .grad{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
   .brand .mut{color:var(--mut)}
@@ -94,6 +99,12 @@
 <div class="wrap">
   <header class="top">
     <div class="brand"><span class="grad">admira</span><span class="mut">.live</span> · dashboard</div>
+    <nav class="nav" aria-label="Navegación">
+      <a href="/">Home</a>
+      <a href="/council-scumm.html">Consejo</a>
+      <a class="primary" href="https://www.admira.studio">Studio</a>
+      <a href="/help/">Ayuda</a>
+    </nav>
     <div class="status">
       <span id="dot" class="dot" aria-hidden="true"></span>
       <span id="statusText" role="status" aria-live="polite">conectando…</span>
@@ -137,7 +148,7 @@
 
   <footer>
     Datos en vivo vía <a href="https://admira-live-worker.csilvasantin.workers.dev/api/health" target="_blank" rel="noopener">admira-live-worker</a>
-    · <span id="lastFetch">—</span><span class="ver" title="Versión desplegada">v.26.07.02.r4</span>
+    · <span id="lastFetch">—</span><span class="ver" title="Versión desplegada">v.26.07.02.r6</span>
   </footer>
 </div>
 
