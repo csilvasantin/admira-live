@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Usuarios · admira.live</title>
+  <!-- Verja: solo entra quien esté en la whitelist -->
+  <script src="/auth-gate.js?v=20260811-r14-c7df116ee0bf"></script>
+  <!-- Barra superior + botones inferiores de navegación (consistente en admira.live) -->
+  <script src="/admira-bar.js?v=20260713-r36"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" />
+  <style>
+    :root{
+      --gold:#e8c25a; --gold2:#d89a3a; --bronze:#b5651d; --ink:#0c0702;
+      --panel:#1c1308; --line:#3a2a14; --txt:#f4e2b0; --mut:#8f6a2a; --bad:#e0563a; --ok:#7bd88f; --sup:#7CFC00;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0%,#160f06,#070401);
+      color:var(--txt);font-family:'VT323',monospace;font-size:20px;padding:24px 18px;display:flex;justify-content:center}
+    .wrap{width:min(720px,100%)}
+    h1{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--gold);letter-spacing:1px;
+      text-shadow:2px 2px 0 #7a3f12;margin:0 0 6px}
+    .sub{color:var(--gold2);letter-spacing:2px;margin:0 0 20px}
+    .card{background:linear-gradient(var(--panel),#140d05);
+      box-shadow:inset 0 0 0 2px var(--line),0 0 0 3px var(--bronze),0 10px 30px rgba(0,0,0,.6);
+      padding:20px;margin-bottom:20px}
+    .who{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+    .who .me{color:var(--gold)}
+    .badge{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:1px;padding:6px 9px;
+      box-shadow:inset 0 0 0 2px var(--line),0 0 0 2px var(--bronze)}
+    .badge.super{color:var(--sup)} .badge.ro{color:var(--mut)}
+    .logout{cursor:pointer;color:var(--gold2);text-decoration:underline;font-size:18px}
+    ul{list-style:none;margin:0;padding:0}
+    li{display:flex;align-items:center;gap:10px;padding:11px 12px;
+      box-shadow:inset 0 0 0 2px var(--line);margin-bottom:8px;background:#140d05;flex-wrap:wrap}
+    li .em{word-break:break-all;flex:1;min-width:160px}
+    li.is-super .em{color:var(--sup)}
+    li.is-owner .em{color:var(--gold)}
+    .tag{font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:1px;padding:4px 7px;box-shadow:inset 0 0 0 2px var(--line)}
+    .tag.own{color:var(--gold)} .tag.sup{color:var(--sup)}
+    button{font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;color:var(--txt);
+      background:linear-gradient(#281a06,#160d03);border:none;padding:8px 10px;
+      box-shadow:inset 0 0 0 2px var(--line),0 0 0 2px var(--bronze),0 4px 0 var(--ink);
+      transition:transform .07s,box-shadow .07s}
+    button:hover{box-shadow:inset 0 0 0 2px #5a3d18,0 0 0 2px var(--gold),0 4px 0 var(--ink);transform:translateY(-1px)}
+    button:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px var(--line),0 0 0 2px var(--bronze),0 1px 0 var(--ink)}
+    button[disabled]{opacity:.4;cursor:not-allowed;transform:none}
+    .pro{color:var(--sup)} .down{color:#bfe0a0} .rm{color:#f0b3a4}
+    .add{display:flex;gap:10px;margin-top:14px}
+    .add input{flex:1;font-family:'VT323',monospace;font-size:20px;color:var(--txt);background:#0d0902;
+      border:none;box-shadow:inset 0 0 0 2px var(--line);padding:11px 12px;outline:none}
+    .add input:focus{box-shadow:inset 0 0 0 2px var(--gold2)}
+    .add button{font-size:10px;padding:0 16px}
+    .msg{min-height:24px;margin-top:12px;letter-spacing:1px}
+    .msg.err{color:var(--bad)} .msg.ok{color:var(--ok)} .msg.mut{color:var(--mut)}
+    .note{color:var(--mut);font-size:17px;line-height:1.5;margin-top:18px}
+    .legend{color:var(--mut);font-size:16px;margin:4px 0 14px}
+    .legend b{color:var(--sup)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>◆ USUARIOS · ADMIRA.LIVE</h1>
+    <p class="sub">Quién accede al sitio · quién es superuser (equipos /control)</p>
+
+    <div class="card">
+      <div class="who">
+        <span class="me" id="me">…</span>
+        <span>
+          <span class="badge" id="role">…</span>
+          <span class="logout" id="logout">cerrar sesión</span>
+        </span>
+      </div>
+      <p class="legend"><b>SUPERUSER</b> = entra a /control (equipos) y gestiona usuarios. Los <b style="color:#e8c25a">OWNER</b> no se pueden quitar ni degradar.</p>
+
+      <ul id="list"><li><span class="em">cargando…</span></li></ul>
+
+      <div class="add" id="addRow" style="display:none">
+        <input id="email" type="email" placeholder="nombre@admira.com" autocomplete="off" />
+        <button id="addBtn">AÑADIR</button>
+      </div>
+      <div class="msg mut" id="msg"></div>
+      <div id="renew" style="display:none;margin-top:14px"></div>
+    </div>
+
+    <p class="note">
+      La lista la sirve el worker <code>admira-whitelist</code> (Cloudflare + KV) y la usan tanto la verja
+      (auth-gate.js) como FleetControl (/control). Cambios inmediatos. ⚠️ La verja es un bloqueo
+      <b>blando</b> (sitio estático) — disuade, no es seguridad fuerte. Solo los <b>superusers</b> gestionan.
+    </p>
+  </div>
+
+  <script>
+    // Writes van a Fleet (cookie __Host-fleet_session + CSRF). El worker ya no
+    // acepta GET /list anónimo (FLT-100603 P0).
+    var API = "https://fleet.admira.live/api/whitelist";
+    var OWNERS = ["csilva@admira.com", "csilvasantin@gmail.com"]; // solo para la UI; el worker es quien protege
+
+    function myEmail() { try { return String((window.admiraGateUser && window.admiraGateUser()) || "").toLowerCase(); } catch (e) { return ""; } }
+    function csrf() { try { return String((window.admiraGateCsrf && window.admiraGateCsrf()) || ""); } catch (e) { return ""; } }
+    function $(id) { return document.getElementById(id); }
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
+    function setMsg(t, kind) { var m = $("msg"); m.textContent = t || ""; m.className = "msg " + (kind || "mut"); }
+    function isOwner(e) { return OWNERS.indexOf(e) >= 0; }
+
+    var ME = myEmail();
+    var IAM_SUPER = false;
+
+    function render(emails, supers) {
+      var ul = $("list");
+      if (!emails.length) { ul.innerHTML = '<li><span class="em">(lista vacía)</span></li>'; return; }
+      ul.innerHTML = emails.map(function (e) {
+        var sup = supers.indexOf(e) >= 0, own = isOwner(e);
+        var cls = own ? "is-owner" : (sup ? "is-super" : "");
+        var tag = own ? '<span class="tag own">OWNER</span>' : (sup ? '<span class="tag sup">SUPERUSER</span>' : '');
+        var act = "";
+        if (IAM_SUPER && !own) {
+          act += sup
+            ? '<button class="down" data-demote="' + esc(e) + '">QUITAR SUPER</button>'
+            : '<button class="pro" data-promote="' + esc(e) + '">⬆ SUPERUSER</button>';
+          act += '<button class="rm" data-rm="' + esc(e) + '">QUITAR</button>';
+        }
+        return '<li class="' + cls + '"><span class="em">' + esc(e) + '</span>' + tag + act + '</li>';
+      }).join("");
+      bind(ul, "data-promote", function (e) { write("promote", e); });
+      bind(ul, "data-demote", function (e) { if (confirm("¿Quitar superuser a " + e + "? Perderá acceso a /control.")) write("demote", e); });
+      bind(ul, "data-rm", function (e) { if (confirm("¿Quitar TODO el acceso a " + e + "?")) write("remove", e); });
+    }
+    function bind(ul, attr, fn) {
+      Array.prototype.forEach.call(ul.querySelectorAll("[" + attr + "]"), function (b) {
+        b.addEventListener("click", function () { fn(b.getAttribute(attr)); });
+      });
+    }
+
+    function applyRole() {
+      $("me").textContent = ME || "(sin sesión)";
+      var role = $("role");
+      role.textContent = IAM_SUPER ? "SUPERUSER" : "USUARIO";
+      role.className = "badge " + (IAM_SUPER ? "super" : "ro");
+      $("addRow").style.display = IAM_SUPER ? "flex" : "none";
+      if (!IAM_SUPER) setMsg("Solo los superusers pueden gestionar. Tú puedes ver la lista.", "mut");
+    }
+
+    function load() {
+      ME = myEmail();
+      return fetch(API, { cache: "no-store", credentials: "include" })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, status: r.status, d: d }; }); })
+        .then(function (res) {
+          if (res.status === 401) { setMsg("✖ sesión Fleet requerida (entra otra vez)", "err"); return; }
+          if (!res.ok) { setMsg("✖ " + (res.d.error || "no se pudo cargar la lista"), "err"); return; }
+          var emails = res.d.emails || [], supers = res.d.superusers || [];
+          IAM_SUPER = supers.indexOf(ME) >= 0;
+          applyRole();
+          render(emails, supers);
+          return res.d;
+        })
+        .catch(function () { setMsg("✖ no se pudo cargar la lista", "err"); });
+    }
+
+    function write(action, email) { doWrite(action, email); }
+    function doWrite(action, email) {
+      setMsg("…", "mut");
+      return fetch(API, {
+        method: "POST", credentials: "include",
+        headers: { "Content-Type": "application/json", "X-Fleet-CSRF": csrf() },
+        body: JSON.stringify({ action: action, email: email })
+      }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, status: r.status, d: d }; }); })
+        .then(function (res) {
+          if (res.status === 401) { setMsg("✖ sesión caducada. Recarga e entra otra vez.", "err"); return; }
+          if (res.status === 403) { setMsg("✖ CSRF inválido. Recarga la página.", "err"); return; }
+          if (!res.ok) { setMsg("✖ " + (res.d.error || "error"), "err"); return; }
+          IAM_SUPER = (res.d.superusers || []).indexOf(ME) >= 0;
+          applyRole();
+          render(res.d.emails || [], res.d.superusers || []);
+          if (action === "add") $("email").value = "";
+          var verb = { add: "añadido", remove: "quitado", promote: "elevado a superuser", demote: "degradado" }[action];
+          setMsg("✔ " + verb + " " + email, "ok");
+        })
+        .catch(function () { setMsg("✖ error de red", "err"); });
+    }
+
+    function add() {
+      var v = ($("email").value || "").toLowerCase().trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { setMsg("✖ email no válido", "err"); return; }
+      write("add", v);
+    }
+
+    // arranque
+    $("addBtn").addEventListener("click", add);
+    $("email").addEventListener("keydown", function (e) { if (e.key === "Enter") add(); });
+    $("logout").addEventListener("click", function () {
+      if (window.admiraGateLogout) window.admiraGateLogout();
+      else location.reload();
+    });
+    (function boot() {
+      var n = 0, t = setInterval(function () {
+        ME = myEmail();
+        if (ME || ++n > 50) { clearInterval(t); load(); }
+      }, 100);
+    })();
+  </script>
+</body>
+</html>
