@@ -2019,6 +2019,32 @@
             font-size: 0.34rem;
             margin-top: 3px;
         }
+        .legend-chip:focus-visible,
+        .verb-btn:focus-visible,
+        .gen-btn:focus-visible {
+            outline: 2px solid #ffee88;
+            outline-offset: 2px;
+        }
+        /* Misma rail sobre la mesa cuando la generación es Coetáneos */
+        .legend-strip.gen-coetaneos {
+            border-color: #3d6eaa;
+            background: #0c1420;
+        }
+        .legend-strip.gen-coetaneos .legend-kicker { color: #9ec8ff; }
+        .legend-strip.gen-coetaneos .legend-active { color: #e7f2ff; }
+        .legend-strip.gen-coetaneos .legend-focus { color: #8eb0d4; }
+        .legend-strip.gen-coetaneos .legend-chip {
+            border-color: #24507a;
+            background: #102033;
+            color: #b9d7f5;
+        }
+        .legend-strip.gen-coetaneos .legend-chip span { color: #6f93b8; }
+        .legend-strip.gen-coetaneos .legend-chip:hover,
+        .legend-strip.gen-coetaneos .legend-chip.active {
+            border-color: #7eb6ff;
+            background: #173456;
+            color: #f3f8ff;
+        }
         @media (max-width: 820px) {
             .legend-strip { grid-template-columns: 1fr; }
             .legend-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2491,7 +2517,7 @@
             .action-line { flex-wrap: wrap; }
             .action-input { font-size: 11px; min-height: 28px; }
             .action-send { min-height: 40px; font-size: 9px; }
-            .sentence-line { font-size: 8px; white-space: normal; }
+            .sentence-line { font-size: 11px; white-space: normal; line-height: 1.6; }
         }
         /* ════ fin Oleada 2 ════ */
 
@@ -2500,7 +2526,7 @@
 <body>
     <div class="container">
         <div class="top-bar">
-            <a href="https://www.admira.live/dashboard.html" target="_blank" class="version-badge">Admira v.26.05.30.r2</a>
+            <a href="https://www.admira.live/dashboard.html" target="_blank" class="version-badge">Admira v.26.09.26.r1</a>
             <a href="https://csilvasantin.github.io/diario/" target="_blank" rel="noopener" class="version-badge" title="Diario operativo del Consejo">📓 Diario</a>
             <a href="/game/help" class="version-badge" title="Cómo se juega y cómo contribuir">❔ Ayuda</a>
             <div class="gen-toggle">
@@ -2528,13 +2554,13 @@
             </div>
         </div>
 
-        <div class="legend-strip" id="legend-strip">
+        <div class="legend-strip" id="legend-strip" role="region" aria-label="Rail de sillas de la mesa">
             <div class="legend-head">
-                <div class="legend-kicker">⭐ LEYENDAS · CONSEJO BASE</div>
-                <div class="legend-active" id="legend-active">Selecciona una leyenda</div>
-                <div class="legend-focus" id="legend-focus">Criterio, memoria larga y oficio fundador.</div>
+                <div class="legend-kicker" id="legend-kicker">⭐ LEYENDAS · CONSEJO BASE</div>
+                <div class="legend-active" id="legend-active" aria-live="polite">Selecciona una silla</div>
+                <div class="legend-focus" id="legend-focus">Criterio de la silla activa en esta generación.</div>
             </div>
-            <div class="legend-grid" id="legend-grid"></div>
+            <div class="legend-grid" id="legend-grid" role="toolbar" aria-label="Sillas del Consejo"></div>
         </div>
 
         <div class="council-image">
@@ -2631,7 +2657,7 @@
         </div>
 
         <div class="scumm-bar">
-            <div class="sentence-line" id="sentence-line"></div>
+            <div class="sentence-line" id="sentence-line" role="status" aria-live="polite"></div>
             <div class="action-line">
                 <input class="action-input" id="action-input" type="text" placeholder="Escribe aquí o usa /help..." autocomplete="off" onkeydown="if(event.key==='Enter')sendMessage()">
                 <button class="action-send" onclick="sendMessage()">Enviar</button>
@@ -2965,7 +2991,7 @@
     let apiOk = false;
 	    let currentGen = "leyendas";
 	    let speakerTurnMap = {};
-	    let activeLegendPersona = "Steve Jobs";
+	    let activeSeatByGen = { leyendas: "Steve Jobs", coetaneos: "Elon Musk" };
 	    // Maquinas dormidas manualmente desde el dashboard (display sleep)
 	    // El Mac sigue en Tailscale como "online" pero la pantalla esta apagada
 	    const sleepingMachines = new Set();
@@ -3002,6 +3028,38 @@
 	        "George Lucas": {
 	            short: "mundo narrativo",
 	            prompt: "George Lucas, conviértelo en saga: mito, personajes, conflicto, expansión y continuidad narrativa."
+	        },
+	        "Elon Musk": {
+	            short: "primeros principios",
+	            prompt: "Elon Musk, baja esto a primeros principios: ¿qué restricción es física y cuál es solo costumbre, y qué gesto la rompe?"
+	        },
+	        "Jensen Huang": {
+	            short: "cómputo y escala",
+	            prompt: "Jensen Huang, míralo como plataforma: ¿qué cómputo hace falta, dónde está el cuello de botella y cómo se escala sin perder el foco?"
+	        },
+	        "Gwynne Shotwell": {
+	            short: "ejecución a escala",
+	            prompt: "Gwynne Shotwell, conviértelo en lanzamiento: secuencia, dueños, riesgos de vuelo y la métrica que dice que ya está en órbita."
+	        },
+	        "Ruth Porat": {
+	            short: "números que sostienen",
+	            prompt: "Ruth Porat, ponle números: qué inversión cabe, qué retorno es honesto y qué señal financiera debe vigilarse."
+	        },
+	        "John Lasseter": {
+	            short: "emoción y oficio",
+	            prompt: "John Lasseter, dale alma: qué emoción debe quedar, qué escena la cuenta y qué detalle de oficio no se puede quitar."
+	        },
+	        "Jony Ive": {
+	            short: "inevitable y simple",
+	            prompt: "Jony Ive, redúcelo a lo inevitable: qué material, qué gesto y qué silencio hacen que el objeto se explique solo."
+	        },
+	        "Carlos Ratti": {
+	            short: "espacio vivo",
+	            prompt: "Carlos Ratti, piensa el lugar: qué se activa, quién lo recorre y qué dato urbano cambia la experiencia."
+	        },
+	        "Ryan Reynolds": {
+	            short: "memorable o nada",
+	            prompt: "Ryan Reynolds, hazlo memorable: la frase, el giro y la razón por la que alguien lo repetiría mañana."
 	        }
 	    };
 
@@ -3020,21 +3078,38 @@
         _pendingEntrenar = null;
 	        if (currentVerb === 'entrenar') renderEntrenarList();
 	        closeTableViewer();
+	        // La silla marcada era de la otra generación: no dejar a Preguntar apuntando a quien ya no está en la mesa.
+	        if (typeof selectedAgent !== "undefined" && selectedAgent && selectedAgent.gen !== gen) {
+	            selectedAgent = null;
+	            if (typeof preguntarMode !== "undefined" && preguntarMode && typeof setActionLine === "function") {
+	                setActionLine("👆 Selecciona un consejero de " + (gen === "coetaneos" ? "Coetáneos" : "Leyendas") + "…");
+	            }
+	        }
 	        renderLegendStrip();
 	    }
 
 	    function renderLegendStrip() {
 	        const strip = document.getElementById("legend-strip");
 	        const grid = document.getElementById("legend-grid");
+	        const kicker = document.getElementById("legend-kicker");
 	        if (!strip || !grid) return;
-	        const legends = COUNCIL.filter(m => m.gen === "leyendas");
-	        strip.classList.toggle("hidden", currentGen !== "leyendas");
-	        if (currentGen !== "leyendas") return;
-	        if (!legends.some(m => m.persona === activeLegendPersona)) activeLegendPersona = legends[0]?.persona || "";
-	        grid.innerHTML = legends.map(m => {
+	        const seats = COUNCIL.filter(m => m.gen === currentGen);
+	        strip.classList.remove("hidden");
+	        strip.classList.toggle("gen-coetaneos", currentGen === "coetaneos");
+	        if (kicker) {
+	            kicker.textContent = currentGen === "coetaneos"
+	                ? "🚀 COETÁNEOS · MESA ACTIVA"
+	                : "⭐ LEYENDAS · CONSEJO BASE";
+	        }
+	        if (!seats.some(m => m.persona === activeSeatByGen[currentGen])) {
+	            activeSeatByGen[currentGen] = seats[0]?.persona || "";
+	        }
+	        const activePersona = activeSeatByGen[currentGen];
+	        grid.innerHTML = seats.map(m => {
 	            const mandate = LEGEND_MANDATES[m.persona] || {};
-	            const active = m.persona === activeLegendPersona ? " active" : "";
-	            return `<button class="legend-chip${active}" type="button" data-persona="${m.persona}" onclick="activateLegend('${m.persona.replace(/'/g, "\\'")}')">${m.icon} ${m.persona}<span>${m.name} · ${mandate.short || m.territory || ''}</span></button>`;
+	            const active = m.persona === activePersona;
+	            const personaJs = m.persona.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+	            return `<button class="legend-chip${active ? " active" : ""}" type="button" aria-pressed="${active ? "true" : "false"}" data-persona="${m.persona}" title="${m.name} · ${mandate.short || m.territory || ""}" onclick="activateLegend('${personaJs}')">${m.icon} ${m.persona}<span>${m.name} · ${mandate.short || m.territory || ""}</span></button>`;
 	        }).join("");
 	        updateLegendReadout();
 	    }
@@ -3042,32 +3117,35 @@
 	    function updateLegendReadout() {
 	        const activeEl = document.getElementById("legend-active");
 	        const focusEl = document.getElementById("legend-focus");
-	        const member = COUNCIL.find(m => m.gen === "leyendas" && m.persona === activeLegendPersona);
+	        const persona = activeSeatByGen[currentGen];
+	        const member = COUNCIL.find(m => m.gen === currentGen && m.persona === persona);
 	        if (!activeEl || !focusEl || !member) return;
 	        const mandate = LEGEND_MANDATES[member.persona] || {};
-	        activeEl.textContent = member.icon + " " + member.persona + " · " + member.name + " · " + member.role;
+	        const genLabel = currentGen === "coetaneos" ? "Coetáneo" : "Leyenda";
+	        activeEl.textContent = member.icon + " " + member.persona + " · " + member.name + " · " + genLabel;
 	        focusEl.textContent = mandate.short ? (mandate.short + " · " + member.territory) : member.territory;
 	    }
 
 	    function activateLegend(persona) {
-	        if (currentGen !== "leyendas") setGen("leyendas");
-	        activeLegendPersona = persona;
+	        const member = COUNCIL.find(m => m.gen === currentGen && m.persona === persona)
+	            || COUNCIL.find(m => m.persona === persona);
+	        if (!member) return;
+	        if (member.gen !== currentGen) setGen(member.gen);
+	        activeSeatByGen[member.gen] = member.persona;
 	        renderLegendStrip();
 	        const askBtn = document.querySelector('.verb-btn[data-verb="preguntar"]');
 	        if (askBtn && currentVerb !== "preguntar") selectVerb(askBtn);
-	        if (typeof selectAgentByPersona === "function") selectAgentByPersona(persona);
-	        const member = COUNCIL.find(m => m.gen === "leyendas" && m.persona === persona);
-	        const mandate = LEGEND_MANDATES[persona] || {};
+	        if (typeof selectAgentByPersona === "function") selectAgentByPersona(member.persona);
+	        const mandate = LEGEND_MANDATES[member.persona] || {};
 	        const input = document.getElementById("action-input");
 	        if (input && mandate.prompt) {
 	            input.value = mandate.prompt;
 	            input.focus();
 	        }
-	        if (member) {
-	            showSpeechBubble(member.persona, member.name, (mandate.short || member.territory || "Listo").slice(0, 80) + "...");
-	            highlightNameplate(member.persona);
-	            setActionLine("⭐ Leyenda activa: " + member.persona + " — pulsa Enviar para preguntarle o edita la pregunta");
-	        }
+	        showSpeechBubble(member.persona, member.name, (mandate.short || member.territory || "Listo").slice(0, 80) + "...");
+	        highlightNameplate(member.persona);
+	        const genLabel = member.gen === "coetaneos" ? "Coetáneo" : "Leyenda";
+	        setActionLine("⭐ " + genLabel + " activo: " + member.persona + " — pulsa Enviar para preguntarle o edita la pregunta");
 	    }
 
 	    function loadMachines(data) {
@@ -3919,8 +3997,12 @@
     }
 
     function selectVerb(btn) {
-        document.querySelectorAll('.verb-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.verb-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         currentVerb = btn.dataset.verb;
         updateInventoryPanel(currentVerb);
 
