@@ -2139,6 +2139,11 @@
         .presentar-fmt-row { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0; }
         .presentar-fmt-btn { font-family:'Press Start 2P',monospace; font-size:6px; background:#2a1a08; border:2px solid #5a3a1e; color:#886633; padding:5px 8px; cursor:pointer; transition:all .1s; }
         .presentar-fmt-btn.active { border-color:#daa520; color:#daa520; background:#3a2510; }
+        .presentar-kicker { font-family:'Press Start 2P',monospace; font-size:6px; color:#886633; margin:8px 0 4px; }
+        .presentar-criterio { font-family:'Press Start 2P',monospace; font-size:6px; color:#ffee88; line-height:1.85; background:#0d0800; border:2px solid #5a3a1e; padding:8px; margin:0 0 8px; max-height:148px; overflow:auto; }
+        .presentar-criterio.best { border-color:#daa520; }
+        .presentar-criterio .k { color:#daa520; display:block; margin-top:6px; }
+        .presentar-pedido { font-family:'Press Start 2P',monospace; font-size:6px; color:#daa520; margin-bottom:8px; line-height:1.8; }
         .presentar-file-label { display:block; margin:8px 0; border:2px dashed #5a3a1e; padding:7px; text-align:center; font-family:'Press Start 2P',monospace; font-size:6px; color:#886633; cursor:pointer; }
         .presentar-file-label:hover { border-color:#daa520; color:#daa520; }
         .presentar-gen-btn { width:100%; padding:10px; background:#2a1a08; border:2px solid #daa520; border-top-color:#f0c040; color:#daa520; font-family:'Press Start 2P',monospace; font-size:8px; cursor:pointer; margin-top:8px; }
@@ -2618,7 +2623,14 @@
                     <div class="presentar-title">🏛️ CREAR PRESENTACIÓN</div>
                     <textarea class="presentar-prompt" id="presentar-prompt"
                         placeholder="Describe el tema...&#10;Ej: Resumen del estado del consejo&#10;    Análisis de productividad&#10;    Pitch de nuevo proyecto"></textarea>
-                    <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#886633;margin:8px 0 4px">FORMATO DE SALIDA:</div>
+                    <div class="presentar-kicker">ESCALERA · GOOD / BETTER / BEST</div>
+                    <div class="presentar-fmt-row" id="presentar-calidad-row" role="radiogroup" aria-label="Escalera de la presentación">
+                        <button type="button" class="presentar-fmt-btn" data-calidad="good" aria-pressed="false" onclick="setPresentarCalidad('good')">Good</button>
+                        <button type="button" class="presentar-fmt-btn active" data-calidad="better" aria-pressed="true" onclick="setPresentarCalidad('better')">Better</button>
+                        <button type="button" class="presentar-fmt-btn" data-calidad="best" aria-pressed="false" onclick="setPresentarCalidad('best')">Best</button>
+                    </div>
+                    <div class="presentar-criterio" id="presentar-criterio" aria-live="polite">Leyendo el criterio…</div>
+                    <div class="presentar-kicker">FORMATO DE SALIDA:</div>
                     <div class="presentar-fmt-row">
                         <button class="presentar-fmt-btn active" data-fmt="audio" onclick="setPresentarFmt(this)">🎙️ Audio</button>
                         <button class="presentar-fmt-btn" data-fmt="pdf"   onclick="setPresentarFmt(this)">📄 PDF</button>
@@ -2645,6 +2657,7 @@
                 <!-- Estado: RESULT -->
                 <div class="presentar-dialog" id="pdlg-result" style="display:none;max-width:640px;">
                     <div class="presentar-title" id="pdlg-result-title">✅ PRESENTACIÓN LISTA</div>
+                    <div class="presentar-pedido" id="presentar-pedido" hidden></div>
                     <div class="presentar-tabs" id="presentar-tabs"></div>
                     <div id="presentar-result-content"></div>
                     <div style="display:flex;gap:6px;margin-top:10px;">
@@ -6864,6 +6877,12 @@
             // Bienvenida guiada la primera visita (tras pintar a los consejeros)
             setTimeout(maybeOnboard, 1200);
         }
+        const presentarRung = params.get("presentar");
+        if (!trainUrl && (presentarRung === "good" || presentarRung === "better" || presentarRung === "best")) {
+            const presentarBtn = document.querySelector('button[data-verb="presentar"]');
+            if (presentarBtn) selectVerb(presentarBtn);
+            setPresentarCalidad(presentarRung);
+        }
 
         const hotspot = document.getElementById("apple-ii-hotspot");
         if (hotspot) {
@@ -7688,6 +7707,117 @@
     let _presentarFmt = 'audio';
     let _presentarFileContent = null;
     let _presentarFileName = null;
+    let _presentarCalidad = 'better';
+    let _presentarEscalera = null;
+    let _presentarPedidoLabel = '';
+    const PRESENTAR_ESCALERA_URL = 'assets/presentar-escalera.json';
+
+    function _escPresentar(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+        }[c]));
+    }
+
+    function _presentarRung(id) {
+        const list = (_presentarEscalera && _presentarEscalera.peldaños) || [];
+        return list.find(p => p.id === id) || null;
+    }
+
+    function _presentarBullets(label, items) {
+        if (!items || !items.length) return '';
+        return '<span class="k">' + _escPresentar(label) + '</span>' +
+            items.map(item => '· ' + _escPresentar(item)).join('<br>');
+    }
+
+    function renderPresentarCriterio() {
+        const box = document.getElementById('presentar-criterio');
+        if (!box) return;
+        box.classList.toggle('best', _presentarCalidad === 'best');
+        if (_presentarEscalera && _presentarEscalera.error) {
+            box.textContent = 'No pude leer ' + PRESENTAR_ESCALERA_URL + ' (' + _presentarEscalera.error + ')';
+            return;
+        }
+        const rung = _presentarRung(_presentarCalidad);
+        if (!rung) {
+            box.textContent = 'Leyendo el criterio…';
+            return;
+        }
+        const n = (rung.se_ve || []).length + (rung.se_oye || []).length + (rung.no_vale || []).length;
+        box.innerHTML =
+            '<span class="k">' + _escPresentar(rung.nombre) + ' · ' + _escPresentar(rung.entrega) + ' · ' + n + ' criterios</span>' +
+            _escPresentar(rung.resumen) +
+            _presentarBullets('SE VE', rung.se_ve) +
+            _presentarBullets('SE OYE', rung.se_oye) +
+            _presentarBullets('NO VALE', rung.no_vale);
+    }
+
+    function setPresentarCalidad(id) {
+        if (id !== 'good' && id !== 'better' && id !== 'best') return;
+        _presentarCalidad = id;
+        document.querySelectorAll('#presentar-calidad-row .presentar-fmt-btn').forEach(btn => {
+            const on = btn.dataset.calidad === id;
+            btn.classList.toggle('active', on);
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        renderPresentarCriterio();
+        const rung = _presentarRung(id);
+        if (rung) setActionLine('🏛️ Presentar · ' + rung.nombre + ' — ' + rung.resumen);
+    }
+
+    async function loadPresentarEscalera() {
+        if (_presentarEscalera && !_presentarEscalera.error) {
+            renderPresentarCriterio();
+            return _presentarEscalera;
+        }
+        try {
+            const res = await fetch(PRESENTAR_ESCALERA_URL, { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            if (!data || !Array.isArray(data.peldaños) || !data.peldaños.some(p => p.id === 'best')) {
+                throw new Error('el criterio no trae Best');
+            }
+            _presentarEscalera = data;
+        } catch (e) {
+            _presentarEscalera = { peldaños: [], error: e.message };
+            renderPresentarCriterio();
+            return null;
+        }
+        setPresentarCalidad(_presentarCalidad);
+        return _presentarEscalera;
+    }
+
+    function _presentarSteps(calidad) {
+        if (calidad === 'best') {
+            return [
+                [15, '✍️ Guion, una frase por escena...'],
+                [30, '🖼️ Imagen que ilustra cada frase...'],
+                [50, '🎬 Plano corto con recorrido...'],
+                [68, '🎙️ Voz, y música que cede...'],
+                [82, '💬 Subtítulos y cartelas...'],
+                [92, '📦 Empaquetando el vídeo Best...'],
+            ];
+        }
+        if (calidad === 'good') {
+            return [
+                [15, '✍️ Frase corta por escena...'],
+                [30, '🎨 Un color plano, sin imagen...'],
+                [50, '📝 Texto sobre el color...'],
+                [68, '🎙️ Voz, sin música...'],
+                [82, '🗂️ Montando cartelas Good...'],
+                [92, '📦 Empaquetando...'],
+            ];
+        }
+        return [
+            [15, '📡 Conectando con la API...'],
+            [30, '🤖 Claude analizando el tema...'],
+            [50, '🖼️ Una imagen quieta por escena...'],
+            [68, _presentarFmt === 'audio' ? '🎙️ Sintetizando audio...' :
+                 _presentarFmt === 'pdf'   ? '📄 Compilando PDF...' :
+                 _presentarFmt === 'slides'? '📊 Construyendo slides...' : '🎙️ Generando audio + PDF...'],
+            [82, '⚙️ Procesando y guardando archivos...'],
+            [92, '📦 Empaquetando resultado...'],
+        ];
+    }
 
     function triggerPresentar() {
         showPresentarOverlay();
@@ -7698,7 +7828,11 @@
         document.getElementById('pdlg-input').style.display   = '';
         document.getElementById('pdlg-loading').style.display = 'none';
         document.getElementById('pdlg-result').style.display  = 'none';
-        setActionLine("🏛️ Crear presentación — escribe el tema y pulsa Generar");
+        void loadPresentarEscalera();
+        const rung = _presentarRung(_presentarCalidad);
+        setActionLine(rung
+            ? "🏛️ Presentar · " + rung.nombre + " — " + rung.resumen
+            : "🏛️ Crear presentación — elige Good, Better o Best");
     }
 
     function closePresentarOverlay() {
@@ -7756,20 +7890,20 @@
         document.getElementById('presentar-progress-bar').classList.remove('done');
         const statusEl = document.getElementById('presentar-status');
         statusEl.textContent = '';
-        _setProgress(5, '🤖 Claude generando estructura...');
+        await loadPresentarEscalera();
+        const rung = _presentarRung(_presentarCalidad);
+        _presentarPedidoLabel = rung
+            ? (rung.nombre + ' · ' + rung.entrega)
+            : _presentarCalidad;
+        _setProgress(5, _presentarCalidad === 'best'
+            ? '🎬 Best: guion, planos, voz y subtítulos...'
+            : _presentarCalidad === 'good'
+                ? '🎨 Good: textos sobre color...'
+                : '🖼️ Better: guion e imagen por escena...');
 
         // Simulated progress ticker while waiting for API
         let _fakePct = 5;
-        const STEPS = [
-            [15, '📡 Conectando con la API...'],
-            [30, '🤖 Claude analizando el tema...'],
-            [50, '✍️ Generando contenido estructurado...'],
-            [68, _presentarFmt === 'audio' ? '🎙️ Sintetizando audio...' :
-                 _presentarFmt === 'pdf'   ? '📄 Compilando PDF...' :
-                 _presentarFmt === 'slides'? '📊 Construyendo slides...' : '🎙️ Generando audio + PDF...'],
-            [82, '⚙️ Procesando y guardando archivos...'],
-            [92, '📦 Empaquetando resultado...'],
-        ];
+        const STEPS = _presentarSteps(_presentarCalidad);
         let _stepIdx = 0;
         const _ticker = setInterval(() => {
             if (_stepIdx < STEPS.length) {
@@ -7791,7 +7925,10 @@
                             prompt,
                             file_content: _presentarFileContent,
                             file_name: _presentarFileName,
-                            formato: _presentarFmt
+                            formato: _presentarFmt,
+                            calidad: _presentarCalidad,
+                            entrega: rung ? rung.entrega : null,
+                            criterio: rung
                         }),
                         signal: AbortSignal.timeout(120000)
                     });
@@ -7872,6 +8009,17 @@
 
         if (result.title) {
             document.getElementById('pdlg-result-title').textContent = '✅ ' + result.title;
+        }
+        const pedidoEl = document.getElementById('presentar-pedido');
+        if (pedidoEl) {
+            const echoed = _presentarRung(result.calidad);
+            const pedido = echoed
+                ? (echoed.nombre + ' · ' + (result.entrega || echoed.entrega))
+                : (result.calidad ? String(result.calidad) : _presentarPedidoLabel);
+            if (pedido) {
+                pedidoEl.hidden = false;
+                pedidoEl.textContent = 'PEDIDO · ' + pedido;
+            }
         }
 
         // Construir tabs según qué archivos existen

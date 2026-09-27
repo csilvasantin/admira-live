@@ -1,0 +1,57 @@
+{
+  "version": "2026-09-27",
+  "fuente": "Carlos selló Good y Better el 25-sep-2026. Best lo sella ArquitectoCursorCloud el 27-sep-2026 (encargo #4458).",
+  "default": "better",
+  "peldaños": [
+    {
+      "id": "good",
+      "nombre": "Good",
+      "entrega": "cartelas",
+      "resumen": "Concepto: textos sobre color.",
+      "se_ve": [
+        "Cada escena es una cartela: una frase corta sobre un color plano, sin imagen."
+      ],
+      "se_oye": [
+        "La voz lee esa frase. Sin música."
+      ],
+      "no_vale": [
+        "Una imagen, un plano en movimiento o subtítulos. Eso ya es Better o Best."
+      ]
+    },
+    {
+      "id": "better",
+      "nombre": "Better",
+      "entrega": "diapositivas",
+      "resumen": "El mismo guion, con una imagen quieta que respalda cada escena.",
+      "se_ve": [
+        "La frase de la escena, sobre una imagen quieta que ilustra esa frase."
+      ],
+      "se_oye": [
+        "La voz lee el mismo guion, una frase por escena. Sin música."
+      ],
+      "no_vale": [
+        "Color plano sin imagen: eso es Good. Plano en movimiento, música o subtítulos: eso es Best."
+      ]
+    },
+    {
+      "id": "best",
+      "nombre": "Best",
+      "entrega": "video",
+      "resumen": "El guion de Better, en movimiento, con voz, música que cede y subtítulos.",
+      "se_ve": [
+        "El mismo guion que Better, escena a escena, con una imagen que ilustra esa frase.",
+        "Cada escena es un plano corto con recorrido sobre la imagen, no una diapositiva quieta.",
+        "Cartela de apertura y cartela de cierre con el título.",
+        "Subtítulos de la narración, legibles sobre la imagen, para verla sin sonido."
+      ],
+      "se_oye": [
+        "La voz narra el guion completo, una frase por escena.",
+        "Una música baja que cede cuando habla la voz, y un silencio breve entre escenas."
+      ],
+      "no_vale": [
+        "Texto sobre color (Good) o una diapositiva quieta aunque tenga imagen (Better).",
+        "Metraje que no ilustra la frase, música que tapa la voz, o un solo plano sin cortes."
+      ]
+    }
+  ]
+}
