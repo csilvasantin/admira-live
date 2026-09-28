@@ -2132,9 +2132,9 @@
         /* ── PRESENTAR overlay ── */
         .presentar-overlay { display:none; position:absolute; inset:0; background:rgba(0,0,16,0.93); z-index:60; flex-direction:column; align-items:center; justify-content:center; padding:20px; }
         .presentar-overlay.active { display:flex; }
-        .presentar-dialog { background:#1a0e05; border:3px solid #8b5a14; border-top-color:#a07828; padding:18px; width:100%; max-width:560px; font-family:'Press Start 2P',monospace; }
+        .presentar-dialog { background:#1a0e05; border:3px solid #8b5a14; border-top-color:#a07828; padding:18px; width:100%; max-width:560px; max-height:min(92vh, 740px); overflow:auto; font-family:'Press Start 2P',monospace; }
         .presentar-title { font-size:8px; color:#daa520; text-align:center; margin-bottom:14px; letter-spacing:1px; }
-        .presentar-prompt { width:100%; background:#0d0800; border:2px solid #5a3a1e; color:#ffee88; font-family:'Press Start 2P',monospace; font-size:7px; padding:10px; resize:vertical; min-height:72px; box-sizing:border-box; line-height:1.8; }
+        .presentar-prompt { width:100%; background:#0d0800; border:2px solid #5a3a1e; color:#ffee88; font-family:'Press Start 2P',monospace; font-size:7px; padding:10px; resize:vertical; min-height:52px; box-sizing:border-box; line-height:1.8; }
         .presentar-prompt:focus { outline:none; border-color:#daa520; }
         .presentar-fmt-row { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0; }
         .presentar-fmt-btn { font-family:'Press Start 2P',monospace; font-size:6px; background:#2a1a08; border:2px solid #5a3a1e; color:#886633; padding:5px 8px; cursor:pointer; transition:all .1s; }
@@ -2143,6 +2143,13 @@
         .presentar-criterio { font-family:'Press Start 2P',monospace; font-size:6px; color:#ffee88; line-height:1.85; background:#0d0800; border:2px solid #5a3a1e; padding:8px; margin:0 0 8px; max-height:148px; overflow:auto; }
         .presentar-criterio.best { border-color:#daa520; }
         .presentar-criterio .k { color:#daa520; display:block; margin-top:6px; }
+        .presentar-guion-btn { width:100%; padding:8px; background:#2a1a08; border:2px solid #daa520; color:#daa520; font-family:'Press Start 2P',monospace; font-size:8px; cursor:pointer; margin:0 0 8px; }
+        .presentar-guion-btn:hover { background:#daa520; color:#000; }
+        .presentar-guion { font-family:'Press Start 2P',monospace; font-size:8px; color:#ffee88; line-height:1.7; background:#0d0800; border:2px solid #daa520; padding:8px; margin:0 0 8px; max-height:240px; overflow:auto; }
+        .presentar-guion[hidden], .presentar-entrega[hidden], #presentar-fmt-block[hidden], #presentar-criterio[hidden] { display:none; }
+        .presentar-shot { border-bottom:1px solid #2a1a08; padding:4px 0; }
+        .presentar-shot .tag { color:#daa520; }
+        .presentar-entrega { font-family:'Press Start 2P',monospace; font-size:8px; color:#daa520; border:2px solid #daa520; padding:8px; margin:0 0 8px; text-align:center; line-height:1.7; }
         .presentar-pedido { font-family:'Press Start 2P',monospace; font-size:6px; color:#daa520; margin-bottom:8px; line-height:1.8; }
         .presentar-file-label { display:block; margin:8px 0; border:2px dashed #5a3a1e; padding:7px; text-align:center; font-family:'Press Start 2P',monospace; font-size:6px; color:#886633; cursor:pointer; }
         .presentar-file-label:hover { border-color:#daa520; color:#daa520; }
@@ -2629,13 +2636,18 @@
                         <button type="button" class="presentar-fmt-btn active" data-calidad="better" aria-pressed="true" onclick="setPresentarCalidad('better')">Better</button>
                         <button type="button" class="presentar-fmt-btn" data-calidad="best" aria-pressed="false" onclick="setPresentarCalidad('best')">Best</button>
                     </div>
+                    <button type="button" class="presentar-guion-btn" onclick="presentarGuionDemo()">🎬 GUION BEST · PARA LA SALA</button>
+                    <div class="presentar-guion" id="presentar-guion" hidden></div>
+                    <div class="presentar-entrega" id="presentar-entrega-best" hidden>ENTREGA BEST · VÍDEO<br>PLANOS, VOZ Y SUBTÍTULOS</div>
                     <div class="presentar-criterio" id="presentar-criterio" aria-live="polite">Leyendo el criterio…</div>
+                    <div id="presentar-fmt-block">
                     <div class="presentar-kicker">FORMATO DE SALIDA:</div>
-                    <div class="presentar-fmt-row">
-                        <button class="presentar-fmt-btn active" data-fmt="audio" onclick="setPresentarFmt(this)">🎙️ Audio</button>
-                        <button class="presentar-fmt-btn" data-fmt="pdf"   onclick="setPresentarFmt(this)">📄 PDF</button>
-                        <button class="presentar-fmt-btn" data-fmt="ambos" onclick="setPresentarFmt(this)">🎙️+📄 Ambos</button>
-                        <button class="presentar-fmt-btn" data-fmt="slides" onclick="setPresentarFmt(this)">📊 Slides</button>
+                    <div class="presentar-fmt-row" id="presentar-fmt-row">
+                        <button type="button" class="presentar-fmt-btn active" data-fmt="audio" onclick="setPresentarFmt(this)">🎙️ Audio</button>
+                        <button type="button" class="presentar-fmt-btn" data-fmt="pdf"   onclick="setPresentarFmt(this)">📄 PDF</button>
+                        <button type="button" class="presentar-fmt-btn" data-fmt="ambos" onclick="setPresentarFmt(this)">🎙️+📄 Ambos</button>
+                        <button type="button" class="presentar-fmt-btn" data-fmt="slides" onclick="setPresentarFmt(this)">📊 Slides</button>
+                    </div>
                     </div>
                     <label class="presentar-file-label" id="presentar-file-label">
                         📎 Adjuntar fichero (opcional)
@@ -7705,11 +7717,13 @@
 
     // ═══════════════════════════════════
     let _presentarFmt = 'audio';
+    let _presentarFmtGuardado = 'audio';
     let _presentarFileContent = null;
     let _presentarFileName = null;
     let _presentarCalidad = 'better';
     let _presentarEscalera = null;
     let _presentarPedidoLabel = '';
+    let _presentarGuion = null;
     const PRESENTAR_ESCALERA_URL = 'assets/presentar-escalera.json';
 
     function _escPresentar(s) {
@@ -7751,14 +7765,114 @@
             _presentarBullets('NO VALE', rung.no_vale);
     }
 
+    function _presentarFrases(text) {
+        const raw = String(text || '').trim();
+        if (!raw) return [];
+        const lines = raw.split(/\n+/).map(s => s.trim()).filter(Boolean);
+        let parts = lines.length > 1
+            ? lines
+            : raw.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+        if (parts.length === 1) {
+            const bits = parts[0].split(/\s*[;,]\s+/).map(s => s.trim()).filter(s => s.length > 12);
+            if (bits.length > 1) parts = bits;
+        }
+        return parts.slice(0, 5).map(s => s.replace(/[.!?…]+$/g, '').slice(0, 120));
+    }
+
+    function buildPresentarGuion(prompt) {
+        const rung = _presentarRung('best') || {};
+        const plantilla = rung.guion || {};
+        const recorridos = (plantilla.recorridos && plantilla.recorridos.length)
+            ? plantilla.recorridos
+            : ['acercamiento', 'barrido lateral', 'alejamiento'];
+        const frases = _presentarFrases(prompt);
+        const titulo = (frases[0] || 'Presentación').slice(0, 52);
+        const escenas = (frases.length ? frases : ['Una frase por escena']).map((frase, i) => ({
+            n: i + 1,
+            frase: frase,
+            recorrido: recorridos[i % recorridos.length],
+            subtitulo: frase
+        }));
+        return {
+            titulo: titulo,
+            apertura: plantilla.apertura || 'Cartela de apertura con el título.',
+            cierre: plantilla.cierre || 'Cartela de cierre con el título.',
+            escenas: escenas,
+            entrega: 'video'
+        };
+    }
+
+    function _presentarGuionHtml(guion) {
+        if (!guion) return '';
+        const shots = (guion.escenas || []).map(esc =>
+            '<div class="presentar-shot"><span class="tag">' + esc.n + ' · ' + _escPresentar(esc.recorrido) +
+            '</span> ' + _escPresentar(esc.frase) + '</div>'
+        ).join('');
+        return '<span class="k">' + (guion.escenas || []).length + ' planos · subtítulo = frase</span>' +
+            '<div class="presentar-shot"><span class="tag">APERTURA</span> ' + _escPresentar(guion.titulo) + '</div>' +
+            shots +
+            '<div class="presentar-shot"><span class="tag">CIERRE</span> ' + _escPresentar(guion.titulo) + '</div>';
+    }
+
+    function renderPresentarGuion() {
+        const box = document.getElementById('presentar-guion');
+        if (!box) return;
+        if (_presentarCalidad !== 'best') {
+            _presentarGuion = null;
+            box.hidden = true;
+            box.innerHTML = '';
+            return;
+        }
+        const prompt = (document.getElementById('presentar-prompt') || {}).value || '';
+        _presentarGuion = buildPresentarGuion(prompt);
+        box.hidden = false;
+        box.innerHTML = _presentarGuionHtml(_presentarGuion);
+    }
+
+    function presentarGuionDemo() {
+        const ta = document.getElementById('presentar-prompt');
+        if (ta && !ta.value.trim()) {
+            ta.value = 'La pantalla dice una sola frase.\nLa imagen se mueve sobre esa frase.\nSe lee aunque no haya sonido.';
+        }
+        setPresentarCalidad('best');
+        const dlg = document.getElementById('pdlg-input');
+        if (dlg) dlg.scrollTop = 0;
+        setActionLine('🏛️ Presentar · guion Best en pantalla: apertura, planos y cierre');
+    }
+
+    function _paintPresentarFmt() {
+        document.querySelectorAll('#presentar-fmt-row .presentar-fmt-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.fmt === _presentarFmt);
+        });
+        selectedPresentar = _presentarFmt;
+    }
+
+    function _syncPresentarEntrega() {
+        const best = _presentarCalidad === 'best';
+        const fmt = document.getElementById('presentar-fmt-block');
+        const lock = document.getElementById('presentar-entrega-best');
+        if (fmt) fmt.hidden = best;
+        if (lock) lock.hidden = !best;
+        const criterio = document.getElementById('presentar-criterio');
+        if (criterio) criterio.hidden = best;
+        if (best) _presentarFmt = 'video';
+        _paintPresentarFmt();
+        renderPresentarGuion();
+    }
+
     function setPresentarCalidad(id) {
         if (id !== 'good' && id !== 'better' && id !== 'best') return;
+        if (id === 'best' && _presentarFmt !== 'video') _presentarFmtGuardado = _presentarFmt;
+        if (id !== 'best' && _presentarCalidad === 'best') {
+            _presentarFmt = _presentarFmtGuardado || 'audio';
+        }
         _presentarCalidad = id;
         document.querySelectorAll('#presentar-calidad-row .presentar-fmt-btn').forEach(btn => {
             const on = btn.dataset.calidad === id;
             btn.classList.toggle('active', on);
             btn.setAttribute('aria-pressed', on ? 'true' : 'false');
         });
+        _syncPresentarEntrega();
         renderPresentarCriterio();
         const rung = _presentarRung(id);
         if (rung) setActionLine('🏛️ Presentar · ' + rung.nombre + ' — ' + rung.resumen);
@@ -7847,10 +7961,10 @@
     }
 
     function setPresentarFmt(btn) {
-        document.querySelectorAll('.presentar-fmt-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        _presentarFmt = btn.dataset.fmt;
-        selectedPresentar = _presentarFmt;
+        if (_presentarCalidad === 'best') return;
+        _presentarFmt = btn.dataset.fmt || 'audio';
+        _presentarFmtGuardado = _presentarFmt;
+        _paintPresentarFmt();
     }
 
     function onPresentarFile(input) {
@@ -7892,9 +8006,23 @@
         statusEl.textContent = '';
         await loadPresentarEscalera();
         const rung = _presentarRung(_presentarCalidad);
+        const guion = _presentarCalidad === 'best'
+            ? (_presentarGuion || buildPresentarGuion(prompt))
+            : null;
+        if (guion) _presentarGuion = guion;
         _presentarPedidoLabel = rung
             ? (rung.nombre + ' · ' + rung.entrega)
             : _presentarCalidad;
+        if (guion) {
+            showPresentarResult({
+                title: 'GUION BEST',
+                calidad: 'best',
+                entrega: 'video',
+                guion: guion
+            });
+            void _presentarFetch(prompt, rung, guion);
+            return;
+        }
         _setProgress(5, _presentarCalidad === 'best'
             ? '🎬 Best: guion, planos, voz y subtítulos...'
             : _presentarCalidad === 'good'
@@ -7913,33 +8041,7 @@
         }, 4000);
 
         try {
-            const urls = activeApiUrl ? [activeApiUrl] : COUNCIL_API_URLS;
-            let result = null;
-
-            for (const baseUrl of urls) {
-                try {
-                    const resp = await fetch(`${baseUrl}/api/council/presentar`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-Council-Token': COUNCIL_API_TOKEN },
-                        body: JSON.stringify({
-                            prompt,
-                            file_content: _presentarFileContent,
-                            file_name: _presentarFileName,
-                            formato: _presentarFmt,
-                            calidad: _presentarCalidad,
-                            entrega: rung ? rung.entrega : null,
-                            criterio: rung
-                        }),
-                        signal: AbortSignal.timeout(120000)
-                    });
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    result = await resp.json();
-                    activeApiUrl = baseUrl;
-                    break;
-                } catch(e) {
-                    statusEl.textContent += `⚠️ ${e.message}\n`;
-                }
-            }
+            const result = await _presentarFetch(prompt, rung, null, statusEl);
 
             clearInterval(_ticker);
             if (!result) throw new Error('API no disponible — arranca council-api.py');
@@ -7953,6 +8055,53 @@
             document.getElementById('pdlg-input').style.display   = '';
             setActionLine("❌ " + e.message);
         }
+    }
+
+    async function _presentarFetch(prompt, rung, guion, statusEl) {
+        const urls = activeApiUrl ? [activeApiUrl] : COUNCIL_API_URLS;
+        let lastError = null;
+        for (const baseUrl of urls) {
+            try {
+                const resp = await fetch(`${baseUrl}/api/council/presentar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Council-Token': COUNCIL_API_TOKEN },
+                    body: JSON.stringify({
+                        prompt,
+                        file_content: _presentarFileContent,
+                        file_name: _presentarFileName,
+                        formato: guion ? 'video' : _presentarFmt,
+                        calidad: guion ? 'best' : _presentarCalidad,
+                        entrega: guion ? 'video' : (rung ? rung.entrega : null),
+                        criterio: rung,
+                        guion: guion
+                    }),
+                    signal: AbortSignal.timeout(120000)
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const result = await resp.json();
+                activeApiUrl = baseUrl;
+                if (guion) {
+                    const overlay = document.getElementById('presentar-overlay');
+                    if (overlay && overlay.classList.contains('active')) {
+                        showPresentarResult(Object.assign({ guion: guion, calidad: 'best', entrega: 'video' }, result));
+                    }
+                }
+                return result;
+            } catch (e) {
+                lastError = e;
+                if (statusEl) statusEl.textContent += `⚠️ ${e.message}\n`;
+            }
+        }
+        if (guion) {
+            const pedido = document.getElementById('presentar-pedido');
+            const overlay = document.getElementById('presentar-overlay');
+            if (pedido && overlay && overlay.classList.contains('active')) {
+                pedido.hidden = false;
+                pedido.textContent = 'PEDIDO · Best · video · la API no contestó; el guion sigue en pantalla';
+            }
+            return null;
+        }
+        throw lastError || new Error('API no disponible — arranca council-api.py');
     }
 
     function _pingDone() {
@@ -7984,6 +8133,7 @@
         document.getElementById('presentar-prompt').value = '';
         document.getElementById('presentar-file-label').childNodes[0].textContent = '📎 Adjuntar fichero (opcional) ';
         _presentarFileContent = null; _presentarFileName = null;
+        if (_presentarCalidad === 'best') renderPresentarGuion();
     }
 
     function showPresentarResult(result) {
@@ -8006,6 +8156,7 @@
         const audioUrl  = absUrl(result.audio_url);
         const pdfUrl    = absUrl(result.pdf_url);
         const slidesUrl = absUrl(result.slides_url);
+        const guion = result.guion || (_presentarCalidad === 'best' ? _presentarGuion : null);
 
         if (result.title) {
             document.getElementById('pdlg-result-title').textContent = '✅ ' + result.title;
@@ -8024,6 +8175,7 @@
 
         // Construir tabs según qué archivos existen
         const tabs = [];
+        if (guion)     tabs.push({ id:'guion',  label:'🎬 Guion' });
         if (audioUrl)  tabs.push({ id:'audio',  label:'🎙️ Audio' });
         if (pdfUrl)    tabs.push({ id:'pdf',     label:'📄 PDF' });
         if (slidesUrl) tabs.push({ id:'slides',  label:'📊 Slides' });
@@ -8037,6 +8189,12 @@
         // Construir paneles
         let html = '';
 
+        if (guion) {
+            const isFirst = tabs[0].id === 'guion';
+            html += `<div class="presentar-tab-panel${isFirst?' active':''}" id="ptab-guion">
+                <div class="presentar-section-list">${_presentarGuionHtml(guion)}</div>
+            </div>`;
+        }
         if (audioUrl) {
             html += `<div class="presentar-tab-panel${tabs[0].id==='audio'?' active':''}" id="ptab-audio">
                 <audio controls style="width:100%;margin-bottom:6px" src="${audioUrl}"></audio>
@@ -8076,6 +8234,13 @@
         }
 
         document.getElementById('presentar-result-content').innerHTML = html;
+    }
+
+    const _presentarPromptEl = document.getElementById('presentar-prompt');
+    if (_presentarPromptEl) {
+        _presentarPromptEl.addEventListener('input', function () {
+            if (_presentarCalidad === 'best') renderPresentarGuion();
+        });
     }
 
     </script>
