@@ -237,7 +237,8 @@ Todo lo simulado se rotula **EJEMPLO / SIMULADO** en pantalla.
 | Activos de la Cafebrería (8 soportes con tarifa simulada) | `/workspace/cafebreria/activos/activos-cafebreria.csv` / `.json` | Datos del presupuesto de 49:00 |
 | Proof of play (informe es/en, captura, JSON de ejemplo) | `/workspace/cafebreria/proof-of-play/` (`captura-es.png`, `ejemplo-proof-of-play.json`) | Cierre de 49:00: qué pieza, qué pantalla, a qué hora |
 | Xperience de Smith (pantalla partida) | `https://smith-demo-alsea-4737.xpaceos.pages.dev/demo-alsea/?split=1` | Mitad derecha de todo C (10:00–55:00), sobre todo P12–P14 |
-| Biblioteca de Oráculo | `https://oraculo-demo-distribucion-bi.pixeria.pages.dev/demo/biblioteca/` | Paso 1 de #4762 en lugar del placeholder; aquí, respaldo del Stock en C2 |
+| Planos de Lucas P08–P11 (admira.studio, interfaz de siempre) | GrokBotBox `/workspace/demo-alsea/studio/planos/` (prototipo `studio/index.html`, servido desde `/workspace`) | 25:00–40:00. **No** se usa la biblioteca de Oráculo: rompe la regla de una sola interfaz (#4769) |
+| «Tu pausa» **sin la marca de Suno** (45 s, 824x1464, mismo audio) | GrokBotBox `/workspace/tupausa-nosuno/tu-pausa-sin-marca.mp4` | En P08 y en todo el vídeo; `montar.py --musica` la usa para el hilo. No debe verse «MADE WITH SUNO» en ningún plano (#4769) |
 
 Para el montaje, copia los tres `plano-*.png` a `<assets>/distribucion/` y `captura-es.png` a `<assets>/proof-of-play/`:
 `montar.py` los usa como respaldo del minuto 49:00.

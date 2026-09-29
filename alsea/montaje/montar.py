@@ -5,10 +5,12 @@ Cada fila de la escaleta es un minuto. Para cada minuto:
   - imagen: el plano grabado (planos/P<nº>-*.mp4) o su captura (planos/P<nº>-*.png) si existe; si no, una lámina
     1920x1080 con la captura de respaldo, rotulada «captura · plano pendiente»;
   - locución: la columna LOC con Piper (voz libre local, sin coste);
-  - música: «Tu pausa» del Stock de Pixeria, con ducking bajo la voz.
+  - música: «Tu pausa» del Stock de Pixeria, con ducking bajo la voz (--musica acepta el mp4 sin la marca de Suno).
+
+Una sola interfaz: P08–P11 son los planos de Lucas (admira.studio); no hay respaldo con páginas de otra interfaz.
 
 Uso:
-  montar.py --planos DIR[,DIR…] --assets DIR --salida alsea-lineal.mp4 [--seg 60] [--solo 00:00,10:00]
+  montar.py --planos DIR[,DIR…] --assets DIR --salida alsea-lineal.mp4 [--musica tu-pausa-sin-marca.mp4] [--seg 60] [--solo 00:00,10:00]
 """
 import argparse, json, os, re, shutil, subprocess, sys, html, tempfile
 
@@ -145,6 +147,7 @@ def main():
     ap.add_argument('--salida', required=True); ap.add_argument('--seg', type=float, default=60)
     ap.add_argument('--solo', default=''); ap.add_argument('--piper', default='piper')
     ap.add_argument('--voz', required=True); ap.add_argument('--tmp', default='')
+    ap.add_argument('--musica', default='', help='audio o vídeo de «Tu pausa» (por defecto ASSETS/tu-pausa.mp3)')
     a = ap.parse_args()
     filas = parse(GUION)
     if a.solo: filas = [f for f in filas if f['min'] in a.solo.split(',')]
@@ -196,7 +199,7 @@ def main():
     ff('-f', 'concat', '-safe', '0', '-i', f'{tmp}/segs.txt', '-c', 'copy', f'{tmp}/video.mp4')
     ff('-f', 'concat', '-safe', '0', '-i', f'{tmp}/voces.txt', '-c', 'pcm_s16le', f'{tmp}/voz.wav')
     total = a.seg * len(filas)
-    musica = os.path.join(a.assets, 'tu-pausa.mp3')
+    musica = a.musica or os.path.join(a.assets, 'tu-pausa.mp3')
     ff('-i', f'{tmp}/video.mp4', '-i', f'{tmp}/voz.wav', '-stream_loop', '-1', '-i', musica, '-filter_complex',
        '[1:a]asplit=2[v1][v2];'
        '[2:a]aformat=sample_rates=48000:channel_layouts=stereo,volume=0.30[m];'
