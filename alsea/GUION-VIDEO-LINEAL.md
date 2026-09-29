@@ -3,8 +3,8 @@
 **Demo:** miércoles 30-sep-2026 · 16:00 Madrid · presenta Carlos Silva Santin (Barcelona).
 **Qué es este documento:** la escaleta minuto a minuto de la **versión grabada** (vídeo lineal). Es la
 reserva y el ensayo de la demo: va **primero**; la versión interactiva la sigue en directo con el mismo orden.
-**Encargo:** #4732 · misión FLT-101250 · Morfeo (GrokBotBox) · proyecto admira.live.
-**Estado:** borrador avanzado para revisión de Carlos. Solo preview, nada en producción.
+**Encargo:** #4732 (Morfeo) → relevo #4761 (Neo, GrokBotBox) · misión FLT-101250 · proyecto admira.live.
+**Estado:** revisado (F1 cerrada, 29-sep 18:45 Madrid) y listo para rodar; quedan los datos del §6 para Carlos. Solo preview, nada en producción.
 
 ---
 
@@ -19,8 +19,8 @@ reserva y el ensayo de la demo: va **primero**; la versión interactiva la sigue
 | Metaestilo | Si ya está listo, grabar con el **metaestilo Alsea** activo; si no, con el estándar y marcarlo en el nombre del fichero (`-sin-metaestilo`) |
 | Coste | Cero créditos: nada de ElevenLabs ni Suno. Música solo del Stock de Pixeria (Alsea · «Tu pausa», vídeo `1790609061411-86drpb`, audio `1790608402098-xubtdh`) |
 | Nombre de fichero | `P<nº>-<consejero>-<slug>.mp4`, p. ej. `P07-woz-alta-excel.mp4` |
-| Entrega | **Hoy 21:00 Madrid**, subidos al Stock de Pixeria con el hashtag `#alsea-lineal` (o, si no, enlace en el hilo del encargo #4732) |
-| Plan B | Si a las 21:00 falta un plano, Morfeo monta ese tramo con las **capturas** que se citan en la columna «Plano» y lo rotula «captura · plano pendiente» |
+| Entrega | **Hoy 21:00 Madrid**, subidos al Stock de Pixeria con el hashtag `#alsea-lineal` (o, si no, enlace en el hilo del encargo #4761, relevo de #4732) |
+| Plan B | Si a las 21:00 falta un plano, Neo (relevo de Morfeo) monta ese tramo con las **capturas** que se citan en la columna «Plano» y lo rotula «captura · plano pendiente» |
 
 ### Reparto de planos
 
@@ -29,7 +29,7 @@ reserva y el ensayo de la demo: va **primero**; la versión interactiva la sigue
 | **Woz** (hardware y admira.store) | Bloque 1 · alta de una cafetería | P04, P05, P06, P07 |
 | **Lucas** (contenido, admira.studio / pixeria.com) | Bloque 2 · contenidos y playlists | P08, P09, P10, P11 |
 | **Walt** (experiencia, la Cafebrería) | Bloque 3 · Xperience Good/Better/Best | P12, P13, P14, P15 |
-| **Morfeo** (montaje) | Apertura, quiénes somos, con quién, cierre | P01, P02, P03, P16 (capturas del deck + motor /demo) |
+| **Neo** (montaje; relevo de Morfeo) | Apertura, quiénes somos, con quién, cierre | P01, P02, P03, P16 (capturas del deck + motor /demo) |
 
 ---
 
@@ -37,7 +37,7 @@ reserva y el ensayo de la demo: va **primero**; la versión interactiva la sigue
 
 | Tramo | Minutos | Duración | Qué cuenta |
 |---|---|---|---|
-| Apertura | 00:00–00:30 | 30 s | Cortinilla Admira × Alsea |
+| Apertura | 00:00–00:30 | 30 s | Cortinilla Admira × Alsea (dentro del min 00:00 de A) |
 | **A · Quiénes somos** | 00:00–05:00 | 5 min | Admira: plataforma agéntica para el espacio físico |
 | **B · Con quién y desde cuándo** | 05:00–10:00 | 5 min | Trayectoria, clientes y ecosistema |
 | **C · Cómo lo hacemos** | 10:00–55:00 | 45 min | La plataforma agéntica en 3 bloques |
@@ -56,7 +56,7 @@ reserva y el ensayo de la demo: va **primero**; la versión interactiva la sigue
 Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebrería) · **LOC** = locución ·
 **Plano** = de dónde sale la imagen. En los tramos A y B la pantalla va **entera** (sin partir): se indica en IZQ.
 
-### A · Quiénes somos (00:00–05:00) · Plano P01–P02 · Morfeo
+### A · Quiénes somos (00:00–05:00) · Plano P01–P02 · Neo
 
 | Min | IZQ | DER | LOC | Plano |
 |---|---|---|---|---|
@@ -66,7 +66,7 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 | 03:00 | Entera: acto *store* | — | «**admira.store** da de alta y supervisa cada local: pantallas, hilo musical, wifi y seguridad. Una pantalla en rojo se ve y se arregla antes de que la note el cliente.» | P01 · `04-acto-store.png` |
 | 04:00 | Entera: acto *app* | — | «Y **admira.app** convierte el circuito en verde en un medio: pantallas, hilo y avatares que Alsea puede programar o vender. Detrás, los agentes: hacen el trabajo repetitivo y piden aprobación cuando toca.» | P02 · `05-acto-app.png` + rótulo «agentes con aprobación humana» |
 
-### B · Con quién y desde cuándo (05:00–10:00) · Plano P03 · Morfeo
+### B · Con quién y desde cuándo (05:00–10:00) · Plano P03 · Neo
 
 > ⚠ **Datos a confirmar por Carlos** antes de montar: año de fundación, clientes citables y cifras
 > (pantallas, países). El guion deja huecos `[…]` en vez de inventarlos.
@@ -175,7 +175,7 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 | 53:00 | Un agente propone reinicio remoto → se aprueba → resuelta | La pizarra 2 vuelve a verde | «Muchas se resuelven en remoto; el agente lo propone y una persona lo aprueba.» | P15 |
 | 54:00 | Panel de **seguridad**: wifi, accesos y cámaras en verde | Cafebrería en verde | «También seguridad: la wifi, los accesos y las cámaras, en el mismo panel.» | P15 · respaldo `cafebreria-itil/03-visor-iot-wifi-altavoces.png` |
 
-### Cierre (55:00–60:00) · Plano **P16** · Morfeo
+### Cierre (55:00–60:00) · Plano **P16** · Neo
 
 | Min | IZQ | DER | LOC | Plano |
 |---|---|---|---|---|
@@ -191,9 +191,9 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 
 | Plano | Quién | Bloque | Qué hay que grabar (60–90 s de acción) | Respaldo si no llega a las 21:00 |
 |---|---|---|---|---|
-| P01 | Morfeo | A / cierre | Portadas del deck Alsea | `capturas-compartidas/alsea-2026-09-30/01…05` (ya existen) |
-| P02 | Morfeo | A | Acto *app* con rótulo de agentes | `05-acto-app.png` |
-| P03 | Morfeo | B | Láminas: línea de tiempo, clientes, ecosistema, Consejo | Láminas generadas; **datos pendientes de Carlos** |
+| P01 | Neo | A / cierre | Portadas del deck Alsea | `capturas-compartidas/alsea-2026-09-30/01…05` (ya existen) |
+| P02 | Neo | A | Acto *app* con rótulo de agentes | `05-acto-app.png` |
+| P03 | Neo | B | Láminas: línea de tiempo, clientes, ecosistema, Consejo | Láminas generadas; **datos pendientes de Carlos** |
 | P04 | **Woz** | 1.1 | Asistente de alta: elegir SO (5 tarjetas), emparejar 3 players | captura del asistente |
 | P05 | **Woz** | 1.2 | Ficha del player: tipo, SO, resolución, orientación, modo lineal/aleatorio/sincronizado | captura de la ficha |
 | P06 | **Woz** | 1.3 | Criterios: ubicación (tiempo), idioma, horario | captura de criterios |
@@ -206,7 +206,7 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 | P13 | **Walt** | 3.1 | Cambio de cartelera y de hilo/locución, visto a la derecha | captura antes/después |
 | P14 | **Walt** | 3.2 | Videoanalítica simulada + objetos (taza, vitrina) | captura del panel de analítica |
 | P15 | **Walt** | 3.3 | yokup.com: inventario, incidencia con SLA, resolución, seguridad | `cafebreria-itil/02…03-visor-*.png` |
-| P16 | Morfeo | cierre | Resumen, metaestilo en 4 webs, tabla G/B/B | capturas del metaestilo |
+| P16 | Neo | cierre | Resumen, metaestilo en 4 webs, tabla G/B/B | capturas del metaestilo |
 
 ---
 
@@ -217,7 +217,8 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 - **Locución:** la columna LOC de este guion, con **voz gratuita** (TTS local/libre, nada de ElevenLabs).
 - **Música:** «Tu pausa» del Stock de Pixeria, con ducking bajo la locución.
 - **Rótulos fijos:** «EJEMPLO» sobre datos simulados; «captura · plano pendiente» donde falte un plano.
-- **Salida:** MP4 1920×1080 subido a Pixeria (Stock), con enlace y captura en el encargo #4732.
+- **Salida:** MP4 1920×1080 subido a Pixeria (Stock), con enlace y captura en el encargo #4761 (relevo de #4732).
+- **Montador:** `alsea/montaje/montar.py` lee esta escaleta (60 filas, 4 columnas): no cambies el formato de las tablas `| MM:SS | IZQ | DER | LOC | Plano |`.
 
 ## 6. Pendientes para Carlos
 
