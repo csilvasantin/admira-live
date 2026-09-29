@@ -3,7 +3,7 @@
 **Demo:** miércoles 30-sep-2026 · 16:00 Madrid · presenta Carlos Silva Santin (Barcelona).
 **Qué es este documento:** la escaleta minuto a minuto de la **versión grabada** (vídeo lineal). Es la
 reserva y el ensayo de la demo: va **primero**; la versión interactiva la sigue en directo con el mismo orden.
-**Encargo:** #4732 (Morfeo) → relevo #4761 (Neo, GrokBotBox) · misión FLT-101250 · proyecto admira.live.
+**Encargo:** #4732 (Morfeo) → relevo #4761 (Neo, GrokBotBox) → seguimiento #4763 (materiales nuevos, §7) · misión FLT-101250 · proyecto admira.live.
 **Estado:** revisado (F1 cerrada, 29-sep 18:45 Madrid) y listo para rodar; quedan los datos del §6 para Carlos. Solo preview, nada en producción.
 
 ---
@@ -14,6 +14,7 @@ reserva y el ensayo de la demo: va **primero**; la versión interactiva la sigue
 |---|---|
 | Formato | MP4 H.264, **1920×1080**, 30 fps, sin audio (la locución se pone en montaje) |
 | Pantalla partida | **Izquierda 960 px = control** (admira.store / admira.studio / pixeria.com / yokup.com). **Derecha 960 px = la Cafebrería fija** (su Xperience). Cada cambio de la izquierda se tiene que ver en la derecha en el mismo plano |
+| Xperience (derecha) | La de Smith en pantalla partida: `https://smith-demo-alsea-4737.xpaceos.pages.dev/demo-alsea/?split=1` (izquierda = control, derecha = Cafebrería) |
 | Duración | Cada plano cubre su bloque de 5 min: basta con **60–90 s de acción limpia**; en montaje se estira con pausas y zooms |
 | Datos | Todo dato inventado lleva el rótulo **EJEMPLO** en pantalla. Nada de clientes reales que no hayan autorizado |
 | Metaestilo | Si ya está listo, grabar con el **metaestilo Alsea** activo; si no, con el estándar y marcarlo en el nombre del fichero (`-sin-metaestilo`) |
@@ -163,7 +164,7 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 | 46:00 | Regla: «si hay más de 5 personas → promo de bebida fría» | Se llena → la pizarra cambia a la promo | «Y reacciona: si se llena, cambia a la promoción que más rota con cola.» | P14 |
 | 47:00 | **Analítica de objetos**: se toca la **taza** | La pizarra muestra el origen del café | «Analítica de objetos: si el cliente coge la taza, la pantalla le cuenta de dónde viene ese café.» | P14 |
 | 48:00 | Se toca la **vitrina** | La pizarra muestra la bollería del día | «Si se acerca a la vitrina, la bollería del día.» | P14 |
-| 49:00 | Resumen analítica: afluencia por hora, objetos más tocados (EJEMPLO) | Cafebrería en reposo | «Todo esto se mide y vuelve al panel para decidir el contenido de mañana.» | P14 |
+| 49:00 | **admira.app · distribución (SIMULADO)**: presupuesto de «Tu pausa» en 10 Starbucks, **20.200 € EJEMPLO** → compra simulada → proof of play | Las pizarras emiten «Tu pausa» y cada pase queda registrado | «Y lo que se mide, se vende. En admira.app, Alsea presupuesta una campaña —aquí «Tu pausa» en diez Starbucks, con cifras simuladas—, la compra y recibe la prueba de emisión: qué pieza salió, en qué pantalla y a qué hora.» | P14 · respaldo `distribucion-alsea/plano-presupuesto.png`, `plano-compra-hecha.png`, `plano-proof.png` |
 
 #### 3.3 Mantenimiento y seguridad con yokup.com (50:00–55:00) · Plano **P15**
 
@@ -180,7 +181,7 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 | Min | IZQ | DER | LOC | Plano |
 |---|---|---|---|---|
 | 55:00 | Resumen: alta → contenido → experiencia → mantenimiento | Cafebrería **Best** completa | «En una hora: hemos dado de alta una cafetería, la hemos llenado de contenido, la hemos hecho reaccionar y la hemos puesto a salvo.» | P16 |
-| 56:00 | Metaestilo Alsea en admira.studio, admira.store, admira.app y yokup.com (4 miniaturas) | Igual | «Y todo con el estilo de Alsea: vuestras herramientas se ven como vuestras.» | P16 · capturas del metaestilo |
+| 56:00 | Metaestilo Alsea en admira.studio, admira.store, admira.app y yokup.com (4 miniaturas) | Igual | «Y todo con el estilo de Alsea: vuestras herramientas se ven como vuestras.» | P16 · capturas del metaestilo (admira.app = `distribucion-alsea/plano-presupuesto.png`) |
 | 57:00 | Tabla Good / Better / Best con qué incluye cada nivel | Igual | «Se puede empezar en Good en una cafetería y subir a Best en todo el circuito, sin cambiar de plataforma.» | P16 |
 | 58:00 | Propuesta de piloto `[nº locales, plazo]` | Igual | «Nuestra propuesta: un piloto de `[…]` locales en `[…]` semanas.» | P16 · **a confirmar por Carlos** |
 | 59:00 | Cortinilla final: «Admira × Alsea» + contacto | Fundido | «Gracias. Ahora, si queréis, lo vemos en directo.» *(música sube y cierra)* | P01 |
@@ -202,9 +203,9 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 | P09 | **Lucas** | 2.2 | Subida desde disco, arrastre múltiple, YouTube/Vimeo/LinkedIn | captura del diálogo de subida |
 | P10 | **Lucas** | 2.3 | Playlist manual y por criterios | captura del creador de playlists |
 | P11 | **Lucas** | 2.3 | Playlist por IA con aprobación → asignar al circuito → publicar | captura «pendiente de aprobación» |
-| P12 | **Walt** | 3.1 | Cafebrería en Good → Better → Best (pantalla partida) | capturas `cafebreria-itil/mejora-niveles/` |
+| P12 | **Walt** | 3.1 | Cafebrería en Good → Better → Best (pantalla partida, Xperience de Smith con `?split=1`) | capturas `cafebreria-itil/mejora-niveles/` |
 | P13 | **Walt** | 3.1 | Cambio de cartelera y de hilo/locución, visto a la derecha | captura antes/después |
-| P14 | **Walt** | 3.2 | Videoanalítica simulada + objetos (taza, vitrina) | captura del panel de analítica |
+| P14 | **Walt** | 3.2 | Videoanalítica simulada + objetos (taza, vitrina) + admira.app: presupuesto, compra y proof of play (SIMULADO) | captura del panel de analítica + `distribucion-alsea/plano-*.png` |
 | P15 | **Walt** | 3.3 | yokup.com: inventario, incidencia con SLA, resolución, seguridad | `cafebreria-itil/02…03-visor-*.png` |
 | P16 | Neo | cierre | Resumen, metaestilo en 4 webs, tabla G/B/B | capturas del metaestilo |
 
@@ -225,3 +226,18 @@ Columnas: **IZQ** = mitad izquierda (control) · **DER** = mitad derecha (Cafebr
 1. Año de fundación, clientes citables y cifras del tramo B (05:00–10:00).
 2. Propuesta de piloto del cierre (58:00): nº de locales y plazo.
 3. OK a nombrar las marcas de Alsea en pantalla (el guion solo dice «Alsea»).
+
+## 7. Materiales nuevos (seguimiento #4763, 29-sep)
+
+Todo lo simulado se rotula **EJEMPLO / SIMULADO** en pantalla.
+
+| Material | Dónde | Uso en el guion |
+|---|---|---|
+| Distribución Alsea (Walt, admira.app): presupuesto «Tu pausa» en 10 Starbucks (20.200 €, SIMULADO), compra simulada y proof of play estático | GrokBotBox `/workspace/cafebreria/distribucion-alsea/index.html` + `plano-presupuesto.png`, `plano-compra-hecha.png`, `plano-proof.png` | 49:00 (P14) y miniatura admira.app en 56:00 |
+| Activos de la Cafebrería (8 soportes con tarifa simulada) | `/workspace/cafebreria/activos/activos-cafebreria.csv` / `.json` | Datos del presupuesto de 49:00 |
+| Proof of play (informe es/en, captura, JSON de ejemplo) | `/workspace/cafebreria/proof-of-play/` (`captura-es.png`, `ejemplo-proof-of-play.json`) | Cierre de 49:00: qué pieza, qué pantalla, a qué hora |
+| Xperience de Smith (pantalla partida) | `https://smith-demo-alsea-4737.xpaceos.pages.dev/demo-alsea/?split=1` | Mitad derecha de todo C (10:00–55:00), sobre todo P12–P14 |
+| Biblioteca de Oráculo | `https://oraculo-demo-distribucion-bi.pixeria.pages.dev/demo/biblioteca/` | Paso 1 de #4762 en lugar del placeholder; aquí, respaldo del Stock en C2 |
+
+Para el montaje, copia los tres `plano-*.png` a `<assets>/distribucion/` y `captura-es.png` a `<assets>/proof-of-play/`:
+`montar.py` los usa como respaldo del minuto 49:00.

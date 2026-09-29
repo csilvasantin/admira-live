@@ -49,6 +49,7 @@ def respaldo(f, A):
         2: f'{deck}/03-acto-studio.png', 3: f'{deck}/04-acto-store.png', 4: f'{deck}/05-acto-app.png',
         7: f'{A}/live-app.png', 59: f'{deck}/01-portada-alsea-circuito.png',
         56: f'{A}/live-app.png', 57: f'{A}/niveles/comparativa-4-niveles.png',
+        49: f'{A}/distribucion/plano-presupuesto.png',   # admira.app · distribución SIMULADA (#4763)
     }.get(n)
     if not izq:
         if P in ('P04', 'P05', 'P06', 'P07'): izq = f'{A}/live-store.png'
