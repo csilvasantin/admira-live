@@ -2,13 +2,13 @@
 """Monta el vídeo lineal Alsea a partir de GUION-VIDEO-LINEAL.md (encargo #4732, fase 2).
 
 Cada fila de la escaleta es un minuto. Para cada minuto:
-  - imagen: el plano grabado (planos/P<nº>-*.mp4) si existe; si no, una lámina
+  - imagen: el plano grabado (planos/P<nº>-*.mp4) o su captura (planos/P<nº>-*.png) si existe; si no, una lámina
     1920x1080 con la captura de respaldo, rotulada «captura · plano pendiente»;
   - locución: la columna LOC con Piper (voz libre local, sin coste);
   - música: «Tu pausa» del Stock de Pixeria, con ducking bajo la voz.
 
 Uso:
-  montar.py --planos DIR --assets DIR --salida alsea-lineal.mp4 [--seg 60] [--solo 00:00,10:00]
+  montar.py --planos DIR[,DIR…] --assets DIR --salida alsea-lineal.mp4 [--seg 60] [--solo 00:00,10:00]
 """
 import argparse, json, os, re, shutil, subprocess, sys, html, tempfile
 
@@ -149,8 +149,10 @@ def main():
     filas = parse(GUION)
     if a.solo: filas = [f for f in filas if f['min'] in a.solo.split(',')]
     tmp = a.tmp or tempfile.mkdtemp(prefix='alsea-lineal-'); os.makedirs(tmp, exist_ok=True)
-    planos = {os.path.basename(p)[:3]: os.path.join(a.planos, p)
-              for p in sorted(os.listdir(a.planos)) if re.match(r'P\d\d-.*\.(mp4|mov|webm)$', p)} if os.path.isdir(a.planos) else {}
+    # Varias carpetas (p. ej. studio/planos de Lucas y admira-app/planos de Walt); gana la última.
+    planos = {}
+    for d in filter(os.path.isdir, a.planos.split(',')):
+        planos.update({p[:3]: os.path.join(d, p) for p in sorted(os.listdir(d)) if re.match(r'P\d\d-.*\.(mp4|mov|webm|png|jpe?g)$', p, re.I)})
     usos = {}
     for f in filas: usos.setdefault(f['plano'], []).append(f['n'])
     informe, segs, voces = [], [], []
@@ -166,7 +168,14 @@ def main():
         ff('-i', crudo, '-af', f'adelay=1500:all=1,apad,atrim=0:{a.seg},aformat=sample_rates=48000:channel_layouts=stereo', voz)
         voces.append(voz)
         P = f['plano']
-        if P in planos:
+        if P in planos and re.search(r'\.(png|jpe?g)$', planos[P], re.I):
+            # Captura fija: cabe entera entre la cabecera y el subtítulo (no tapa la barra de Experto).
+            over = f'{tmp}/over-{tag}.png'; foto(superpuesto(f), over, tmp, transparente=True)
+            ff('-loop', '1', '-framerate', '30', '-i', planos[P], '-loop', '1', '-i', over, '-filter_complex',
+               f'[0:v]scale={W}:{H-72-150}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:72+({H-72-150}-ih)/2:color=0x0b1210,setsar=1[v];[v][1:v]overlay=0:0',
+               '-t', str(a.seg), '-an', '-c:v', 'libx264', '-preset', 'veryfast', '-tune', 'stillimage', '-pix_fmt', 'yuv420p', seg)
+            informe.append((f['min'], P, 'captura', os.path.basename(planos[P])))
+        elif P in planos:
             over = f'{tmp}/over-{tag}.png'; foto(superpuesto(f), over, tmp, transparente=True)
             d, idx = dur(planos[P]), usos[P].index(f['n'])
             off = (d / len(usos[P])) * idx
